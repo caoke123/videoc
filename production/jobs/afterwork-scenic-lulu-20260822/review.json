@@ -1,0 +1,25 @@
+{
+  "default_policy": "human_first",
+  "automatic_ai_review": false,
+  "automatic_retry": false,
+  "shots": {
+    "S01": {
+      "decision": "accepted",
+      "asset": "assets/approved/S01-product-hook-v3.png",
+      "approved_on": "2026-08-22",
+      "note": "用户人工审核通过。v3按项目硬约束重制：套体与局部织带宽度约1.4倍，产品位于肩部至上胸。"
+    },
+    "S02": {
+      "decision": "accepted",
+      "asset": "assets/approved/S02-driver-lifestyle-v2.png",
+      "approved_on": "2026-08-22",
+      "note": "用户人工审核通过。v2锁定角色、服饰、左舵主驾、连续三点式安全带、中控侧锁扣和实拍产品比例。"
+    },
+    "S03": {
+      "decision": "accepted",
+      "asset": "assets/approved/S03-lakeside-close-v3.png",
+      "approved_on": "2026-08-22",
+      "note": "用户人工审核通过。v3保持同一角色服饰、停车状态、产品安装比例和湖边落日收尾构图。"
+    }
+  }
+}

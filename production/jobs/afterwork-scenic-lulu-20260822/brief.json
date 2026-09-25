@@ -1,0 +1,21 @@
+{
+  "job_id": "afterwork-scenic-lulu-20260822",
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 18,
+  "audience": "喜欢布置车内空间、重视个性与情绪氛围的年轻女性车主",
+  "raw_copy": "我的车里，必须有点可爱的。工作忙完，开车去周边转转。有水豚噜噜陪我，车里也多了一点好心情。看看沿途风景，每一刻都是好心情。",
+  "hook": "我的车里，必须有点可爱的。",
+  "cta": "给车里安排一只噜噜｜点击查看",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system",
+    "减压、缓解勒感、减少摩擦或任何护肩功能暗示",
+    "展示安装、拆卸、拉扯、调整或移动产品"
+  ],
+  "reference_video": null,
+  "notes": "三镜头低动作AI投流视频。产品定位为年轻车主的车内可爱装饰与情绪搭子，不强调功能。女主身份以三视图为准；白底图锁定完整SKU身份；车内实拍锁定安装比例与佩戴关系。中国左舵轿车主驾，产品从每个镜头开始均已正确安装。文字、CTA和品牌信息全部后期叠加。"
+}

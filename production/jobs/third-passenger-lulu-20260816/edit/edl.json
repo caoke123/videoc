@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "sources": {
+    "S01": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_5eef2571fadb4be2b28e2e38ab753232.mp4",
+    "S02": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_9b47cea4d6ad48d6845559a73da76a96.mp4",
+    "S03": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_fdd3053e18084c28a870b88b97b14c0f.mp4",
+    "S04": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_81bb67034189485b8932afd53c48c3a6.mp4",
+    "S05": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_1eb1be6b49944b47a3ccd3ae2eba9f3b.mp4",
+    "S06": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_3c12c0cd858241daa276038bb5d3d679.mp4",
+    "S07": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_952c7f39ce1c4ef1a22d491ab4fa4332.mp4",
+    "S08": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_dd574884c86d43e0a399fc193e626e39.mp4",
+    "S09": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_4538b05d9d934aa0a0f3fca6ba50a325.mp4",
+    "S10": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_3e3d81fff3844323b700090687e33958.mp4",
+    "S11": "E:/videoC/production/jobs/third-passenger-lulu-20260816/edit/s11_clean_hold.mp4"
+  },
+  "ranges": [
+    {"source": "S01", "start": 0.00, "end": 3.00, "beat": "HOOK", "quote": "副驾是我的位置。", "reason": "完整保留产品钩子与第一句旁白。"},
+    {"source": "S02", "start": 0.00, "end": 2.00, "beat": "DRIVER_CONTEXT", "quote": "他一个人的时候，", "reason": "保留男主独驾和旁白起句。"},
+    {"source": "S03", "start": 0.00, "end": 2.00, "beat": "DRIVER_CONTEXT", "quote": "话比跟我在一起还多。", "reason": "接续S02完成男主独驾信息。"},
+    {"source": "S04", "start": 0.00, "end": 2.00, "beat": "ARRIVAL", "quote": "", "reason": "压缩入座镜头尾部，保留从开门到坐定的动作信息。"},
+    {"source": "S05", "start": 0.00, "end": 2.00, "beat": "PRODUCT_PROOF", "quote": "她每次来，", "reason": "使用新版S05，完整展示已审核的白色水豚噜噜产品组件。"},
+    {"source": "S06", "start": 0.00, "end": 2.00, "beat": "LIFESTYLE", "quote": "身上都带着", "reason": "保留望向窗外和安全带护肩套的生活化状态。"},
+    {"source": "S07", "start": 0.00, "end": 2.00, "beat": "LIFESTYLE", "quote": "外面的风。", "reason": "使用新版S07，保留清晰的放入冰饮动作。"},
+    {"source": "S08", "start": 0.00, "end": 1.50, "beat": "RED_LIGHT", "quote": "", "reason": "短留红灯安静段，作为情绪转折。"},
+    {"source": "S09", "start": 0.00, "end": 2.50, "beat": "EMOTIONAL_PEAK", "quote": "有些浪漫，", "reason": "保留触摸绒面的情绪动作和产品特写。"},
+    {"source": "S10", "start": 0.00, "end": 2.00, "beat": "EMOTIONAL_PEAK", "quote": "他们自己都忘了说。", "reason": "接续情绪旁白并回到双人关系。"},
+    {"source": "S11", "start": 0.00, "end": 2.00, "beat": "PACKSHOT_CTA", "quote": "没关系，我替他们记着。", "reason": "保留最终产品定格与CTA安全区。"}
+  ],
+  "grade": "none",
+  "overlays": [],
+  "total_duration_s": 23.0
+}

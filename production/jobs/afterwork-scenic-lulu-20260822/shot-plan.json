@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "purpose": "visual_hook_product_hero",
+      "generation_mode": "h3_ref2va",
+      "audio_mode": "post_tts",
+      "dialogue": "我的车里，必须有点可爱的。",
+      "audio_direction": "年轻女声，轻松自然，像分享自己的车内小物。",
+      "references": ["assets/approved/S01-product-hook-v3.png", "assets/source/product-front-white.png"],
+      "primary_action": "车辆持续驶过城市道路，产品随车身产生克制的低频同步起伏",
+      "camera": "副驾驶侧固定机位拍主驾肩部产品近景，仅保留真实车身轻微振动",
+      "end_state": "产品完整清晰，安全带连续平整，下方留字幕安全区",
+      "dfcine_workflow_id": "h3.ref.cloud",
+      "prompt_path": "DFCine canvas 7 / S01｜H3产品Hook",
+      "status": "h3_prompt_ready"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 3,
+      "end_seconds": 10,
+      "purpose": "driver_lifestyle",
+      "generation_mode": "h3_ref2va",
+      "audio_mode": "post_tts",
+      "dialogue": "工作忙完，开车去周边转转。有水豚噜噜陪我，车里也多了一点好心情。",
+      "audio_direction": "年轻女声，自然松弛，句间留呼吸。",
+      "references": ["assets/approved/S02-driver-lifestyle-v2.png", "assets/source/product-front-white.png"],
+      "primary_action": "女主双手自然驾驶，城市通勤景物持续后移，人物与产品随车身轻微同步起伏",
+      "camera": "中国左舵车副驾驶侧斜拍车辆左侧主驾中近景，固定机位保留低频行驶振动",
+      "camera_origin": "front_passenger_seat_or_passenger_dashboard",
+      "camera_facing": "diagonally_toward_vehicle_left_driver",
+      "software_mirror": "no",
+      "expected_image_mapping": "女主坐在车身左侧主驾；方向盘和仪表在女主正前方；左门、左窗和左B柱位于女主外侧；中控台和右髋锁扣位于女主内侧；肩带从左B柱经左肩斜向右髋中控侧锁扣。画面像素左右以此相机透视为准，不得通过水平翻转纠正。",
+      "end_state": "人物身份稳定，产品已安装且与人物自然同框",
+      "dfcine_workflow_id": "h3.ref.cloud",
+      "prompt_path": "DFCine canvas 7 / S02｜H3沿途氛围",
+      "status": "h3_prompt_ready"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 10,
+      "end_seconds": 18,
+      "purpose": "scenic_close_cta",
+      "generation_mode": "h3_ref2va",
+      "audio_mode": "post_tts",
+      "dialogue": "看看沿途风景，每一刻都是好心情。",
+      "audio_direction": "年轻女声，温柔收束，末尾留一秒音乐空间。",
+      "references": ["assets/approved/S03-lakeside-driver-v4.png", "assets/source/product-front-white.png"],
+      "primary_action": "女主始终在车辆左侧主驾双手驾驶，车辆持续驶过湖边道路，近景护栏与远景湖山形成真实视差",
+      "camera": "副驾驶侧固定机位斜拍主驾、产品和湖边落日，保留克制的低频车身起伏",
+      "end_state": "产品、车内和沿途风景同框，底部留CTA安全区",
+      "dfcine_workflow_id": "h3.ref.cloud",
+      "prompt_path": "DFCine canvas 7 / S03｜H3湖边收束",
+      "status": "h3_prompt_ready"
+    }
+  ]
+}

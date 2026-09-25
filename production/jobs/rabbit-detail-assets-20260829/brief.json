@@ -1,0 +1,15 @@
+{
+  "job_id": "rabbit-detail-assets-20260829",
+  "mode": "hybrid",
+  "goal": "Create separate reusable product images from the supplied detail-page visual while preserving the white and beige rabbit SKU identities.",
+  "aspect_ratio": "1:1",
+  "review_policy": "human_first",
+  "source_references": [
+    "assets/source/detail-reference.jpg",
+    "assets/source/rabbit-white.png",
+    "assets/source/rabbit-beige.png"
+  ],
+  "output_status": "v2_generated_pending_human_review",
+  "active_candidate_set": "assets/generated-v2",
+  "superseded_candidate_set": "assets/generated"
+}

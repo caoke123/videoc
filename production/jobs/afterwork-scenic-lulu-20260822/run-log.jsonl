@@ -1,0 +1,3 @@
+{"shot_id":"S01","run_id":"25878f91-8554-4c57-a0b3-14f28eff5fe4","workflow_id":"h3.ref.cloud.accelerate","status":"succeeded","duration_seconds":3,"result":"renders/S01-h3-accelerate-v2.mp4","asset_id":"asset_01723be27bbd49a4a3b5f43d28e3f9b7"}
+{"shot_id":"S02","run_id":"b9491f13-2904-4945-8706-481d8e6ccca2","workflow_id":"h3.ref.cloud.accelerate","status":"succeeded","duration_seconds":7,"result":"renders/S02-h3-accelerate-v2.mp4","asset_id":"asset_290bec433c5649989bac5c8173f313ae"}
+{"shot_id":"S03","run_id":"2a780eb8-c5a4-4976-9e4f-cebd3ea9f60e","workflow_id":"h3.ref.cloud.accelerate","status":"succeeded","duration_seconds":8,"result":"renders/S03-h3-accelerate-v2.mp4","asset_id":"asset_e391006cf4304de99c369df5c7179ec3"}

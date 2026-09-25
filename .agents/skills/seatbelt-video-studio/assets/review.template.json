@@ -1,0 +1,6 @@
+{
+  "default_policy": "human_first",
+  "automatic_ai_review": false,
+  "automatic_retry": false,
+  "shots": {}
+}

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "job_id": "third-passenger-lulu-20260816",
+  "workflow": "h3.ref.cloud",
+  "aspect_ratio": "9:16",
+  "review_policy": "human_first",
+  "paid_run_authorized": false,
+  "global_locks": {
+    "product": "The white-hat yellow/orange Shuiba Lulu plush and black shoulder pad remain one rigid assembly; preserve exact colors, parts, proportions, seams and scale. The product is already installed in frame one and is never opened, wrapped, adjusted, pulled, removed or duplicated.",
+    "seatbelt": "Webbing remains continuous, flat and untwisted above and below the pad. Pad width remains 1.35–1.50 local webbing widths and never exceeds 1.55. Buckles stay at the inboard seat side beside the center console.",
+    "vehicle": "Chinese left-hand-drive sedan. Unmirrored third-person frontal assets: passenger is image-left with belt upper-left to lower-right; driver is image-right with belt upper-right to lower-left.",
+    "identity": "Use only the approved male and female look references; no face, hair, makeup, wardrobe or accessory redesign.",
+    "rendered_text": "No generated subtitles, logo, price, safety claim, watermark or CTA. All advertising text is added in post."
+  },
+  "shots": [
+    {
+      "shot_id": "S01",
+      "duration_seconds": 3,
+      "start_reference": "assets/generated/storyboard-s01-product-hook-v2.png",
+      "reference_roles": {
+        "product_identity": "assets/approved/product-identity-approved.png",
+        "target_scene": "assets/generated/storyboard-s01-product-hook-v2.png"
+      },
+      "primary_action": "The male index finger pauses 2–3 cm beside the plush for one second, then withdraws toward image-right without touching the product or belt.",
+      "camera_motion": "Locked macro frame with only subtle natural breathing; no orbit, pan or reframing.",
+      "audio_mode": "post_tts",
+      "dialogue": "副驾是我的位置。",
+      "audio_direction": "Young female post voice, soft and matter-of-fact; very light engine idle and distant after-work street ambience.",
+      "endpoint": "Finger has left frame; product remains unchanged and centered.",
+      "hard_avoid": ["contact with product", "installation motion", "product displacement", "belt deformation", "extra fingers"]
+    },
+    {
+      "shot_id": "S02",
+      "duration_seconds": 2,
+      "start_reference": "assets/approved/storyboard-s02-approved.png",
+      "reference_roles": {
+        "male_identity": "assets/approved/male-lead-look-approved-v2.png",
+        "target_scene": "assets/approved/storyboard-s02-approved.png",
+        "product_identity": "assets/approved/product-identity-approved.png"
+      },
+      "primary_action": "The male driver keeps both hands safely placed and makes one tiny relaxed humming head motion while looking forward at the red light.",
+      "camera_motion": "Locked third-person frontal driver frame; imperceptible push-in only.",
+      "audio_mode": "silent_plate",
+      "dialogue": "",
+      "audio_direction": "Low road ambience and faint in-car acoustic guitar reserved for post.",
+      "endpoint": "Driver faces forward; empty passenger-seat product stays fixed in the image-left background.",
+      "hard_avoid": ["lip-sync dialogue", "looking at camera", "steering wheel swap", "driver/passenger mirror flip", "product movement"]
+    },
+    {
+      "shot_id": "S03",
+      "duration_seconds": 3,
+      "start_reference": "assets/approved/storyboard-s03-approved.png",
+      "reference_roles": {
+        "female_identity": "assets/approved/female-lead-look-approved-v2.png",
+        "product_identity": "assets/approved/product-identity-approved.png",
+        "target_scene": "assets/approved/storyboard-s03-approved.png"
+      },
+      "primary_action": "The seated female passenger settles her shoulders gently against the seat and lowers both hands to her lap; the already-fastened belt and product do not move independently.",
+      "camera_motion": "Stable frontal passenger medium shot with a very small settling move.",
+      "audio_mode": "silent_plate",
+      "dialogue": "",
+      "audio_direction": "Door-close tail, soft city ambience and belt fabric settling sound in post; no speech.",
+      "endpoint": "Passenger sits still with hands on lap; product remains on right shoulder-to-upper-chest.",
+      "hard_avoid": ["showing belt fastening", "touching product", "belt adjustment", "camera side shift", "identity drift"]
+    },
+    {
+      "shot_id": "S04",
+      "duration_seconds": 3,
+      "start_reference": "assets/approved/storyboard-s04-approved.png",
+      "reference_roles": {
+        "female_identity": "assets/approved/female-lead-look-approved-v2.png",
+        "product_identity": "assets/approved/product-identity-approved.png",
+        "target_scene": "assets/approved/storyboard-s04-approved.png"
+      },
+      "primary_action": "The female passenger turns only her eyes and head slightly toward the right-side window; hair tips move subtly with cabin airflow and the product follows the torso as one fixed installed assembly.",
+      "camera_motion": "Locked frontal passenger composition with a slow 2% push-in.",
+      "audio_mode": "post_tts",
+      "dialogue": "她每次来，身上都带着外面的风。",
+      "audio_direction": "Soft post narration over quiet road tone and low acoustic guitar.",
+      "endpoint": "She holds a restrained soft expression toward the window; product is crisp and unchanged.",
+      "hard_avoid": ["large head turn", "hair crossing product", "product bounce", "side-camera conversion", "new smile or face"]
+    },
+    {
+      "shot_id": "S05",
+      "duration_seconds": 2,
+      "start_reference": "assets/approved/storyboard-s05-approved.png",
+      "reference_roles": {
+        "female_identity": "assets/approved/female-lead-look-approved-v2.png",
+        "target_scene": "assets/approved/storyboard-s05-approved.png",
+        "product_identity": "assets/approved/product-identity-approved.png"
+      },
+      "primary_action": "The passenger's left hand lowers the single iced drink the final few centimeters into the cup holder and releases it once stable.",
+      "camera_motion": "Locked frontal low medium-close frame; no top-down or side transition.",
+      "audio_mode": "silent_plate",
+      "dialogue": "",
+      "audio_direction": "Cup meets holder and ice gives one light clink; music remains low in post.",
+      "endpoint": "Cup is stable in holder; hand retreats slightly; product remains fixed and readable.",
+      "hard_avoid": ["duplicate cup", "hand-cup penetration", "spill", "product occlusion", "belt or pad movement"]
+    },
+    {
+      "shot_id": "S06",
+      "duration_seconds": 3,
+      "start_reference": "assets/approved/storyboard-s06-approved.png",
+      "reference_roles": {
+        "male_identity": "assets/approved/male-lead-look-approved-v2.png",
+        "female_identity": "assets/approved/female-lead-look-approved-v2.png",
+        "product_identity": "assets/approved/product-identity-approved.png",
+        "target_scene": "assets/approved/storyboard-s06-approved.png"
+      },
+      "primary_action": "At the red light, the male driver's right hand rests still on the gear selector while both characters breathe naturally and maintain their restrained distance.",
+      "camera_motion": "Locked centered frontal two-shot; no camera translation.",
+      "audio_mode": "silent_plate",
+      "dialogue": "",
+      "audio_direction": "Idle engine and distant intersection ambience; music ducks in post.",
+      "endpoint": "Hands and bodies remain separated; product remains unchanged on passenger.",
+      "hard_avoid": ["hands touching", "gear shift movement", "driver/passenger swap", "steering wheel drift", "belt crossing or product deformation"]
+    },
+    {
+      "shot_id": "S07",
+      "duration_seconds": 3,
+      "start_reference": "assets/approved/storyboard-s07-approved.png",
+      "reference_roles": {
+        "female_identity": "assets/approved/female-lead-look-approved-v2.png",
+        "product_identity": "assets/approved/product-identity-approved.png",
+        "target_scene": "assets/approved/storyboard-s07-approved.png"
+      },
+      "primary_action": "The passenger's left index fingertip makes one feather-light touch on the orange plush muzzle and withdraws; no pressing, gripping or dragging.",
+      "camera_motion": "Fixed medium macro frontal crop with focus locked on fingertip and plush fibers.",
+      "audio_mode": "post_tts",
+      "dialogue": "有些浪漫，他们自己都忘了说。",
+      "audio_direction": "Soft post narration, one subtle fiber-touch sound, followed by a clean turn-signal click.",
+      "endpoint": "Finger is separated from plush; product returns to complete stillness without deformation.",
+      "hard_avoid": ["finger penetration", "plush compression", "product displacement", "hand covering face", "extra fingers"]
+    },
+    {
+      "shot_id": "S08",
+      "duration_seconds": 4,
+      "start_reference": "assets/generated/storyboard-s08-incar-packshot-v1.png",
+      "end_reference": "assets/approved/product-identity-approved.png",
+      "reference_roles": {
+        "product_identity": "assets/approved/product-identity-approved.png",
+        "target_scene": "assets/generated/storyboard-s08-incar-packshot-v1.png"
+      },
+      "primary_action": "For the first two seconds the installed product stays completely still during a gentle push-in; at two seconds cut in post to the exact approved white-background product image and continue a subtle digital push-in.",
+      "camera_motion": "2% in-car push-in, then post cut to exact white-background still with 2% digital push-in.",
+      "audio_mode": "post_tts",
+      "dialogue": "没关系，我替他们记着。",
+      "audio_direction": "Post narration resolves over the final acoustic-guitar tail, then near silence.",
+      "endpoint": "Exact approved white-background product still, lower CTA safe area preserved for post overlay.",
+      "hard_avoid": ["model-generated white packshot", "product morph transition", "generated text", "new logo or price", "product part changes"]
+    }
+  ]
+}

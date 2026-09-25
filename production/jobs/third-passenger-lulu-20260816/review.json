@@ -1,0 +1,29 @@
+{
+  "default_policy": "human_first",
+  "automatic_ai_review": false,
+  "automatic_retry": false,
+  "assets": {
+    "male-lead-look-approved-v2.png": "accepted",
+    "female-lead-look-approved-v2.png": "accepted",
+    "product-identity-approved.png": "accepted",
+    "installed-passenger-approved.png": "accepted",
+    "storyboard-s02-approved.png": "accepted",
+    "storyboard-s03-approved.png": "accepted",
+    "storyboard-s04-approved.png": "accepted",
+    "storyboard-s05-approved.png": "accepted",
+    "storyboard-s06-approved.png": "accepted",
+    "storyboard-s07-approved.png": "accepted",
+    "storyboard-s01-product-hook-v2.png": "pending",
+    "storyboard-s08-incar-packshot-v1.png": "pending"
+  },
+  "shots": {
+    "S01": "pending",
+    "S02": "accepted",
+    "S03": "accepted",
+    "S04": "accepted",
+    "S05": "accepted",
+    "S06": "accepted",
+    "S07": "accepted",
+    "S08": "pending"
+  }
+}

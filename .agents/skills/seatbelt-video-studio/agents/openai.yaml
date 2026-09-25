@@ -1,0 +1,7 @@
+interface:
+  display_name: "安全带护肩套视频工作室"
+  short_description: "用于批量策划、生成、编排和复检安全带护肩套短视频项目"
+  default_prompt: "使用 $seatbelt-video-studio 创建或继续一个安全带护肩套短视频项目。"
+policy:
+  allow_implicit_invocation: true
+

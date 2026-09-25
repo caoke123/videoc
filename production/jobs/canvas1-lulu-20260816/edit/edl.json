@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "sources": {
+    "S01": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_353c2305ac5747238002163ad5a553ca.mp4",
+    "S02": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_af678ca963be450784f30aafe403efcf.mp4",
+    "S03": "E:/DFCine/userdata/DFCine Projects/lulu/assets/generated/video/2026-08/asset_09c5d43e06b140f2b16b00aba41afaa7.mp4"
+  },
+  "ranges": [
+    {"source": "S01", "start": 0.00, "end": 6.50, "beat": "HOOK", "quote": "", "reason": "保留人物、驾驶状态和产品同框的开场动作。"},
+    {"source": "S02", "start": 0.00, "end": 6.50, "beat": "PRODUCT_DETAIL", "quote": "", "reason": "承接到产品近景，突出水豚噜噜与护肩套的完整关系。"},
+    {"source": "S03", "start": 5.50, "end": 12.20, "beat": "CLOSING", "quote": "", "reason": "从产品陪伴回到人物驾驶和完整车内关系，形成收束。"}
+  ],
+  "grade": "none",
+  "overlays": [],
+  "total_duration_s": 19.70
+}

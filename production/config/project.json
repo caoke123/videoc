@@ -1,0 +1,38 @@
+{
+  "project_name": "Seatbelt Shoulder Pad Video Studio",
+  "default_mode": "hybrid",
+  "default_aspect_ratio": "9:16",
+  "default_review_policy": "human_first",
+  "automatic_ai_review": false,
+  "automatic_retry": false,
+  "asset_self_check_required": true,
+  "asset_self_check_policy": "required before promotion; no automatic regeneration; human approval remains required",
+  "vehicle_defaults": {
+    "market": "China",
+    "traffic_side": "right-hand traffic",
+    "steering_layout": "left-hand drive",
+    "driver_seat": "vehicle-left",
+    "front_passenger_seat": "vehicle-right",
+    "spatial_rules": "../../.agents/skills/seatbelt-video-studio/references/vehicle-spatial-rules.md"
+  },
+  "show_installation_process": false,
+  "installed_reference_required": true,
+  "product_catalog": "production/config/products.json",
+  "product_geometry_review_required": true,
+  "product_geometry_tolerance_percent": 5,
+  "paid_runs_require_confirmation": true,
+  "integrations": {
+    "reference_video_analysis": "claude-video-watch",
+    "video_generation": "minimax-h3",
+    "prompt_compiler": "h3-prompt-writing",
+    "audio_policy": "prefer_h3_native_for_short_dialogue"
+  },
+  "dfcine": {
+    "compute_provider": "AutoDL",
+    "preferred_video_workflow": "h3.ref.cloud",
+    "image_generation_policy": "all_images_codex_imagegen_then_upload_to_dfcine",
+    "image_generation_model": "gpt-image-2",
+    "image_generation_runner": "codex_builtin_imagegen",
+    "image_generation_upload_required": true
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "products": [
+    {
+      "sku_id": "shuiba-tutu-black-pad-v1",
+      "name": "水豚噜噜黑色安全带护肩套",
+      "status": "approved",
+      "source_product_asset": "production/assets/products/shuiba-tutu-black-pad-v1/source/product-front.png",
+      "approved_installed_asset": "production/assets/products/shuiba-tutu-black-pad-v1/approved/installed-driver-v1.png",
+      "approved_on": "2026-08-22",
+      "approval_note": "User confirmed the supplied standalone photo as SKU identity truth and the supplied driver photo as installed-state and screen-scale truth.",
+      "pad": {
+        "length_cm": 24.0,
+        "width_cm": 6.5,
+        "aspect_ratio": 3.6923,
+        "color": "black"
+      },
+      "assembly_policy": "rigid_locked",
+      "reference_normalized_geometry": {
+        "plush_width_to_pad_width": 1.6,
+        "plush_height_to_pad_length": 0.62,
+        "plush_center_y_from_pad_top": 0.42,
+        "tolerance_percent": 5
+      },
+      "installed_reference_scale": {
+        "priority": "authoritative_for_screen_scale",
+        "pad_width_to_local_vehicle_belt_width": {
+          "nominal": 1.42,
+          "min": 1.35,
+          "max": 1.5,
+          "hard_reject_above": 1.55,
+          "measurement": "perpendicular_to_shared_centerline_at_same_projected_depth"
+        },
+        "pad_length_to_visible_head_width": {
+          "min": 1.4,
+          "max": 1.7
+        },
+        "pad_width_to_visible_head_width": {
+          "min": 0.4,
+          "max": 0.5
+        },
+        "plush_width_to_visible_head_width": {
+          "min": 0.7,
+          "max": 0.85
+        },
+        "pad_length_to_visible_shoulder_width": {
+          "min": 0.65,
+          "max": 0.85
+        },
+        "top_anchor": "shoulder_belt_contact_zone",
+        "lower_edge_limit": "upper_chest"
+      },
+      "installation": {
+        "vehicle_belt_passes_inside_pad": true,
+        "centerlines_aligned": true,
+        "placement_zone": "shoulder_to_upper_chest",
+        "installation_action_visible": false
+      },
+      "identity_locked_parts": [
+        "black_pad",
+        "toy_face",
+        "toy_glasses",
+        "toy_hat",
+        "toy_costume",
+        "toy_limbs",
+        "hanging_cords",
+        "attachment_point",
+        "complete_silhouette"
+      ]
+    },
+    {
+      "sku_id": "shuiba-lulu-brown-black-pad-v1",
+      "name": "水豚噜噜棕色飞行员黑色安全带护肩套",
+      "status": "approved",
+      "source_product_asset": "production/assets/products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+      "approved_installed_asset": "production/assets/products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+      "approved_on": "2026-08-15",
+      "approval_note": "User confirmed the generated driver composite looks very good.",
+      "pad": {
+        "length_cm": 24.0,
+        "width_cm": 6.5,
+        "aspect_ratio": 3.6923,
+        "color": "black"
+      },
+      "assembly_policy": "rigid_locked_from_source_image",
+      "installed_reference_scale": {
+        "priority": "authoritative_for_screen_scale",
+        "pad_width_to_local_vehicle_belt_width": {
+          "nominal": 1.42,
+          "min": 1.35,
+          "max": 1.5,
+          "hard_reject_above": 1.55,
+          "measurement": "perpendicular_to_shared_centerline_at_same_projected_depth"
+        },
+        "top_anchor": "shoulder_belt_contact_zone",
+        "lower_edge_limit": "upper_chest"
+      },
+      "installation": {
+        "vehicle_belt_passes_inside_pad": true,
+        "centerlines_aligned": true,
+        "placement_zone": "shoulder_to_upper_chest",
+        "installation_action_visible": false
+      },
+      "identity_locked_parts": [
+        "black_pad",
+        "yellow_orange_plush_face",
+        "transparent_goggles",
+        "brown_headphones",
+        "orange_green_top_detail",
+        "blue_star_outfit",
+        "cream_star_accessory",
+        "toy_limbs",
+        "attachment_point",
+        "complete_silhouette"
+      ],
+      "approved_composite_traits": [
+        "identity_preserved",
+        "realistic_driver_pose",
+        "realistic_vehicle_and_exterior",
+        "continuous_three_point_belt",
+        "correct_pad_to_belt_width_ratio",
+        "natural_long_hair_occlusion",
+        "product_and_pad_transformed_as_one_assembly"
+      ]
+    }
+  ]
+}

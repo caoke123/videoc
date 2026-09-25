@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "job_id": "third-passenger-lulu-20260816",
+  "prepared_at": "2026-08-16T00:00:00+08:00",
+  "execution_mode": "dry_run_only",
+  "paid_run_authorized": false,
+  "compute_run_started": false,
+  "dfcine_app": {
+    "status": "running_and_inspected",
+    "project": "lulu",
+    "project_path": "E:/DFCine/userdata/DFCine Projects/lulu",
+    "canvas": "画布 1",
+    "compute_provider_displayed": "AutoDL"
+  },
+  "canvas_audit": {
+    "result": "existing_canvas_is_previous_three-shot_commute_project",
+    "existing_nodes": [
+      {"title": "产品身份参考｜水豚噜噜完整SKU 1", "kind": "image_reference", "reuse": false},
+      {"title": "已安装状态参考｜美女司机 1", "kind": "image_reference", "reuse": false},
+      {"title": "S01｜开心通勤开场", "kind": "old_video", "reuse": false},
+      {"title": "S02｜水豚噜噜产品近景", "kind": "old_video", "reuse": false},
+      {"title": "S03｜城市街道收尾", "kind": "old_video", "reuse": false},
+      {"title": "视频节点 4", "kind": "old_assembly", "reuse": false}
+    ],
+    "safety_decision": "Do not alter, delete or repurpose the old canvas. Prepare a separate canvas/group for the current eight-shot job."
+  },
+  "connector_status": {
+    "dfcine_mcp_available": false,
+    "required_tools_missing": [
+      "dfcine_get_canvas_info",
+      "dfcine_list_nodes",
+      "dfcine_get_node_agent_guide",
+      "dfcine_get_node_inputs",
+      "dfcine_get_node_params",
+      "dfcine_create_upload_node_from_file",
+      "dfcine_create_node",
+      "dfcine_connect_nodes",
+      "dfcine_write_node_prompt",
+      "dfcine_write_node_params"
+    ],
+    "dry_run_status": "blocked_before_mutation",
+    "reason": "The DFCine desktop app is open, but the current Codex session exposes no DFCine MCP tools. UI edits do not provide dryRun:true semantics, so no canvas mutation was attempted."
+  },
+  "planned_canvas": {
+    "name": "车内的第三个人｜8镜头视频生成",
+    "workflow": "h3.ref.cloud",
+    "global_upload_nodes": [
+      "assets/approved/product-identity-approved.png",
+      "assets/approved/installed-passenger-approved.png",
+      "assets/approved/male-lead-look-approved-v2.png",
+      "assets/approved/female-lead-look-approved-v2.png"
+    ],
+    "shot_scene_nodes": [
+      {"shot_id": "S01", "asset": "assets/generated/storyboard-s01-product-hook-v2.png", "approval_gate": "pending_human"},
+      {"shot_id": "S02", "asset": "assets/approved/storyboard-s02-approved.png", "approval_gate": "accepted"},
+      {"shot_id": "S03", "asset": "assets/approved/storyboard-s03-approved.png", "approval_gate": "accepted"},
+      {"shot_id": "S04", "asset": "assets/approved/storyboard-s04-approved.png", "approval_gate": "accepted"},
+      {"shot_id": "S05", "asset": "assets/approved/storyboard-s05-approved.png", "approval_gate": "accepted"},
+      {"shot_id": "S06", "asset": "assets/approved/storyboard-s06-approved.png", "approval_gate": "accepted"},
+      {"shot_id": "S07", "asset": "assets/approved/storyboard-s07-approved.png", "approval_gate": "accepted"},
+      {"shot_id": "S08", "asset": "assets/generated/storyboard-s08-incar-packshot-v1.png", "approval_gate": "pending_human"}
+    ],
+    "video_nodes": ["S01", "S02", "S03", "S04", "S05", "S06", "S07"],
+    "post_node": "S08 exact-white-packshot post motion",
+    "prompt_contract": "prompts/video-generation-contracts.json"
+  },
+  "next_safe_action": "After S01/S08 human approval and DFCine MCP availability, inspect exact H3 input labels, then dry-run upload-node creation, connections, prompt writes and parameter writes. Do not run nodes until separate paid-run confirmation."
+}

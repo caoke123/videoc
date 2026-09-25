@@ -1,0 +1,51 @@
+{
+  "canvas_id": "b48cc4c8-1ee7-4b61-837d-75268ce03141",
+  "canvas_name": "画布 7",
+  "configured_at": "2026-08-22",
+  "generation_started": false,
+  "workflow": "h3.ref.cloud",
+  "aspect_ratio": "9:16 (Portrait Widescreen)",
+  "megapixels": 0.6,
+  "total_duration_seconds": 18,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "group_id": "59cd058a-6944-4b53-a1f1-a470a4c9fc73",
+      "group_name": "S01｜我的车里必须有点可爱的",
+      "video_node_id": "bc903725-3ae9-4356-bfa8-e015f0044433",
+      "video_node_title": "S01｜H3产品Hook",
+      "duration_seconds": 3,
+      "seed": 58,
+      "picture_1": "assets/approved/S01-product-hook-v3.png",
+      "picture_2": "assets/source/product-front-white.png",
+      "prompt_ready": true,
+      "run_status": "idle"
+    },
+    {
+      "shot_id": "S02",
+      "group_id": "5f6b86e1-c3fc-47d6-8ebe-6997b0b80c35",
+      "group_name": "S02｜下班出发",
+      "video_node_id": "2cf564ca-3c2a-46d1-a2c6-fc1b9073e3e1",
+      "video_node_title": "S02｜H3沿途氛围",
+      "duration_seconds": 7,
+      "seed": 59,
+      "picture_1": "assets/approved/S02-driver-lifestyle-v2.png",
+      "picture_2": "assets/source/product-front-white.png",
+      "prompt_ready": true,
+      "run_status": "idle"
+    },
+    {
+      "shot_id": "S03",
+      "group_id": "f296419f-2783-43b7-8d8c-943be530830d",
+      "group_name": "S03｜湖边好心情",
+      "video_node_id": "ed28c0e1-1862-45f6-8857-ed159fca93b5",
+      "video_node_title": "S03｜H3湖边收束",
+      "duration_seconds": 8,
+      "seed": 60,
+      "picture_1": "assets/approved/S03-lakeside-driver-v4.png",
+      "picture_2": "assets/source/product-front-white.png",
+      "prompt_ready": true,
+      "run_status": "idle"
+    }
+  ]
+}

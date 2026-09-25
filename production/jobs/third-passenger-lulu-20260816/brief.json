@@ -1,0 +1,19 @@
+{
+  "job_id": "third-passenger-lulu-20260816",
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 23,
+  "audience": "七夕前后、喜欢车载可爱装饰与情绪化短视频的年轻情侣及女性消费者",
+  "raw_copy": "《车内的第三个人》：以水豚噜噜安全带护肩套第一人称，见证一段克制又温柔的下班约会。",
+  "hook": "副驾是我的位置。",
+  "cta": "七夕，给副驾留一个可爱的位子。点击购物车查看水豚噜噜安全带护肩套。",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system"
+  ],
+  "reference_video": null,
+  "notes": "产品SKU：shuiba-tutu-black-pad-v1。车辆默认为中国道路常见左舵轿车：主驾在车身左侧，副驾在车身右侧；按项目级 vehicle-spatial-rules.md 判断座位、镜头和安全带关系。白底产品图与已安装实拍图是身份和比例真值。wearing-reference-front-passenger-v1.png 与 wearing-reference-driver-v1.png 仅作为佩戴关系真值，不替换当前 SKU 外观。产品从每个镜头开始均已正确安装；不展示安装、调整、旋转、拉扯或移除。每张生成资产必须先通过车辆空间、佩戴关系与穿帮自检，再交人工批准；自检失败不自动重试。全片为夏末傍晚明亮暖金色自然光、深色整洁车内。所有品牌、价格、字幕和CTA均后期叠加。不得使用安全防护、减压、缓解勒感、认证或替代安全带等未验证功效表述。"
+}

@@ -1,0 +1,19 @@
+{
+  "job_id": "",
+  "mode": "hybrid",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 15,
+  "audience": "",
+  "raw_copy": "",
+  "hook": "",
+  "cta": "",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system"
+  ],
+  "reference_video": null,
+  "notes": ""
+}
