@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="本地优先的视频生成工作台" />
+    <title>镜场 · Video Workbench</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%230b101d'/%3E%3Cpath d='M17 20h23l8 12-8 12H17z' fill='%23e9ff72'/%3E%3Cpath d='M29 26l9 6-9 6z' fill='%230b101d'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./canvas-fixes.css" />
+    <link rel="stylesheet" href="./visual-nodes.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">▶</span><span>镜场</span><small>WORKBENCH</small></div>
+        <button class="project-switcher"><span class="project-dot"></span><span>双 SKU · 一致性测试</span><span>⌄</span></button>
+        <nav aria-label="项目导航">
+          <button class="nav-item active"><span>▣</span> 画布 <kbd>1</kbd></button>
+          <button class="nav-item"><span>▤</span> 分镜 <kbd>2</kbd></button>
+          <button class="nav-item"><span>◒</span> 生成记录 <kbd>3</kbd></button>
+          <button class="nav-item"><span>◇</span> 素材库 <kbd>4</kbd></button>
+        </nav>
+        <div class="sidebar-section">
+          <p>作品类型</p>
+          <button class="mode active" data-mode="PRODUCT">商品带货</button>
+          <button class="mode" data-mode="UGC">UGC 口播</button>
+          <button class="mode" data-mode="STORY">剧情叙事</button>
+        </div>
+        <div class="side-footer">
+          <div class="local-status"><span></span> 本地项目</div>
+          <p>素材与运行记录保存在你的项目目录；令牌不进入画布文件。</p>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">VIDEO GENERATION STUDIO</p>
+            <h1>480p · 双 SKU 一致性验证</h1>
+          </div>
+          <div class="top-actions">
+            <button class="ghost" id="fitCanvas">适配画布</button>
+            <span class="top-status" id="topStatus">读取任务中…</span>
+            <button class="run-button" id="openRun">查看任务 <span>→</span></button>
+          </div>
+        </header>
+
+        <section class="canvas-wrap" aria-label="视频制作画布">
+          <div class="canvas-help"><span class="grid-dot"></span>原图 → 提示词 → AutoDL → 视频 · 可拖动节点和画布</div>
+          <div class="zoom-controls"><button id="zoomOut" aria-label="缩小">−</button><output id="zoomValue">100%</output><button id="zoomIn" aria-label="放大">＋</button></div>
+          <div class="canvas-viewport" id="viewport">
+            <svg class="connections" viewBox="0 0 1200 940" preserveAspectRatio="none" aria-hidden="true">
+              <path data-from="reference:out" data-to="prompt:p1" />
+              <path data-from="audio:out" data-to="prompt:p2" />
+              <path data-from="prompt:out" data-to="generation:in" />
+              <path data-from="generation:out" data-to="result:in" />
+            </svg>
+            <div class="canvas-stage" id="stage">
+              <article class="node asset-node selected" data-node="reference" style="left:40px;top:90px">
+                <div class="node-head"><span class="node-icon image">▧</span><span>产品原图</span><span class="node-tag">2 张</span></div>
+                <div class="source-grid">
+                  <a class="source-card" id="yellowLink" href="#" target="_blank" rel="noopener"><img id="yellowImage" alt="黄橙款护肩套原图" /><span>黄橙款 · SKU 01</span></a>
+                  <a class="source-card" id="pinkLink" href="#" target="_blank" rel="noopener"><img id="pinkImage" alt="粉色款护肩套原图" /><span>粉色款 · SKU 02</span></a>
+                </div>
+                <strong>两款产品独立锁定</strong><small>点击图片可查看原始大图</small>
+                <div class="lock-summary"><span>卷曲织物</span><span>原图比例</span><span>配件不混搭</span></div>
+                <div class="node-port out"></div>
+              </article>
+              <article class="node asset-node audio-node" data-node="audio" style="left:40px;top:510px">
+                <div class="node-head"><span class="node-icon audio">⌁</span><span>音频参考</span><span class="node-tag">1 段</span></div>
+                <div class="audio-visual"><span class="audio-symbol">♫</span><div><strong>官方静音参考</strong><small>z0903 必填输入 · 无口播</small></div></div>
+                <audio id="audioPlayer" controls preload="none" aria-label="官方静音参考音频"></audio>
+                <div class="node-port out"></div>
+              </article>
+              <article class="node prompt-node" data-node="prompt" style="left:390px;top:90px">
+                <div class="node-head"><span class="node-icon prompt">✦</span><span>分镜与提示词</span><span class="node-tag">S01</span></div>
+                <strong>双款静物 Packshot</strong>
+                <div class="shot-summary">两个完整产品并列陈列。镜头缓慢推近，棚拍光线扫过表面；玩偶和护肩套保持原样。</div>
+                <div class="node-meta"><span>9:16 · 480×864</span><span>3 秒</span><span>固定 Seed</span></div>
+                <div class="prompt-label">已提交给 AutoDL 的完整提示词</div>
+                <div class="prompt-content" id="promptContent" tabindex="0">读取请求计划中…</div>
+                <div class="prompt-lock"><b>一致性约束</b><span>材质纹路连续</span><span>形状比例不变</span><span>两款配件各自保留</span></div>
+                <div class="node-port in p1"></div><div class="node-port in p2"></div><div class="node-port out"></div>
+              </article>
+              <article class="node generation-node" data-node="generation" style="left:780px;top:90px">
+                <svg class="running-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="98" height="98" rx="3" /></svg>
+                <div class="node-head"><span class="node-icon api">↗</span><span>AutoDL 视频生成</span><span class="node-tag lime" id="generationBadge">读取中</span></div>
+                <strong>H3 六图三音频</strong><small>minimax_h3_z0903</small>
+                <div class="slots"><span>参考图 2 / 6</span><span>音频 1 / 3</span></div>
+                <div class="generation-status" aria-live="polite"><span class="status-orb"></span><div><b id="generationStatus">读取任务中…</b><small id="generationTime">任务记录加载中</small></div></div>
+                <div class="process-steps" id="processSteps"><span>素材</span><span>排队</span><span>生成</span><span>保存</span></div>
+                <div class="task-id">任务 ID <code id="taskId">—</code></div>
+                <div class="node-meta"><span>480p 竖</span><span>3 秒</span><span>Seed 48020260927</span></div>
+                <div class="node-port in"></div><div class="node-port out"></div>
+              </article>
+              <article class="node result-node" data-node="result" style="left:780px;top:465px">
+                <div class="node-head"><span class="node-icon result">▷</span><span>最终视频</span><span class="node-tag muted" id="resultBadge">读取中</span></div>
+                <div class="result-placeholder" id="resultPlaceholder">正在读取生成结果…</div>
+                <video id="resultVideo" controls playsinline preload="metadata" hidden aria-label="AutoDL 生成的视频预览"></video>
+                <div class="result-actions" id="resultActions" hidden><button type="button" id="previewVideo">放大预览</button><a id="downloadVideo" href="#" download>下载 MP4 ↓</a></div>
+                <small id="resultMeta">成功后可在此播放与下载</small>
+                <div class="review-note" id="reviewNote" hidden>审片提示：中段粉色款护肩套有短暂灰色纹理断层；本片用于链路测试。</div>
+                <div class="node-port in"></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="bottom-strip">
+          <div><span class="strip-label">测试链路</span><strong>原图</strong><span class="timeline on"></span><strong>提示词</strong><span class="timeline on"></span><strong>AutoDL</strong><span class="timeline on"></span><strong>MP4</strong></div>
+          <p id="footerStatus">读取任务中…</p>
+        </section>
+      </section>
+
+      <aside class="inspector" id="inspector">
+        <div class="inspector-head"><span>节点详情</span><button id="closeInspector">×</button></div>
+        <div id="inspectorContent"></div>
+      </aside>
+    </main>
+
+    <dialog id="runDialog">
+      <div class="dialog-kicker">生成预检</div>
+      <h2>480p 产品一致性测试</h2>
+      <p>本次只提交 1 次：2 张原始产品参考 + 官方静音参考，生成约 3 秒竖版 Packshot。<br />注意：该工作流的 480p 原生规格是 480 × 864（9:16）；最终 3:4、720p 成片将在测试通过后另行裁切与制作。</p>
+      <div class="preflight" id="preflight"><span>✓ 两个独立 SKU 原图</span><span>✓ 官方静音参考</span><span>✓ 材质、纹路、比例锁定</span><span id="tokenState">○ 正在检查本机执行器</span></div>
+      <p class="detail-copy" id="submitStatus">提交后，结果视频与请求记录会保存到本机项目目录；不会上传 Token 到画布页面。</p>
+      <div class="dialog-actions"><button class="ghost" id="closeDialog">返回画布</button><button class="run-button" id="savePlan">提交 1 次测试</button></div>
+    </dialog>
+    <dialog id="previewDialog" class="preview-dialog">
+      <div class="preview-heading"><strong>480p 视频预览</strong><button type="button" id="closePreview" aria-label="关闭预览">×</button></div>
+      <video id="largeVideo" controls playsinline preload="none" aria-label="放大视频预览"></video>
+      <a id="largeDownload" href="#" download>下载原始 MP4 ↓</a>
+    </dialog>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
