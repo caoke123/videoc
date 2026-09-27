@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="本地优先的视频生成工作台" />
+    <title>镜场 · Video Workbench</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%230b101d'/%3E%3Cpath d='M17 20h23l8 12-8 12H17z' fill='%23e9ff72'/%3E%3Cpath d='M29 26l9 6-9 6z' fill='%230b101d'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">▶</span><span>镜场</span><small>WORKBENCH</small></div>
+        <button class="project-switcher"><span class="project-dot"></span><span>水豚噜噜 · 通勤 UGC</span><span>⌄</span></button>
+        <nav aria-label="项目导航">
+          <button class="nav-item active"><span>▣</span> 画布 <kbd>1</kbd></button>
+          <button class="nav-item"><span>▤</span> 分镜 <kbd>2</kbd></button>
+          <button class="nav-item"><span>◒</span> 生成记录 <kbd>3</kbd></button>
+          <button class="nav-item"><span>◇</span> 素材库 <kbd>4</kbd></button>
+        </nav>
+        <div class="sidebar-section">
+          <p>作品类型</p>
+          <button class="mode active" data-mode="UGC">UGC 口播</button>
+          <button class="mode" data-mode="PRODUCT">商品带货</button>
+          <button class="mode" data-mode="STORY">剧情叙事</button>
+        </div>
+        <div class="side-footer">
+          <div class="local-status"><span></span> 本地项目</div>
+          <p>素材与运行记录保存在你的项目目录；令牌不进入画布文件。</p>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">VIDEO GENERATION STUDIO</p>
+            <h1>通勤 UGC · 3 镜头</h1>
+          </div>
+          <div class="top-actions">
+            <button class="ghost" id="fitCanvas">适配画布</button>
+            <button class="ghost" id="addShot">＋ 新镜头</button>
+            <button class="run-button" id="openRun">生成预览 <span>→</span></button>
+          </div>
+        </header>
+
+        <section class="canvas-wrap" aria-label="视频制作画布">
+          <div class="canvas-help"><span class="grid-dot"></span>拖动空白处平移 · 滚轮缩放 · 点击节点查看细节</div>
+          <div class="zoom-controls"><button id="zoomOut" aria-label="缩小">−</button><output id="zoomValue">100%</output><button id="zoomIn" aria-label="放大">＋</button></div>
+          <div class="canvas-viewport" id="viewport">
+            <svg class="connections" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M320 293 C 394 293, 410 260, 488 260" />
+              <path d="M320 482 C 392 482, 414 350, 488 350" />
+              <path d="M720 307 C 786 307, 808 307, 878 307" />
+              <path d="M1112 307 C 1178 307, 1205 307, 1282 307" />
+            </svg>
+            <div class="canvas-stage" id="stage">
+              <article class="node asset-node selected" data-node="reference" style="left:70px;top:196px">
+                <div class="node-head"><span class="node-icon image">▧</span><span>身份参考</span><button class="more">•••</button></div>
+                <div class="asset-preview plush"><span>SKU</span></div>
+                <strong>水豚噜噜护肩套</strong><small>已批准 · 2048 × 2048</small>
+                <div class="node-port out"></div>
+              </article>
+              <article class="node asset-node" data-node="audio" style="left:70px;top:385px">
+                <div class="node-head"><span class="node-icon audio">⌁</span><span>口播音频</span><button class="more">•••</button></div>
+                <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <strong>S01-driver-line.wav</strong><small>4.0 秒 · 外部配音</small>
+                <div class="node-port out"></div>
+              </article>
+              <article class="node prompt-node" data-node="prompt" style="left:488px;top:188px">
+                <div class="node-head"><span class="node-icon prompt">✦</span><span>镜头合同</span><span class="node-tag">S01</span></div>
+                <strong>开心通勤开场</strong>
+                <p>司机自然驾驶，护肩套稳定贴合安全带；副驾视角轻推近。</p>
+                <div class="node-meta"><span>9:16</span><span>4 秒</span><span>口播同步</span></div>
+                <div class="node-port in p1"></div><div class="node-port in p2"></div><div class="node-port out"></div>
+              </article>
+              <article class="node generation-node" data-node="generation" style="left:878px;top:188px">
+                <div class="node-head"><span class="node-icon api">↗</span><span>AutoDL API</span><span class="node-tag lime">待确认</span></div>
+                <strong>H3 六图三音频</strong><small>minimax_h3_z0903</small>
+                <div class="slots"><span>图 1 / 6</span><span>音频 1 / 3</span></div>
+                <div class="node-meta"><span>768p 竖</span><span>Seed 2026</span></div>
+                <div class="node-port in"></div><div class="node-port out"></div>
+              </article>
+              <article class="node result-node" data-node="result" style="left:1282px;top:188px">
+                <div class="node-head"><span class="node-icon result">▷</span><span>候选结果</span><span class="node-tag muted">未生成</span></div>
+                <div class="result-placeholder">等待<br />生成视频</div>
+                <small>成功后自动保存 MP4 与运行记录</small>
+                <div class="node-port in"></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="bottom-strip">
+          <div><span class="strip-label">镜头节奏</span><strong>S01</strong><span class="timeline on"></span><strong>S02</strong><span class="timeline"></span><strong>S03</strong><span class="timeline"></span></div>
+          <p>先筛选候选片段，再人工导入剪映完成剪辑与导出。</p>
+        </section>
+      </section>
+
+      <aside class="inspector" id="inspector">
+        <div class="inspector-head"><span>节点详情</span><button id="closeInspector">×</button></div>
+        <div id="inspectorContent"></div>
+      </aside>
+    </main>
+
+    <dialog id="runDialog">
+      <div class="dialog-kicker">生成预检</div>
+      <h2>此页面不直接发起付费调用</h2>
+      <p>当前会生成并保存可审阅的 <code>z0903</code> 请求计划。连接本地执行器并由你确认后，才会提交给 AutoDL。</p>
+      <div class="preflight"><span>✓ 1 张参考图</span><span>✓ 1 段音频</span><span>✓ 提示词已填写</span><span>○ 等待本地令牌</span></div>
+      <div class="dialog-actions"><button class="ghost" id="closeDialog">返回画布</button><button class="run-button" id="savePlan">保存生成计划</button></div>
+    </dialog>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
