@@ -23,10 +23,8 @@ production/jobs/**/*.mp3
 /production/jobs/*/edit/hyperframes/renders/
 
 # 纯试验/临时目录：整目录不进 git
-/test/
-/output/
-/outputs/
-/work/
+# 原 /test/ /output/ /outputs/ /work/ 已合并为统一的 /scratch/
+/scratch/
 
 # Python 编译缓存（不止 postproduction 一处会出现）
 __pycache__/
