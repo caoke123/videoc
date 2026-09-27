@@ -31,7 +31,14 @@ body { margin: 0; font-family: -apple-system, "Segoe UI", sans-serif; background
 .asset-group ul { list-style: none; margin: 0; padding: 0; font-size: 11px; color: #8294aa; }
 .asset-group li { padding: 2px 0; overflow-wrap: anywhere; }
 .empty-hint { color: #556577; font-size: 12px; padding: 20px; }
-.prompt-text { font-size: 11px; line-height: 1.6; color: #becde0; background: #0e1724; border: 1px solid #26344a; border-radius: 8px; padding: 10px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 220px; overflow-y: auto; }
+
+.prompt-editor-input { width: 100%; font-size: 11px; line-height: 1.6; color: #becde0; background: #0e1724; border: 1px solid #26344a; border-radius: 8px; padding: 10px; resize: vertical; font-family: inherit; }
+.prompt-editor-input:focus { outline: none; border-color: #6d8cad; }
+.prompt-editor-actions { display: flex; gap: 8px; margin-top: 8px; }
+.prompt-editor-actions button { flex: 1; font-size: 11px; padding: 7px 10px; border-radius: 6px; border: 1px solid #2c3a52; background: #1c2635; color: #d9e4f1; cursor: pointer; }
+.prompt-editor-actions button:disabled { opacity: .45; cursor: not-allowed; }
+.prompt-editor-actions .submit-btn { background: #203d32; border-color: #426452; color: #c0f5cf; }
+.prompt-editor-message { font-size: 11px; color: #8fe3bb; margin-top: 8px; line-height: 1.5; }
 
 .run-log-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 11px; }
 .run-log-list li { display: flex; gap: 6px; align-items: center; color: #8294aa; }

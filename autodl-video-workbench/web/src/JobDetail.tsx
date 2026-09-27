@@ -3,6 +3,7 @@ import { ReactFlow, Background, Controls, MiniMap, type Node, type Edge, type No
 import { getJobDetail, listFormats } from './api';
 import type { FormatDefinition, JobDetail as JobDetailType, RequestPlan, ShotPlanEntry } from './types';
 import ShotNode, { type ShotNodeData } from './ShotNode';
+import PromptEditor from './PromptEditor';
 
 const nodeTypes = { shot: ShotNode };
 
@@ -100,11 +101,14 @@ export default function JobDetail({ jobId, onBack }: { jobId: string; onBack: ()
     listFormats().then(setFormats).catch(() => setFormats([]));
   }, []);
 
+  const refetch = () => getJobDetail(jobId).then(setJob).catch(err => setError(err.message));
+
   useEffect(() => {
     setJob(null);
     setError(null);
     setSelectedShotId(null);
-    getJobDetail(jobId).then(setJob).catch(err => setError(err.message));
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobId]);
 
   const layout = formats.find(format => format.format_id === job?.format_id)?.layout || 'sequential';
@@ -140,7 +144,13 @@ export default function JobDetail({ jobId, onBack }: { jobId: string; onBack: ()
             {selectedShotId && (
               <section>
                 <h3>提示词（{selectedShotId}）</h3>
-                {selectedPrompt ? <p className="prompt-text">{selectedPrompt}</p> : <p className="empty-hint">该任务没有 request-plan.json，或此镜头没有对应的提示词记录</p>}
+                <PromptEditor
+                  jobId={jobId}
+                  shotId={selectedShotId}
+                  prompt={selectedPrompt}
+                  canSubmit={Boolean(job.request_plan)}
+                  onChanged={refetch}
+                />
               </section>
             )}
             <section>
