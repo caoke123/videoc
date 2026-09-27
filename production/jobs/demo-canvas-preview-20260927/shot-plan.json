@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "purpose": "产品开场：正面展示，建立身份",
+      "dialogue": "你的车，也可以很温柔。",
+      "references": ["assets/source/hero-product.png"],
+      "status": "planned"
+    },
+    {
+      "shot_id": "S02",
+      "purpose": "材质细节：织物纹理特写",
+      "dialogue": "每一处针脚，都看得见用心。",
+      "references": ["assets/source/hero-product.png"],
+      "status": "planned"
+    },
+    {
+      "shot_id": "S03",
+      "purpose": "生活场景：安装在真实车内",
+      "dialogue": "上车第一件事，先跟它打个招呼。",
+      "references": ["assets/source/lifestyle-scene.png"],
+      "status": "planned"
+    },
+    {
+      "shot_id": "S04",
+      "purpose": "收尾 CTA：产品完整定格",
+      "dialogue": "今天，换个更温柔的通勤方式。",
+      "references": ["assets/source/hero-product.png"],
+      "status": "planned"
+    }
+  ]
+}

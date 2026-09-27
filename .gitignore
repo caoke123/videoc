@@ -39,3 +39,7 @@ autodl-video-workbench/*.tar.gz
 # autodl-video-workbench/web 的 Vite 构建产物：真正的构建输出，不是源码，
 # 旧版手写 dist/ 在切换前继续保留、继续跟踪
 autodl-video-workbench/web-dist/
+
+# infinite-canvas 评估分支：vendored 快照的构建产物/依赖，不进版本控制
+infinite-canvas/web/node_modules/
+infinite-canvas/web/dist/

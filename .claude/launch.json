@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "autodl-video-workbench/web", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "infinite-canvas-web",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["--cwd", "infinite-canvas/web", "run", "dev"],
+      "port": 4400
     }
   ]
 }

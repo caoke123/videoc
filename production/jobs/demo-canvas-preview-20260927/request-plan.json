@@ -1,0 +1,36 @@
+{
+  "job_id": "demo-canvas-preview-20260927",
+  "workflow_id": "minimax_h3_z0903",
+  "resolution": "768p竖(768*1376)",
+  "audio_reference": "https://example.invalid/blank.wav",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "duration": 3,
+      "seed": 100001,
+      "ref_images": ["assets/source/hero-product.png"],
+      "prompt": "A premium commercial product film, 3 seconds, vertical 9:16. The product sits upright and centered on a clean warm studio background. Keep the exact structure, texture and proportions from the reference image. A single slow frontal camera push-in with a gentle light sweep. No car, no person, no text or logo, no reshaping."
+    },
+    {
+      "shot_id": "S02",
+      "duration": 3,
+      "seed": 100002,
+      "ref_images": ["assets/source/hero-product.png"],
+      "prompt": "Extreme close-up macro shot, 3 seconds, vertical 9:16. Reveal the woven fabric texture and stitched edge binding of the product in fine detail. Shallow depth of field, soft directional light sliding across the surface. No text, no logo, no extra objects."
+    },
+    {
+      "shot_id": "S03",
+      "duration": 4,
+      "seed": 100003,
+      "ref_images": ["assets/source/lifestyle-scene.png"],
+      "prompt": "A realistic in-car lifestyle shot, 4 seconds, vertical 9:16. The product is already installed and visible on the seatbelt in a real car interior, warm afternoon light through the window. Natural, candid framing, no exaggerated motion. Generate audible native Mandarin Chinese female off-screen narration, saying exactly: 上车第一件事，先跟它打个招呼。"
+    },
+    {
+      "shot_id": "S04",
+      "duration": 3,
+      "seed": 100004,
+      "ref_images": ["assets/source/hero-product.png"],
+      "prompt": "A closing hero shot, 3 seconds, vertical 9:16. The product is fully visible, centered, static, with soft rim lighting. Leave clean negative space at the top third of the frame for a text overlay to be added in post. No text or logo rendered in the shot itself."
+    }
+  ]
+}
