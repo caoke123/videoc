@@ -1,0 +1,36 @@
+# AutoDL developer token; this repository is public.
+/production/config/autodl.env
+/production/config/autodl-runtime.json
+/production/config/autodl-watchdog.log
+/production/config/elevenlabs.env
+
+# 每个批次目录下的生成/预览/验证二进制素材：不进版本控制，
+# brief/shot-plan/review 等 JSON 与 prompts/*.md 仍然跟踪
+production/jobs/**/*.png
+production/jobs/**/*.jpg
+production/jobs/**/*.jpeg
+production/jobs/**/*.webp
+production/jobs/**/*.gif
+production/jobs/**/*.mp4
+production/jobs/**/*.mov
+production/jobs/**/*.wav
+production/jobs/**/*.mp3
+
+# 旧 HyperFrames 预览工程的构建产物
+/production/jobs/*/edit/hyperframes/node_modules/
+/production/jobs/*/edit/hyperframes/media/
+/production/jobs/*/edit/hyperframes/snapshots/
+/production/jobs/*/edit/hyperframes/renders/
+
+# 纯试验/临时目录：整目录不进 git
+/test/
+/output/
+/outputs/
+/work/
+
+# Python 编译缓存（不止 postproduction 一处会出现）
+__pycache__/
+*.pyc
+
+# Node 依赖（防止未来其它子项目引入 node_modules 又被误提交）
+node_modules/

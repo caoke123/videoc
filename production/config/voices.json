@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "voices": [
+    {
+      "profile_id": "suanna-tw-female",
+      "provider": "elevenlabs",
+      "voice_id": "9lHjugDhwqoxA5MhX0az",
+      "name": "苏安娜",
+      "description": "台湾女声",
+      "language": "Chinese",
+      "locale": "zh-TW",
+      "status": "selected",
+      "source": "user_provided",
+      "notes": [
+        "用户指定作为当前小样及项目口播音色。",
+        "保持同一 voice ID 与 profile 设置，以便不同镜头和后续批次维持音色连续。",
+        "语言 API 参数使用 zh；zh-TW 为音色口音备注，不作为 ElevenLabs language_code 传参。",
+        "尚未用当前本机凭证验证账户可访问性，也未生成音频。"
+      ]
+    },
+    {
+      "profile_id": "legacy-canvas1-voice",
+      "provider": "elevenlabs",
+      "voice_id": "r6qgCCGI7RWKXCagm158",
+      "name": null,
+      "description": "旧脚本音色；名称与口音尚无记录",
+      "language": "Chinese (inferred from script text)",
+      "status": "legacy_reference_not_selected",
+      "source": "existing_project_scripts",
+      "notes": [
+        "历史脚本见 production/jobs/canvas1-lulu-20260816/audio/generate_voice_v2.py 与 generate_assets.py。",
+        "历史脚本使用 eleven_v3；voice settings 在脚本间存在差异。",
+        "当前小样不使用此 ID；音色名称和口音需后续确认。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "canvas": {"width": 1080, "height": 1920, "fps": 24},
+  "duration_seconds": 10,
+  "style": {"cta_top_percent": 8, "caption_box": true},
+  "category_id": "seatbelt-shoulder-pad",
+  "format": "ugc",
+  "editorial_note": "角色 A 驾驶位开场，产品近景收束。H3 原音静音，使用用户提供的10秒真人感配音原声；字幕依据中文语音识别时间码校正。S01现有H3表演按旧台词生成，口型只能近似匹配，精确逐字口型需在DFCine/H3可用后用新音频参考重生。",
+  "shots": [
+    {"id": "S01", "path": "renders/preview/S01-H3-preview.mp4", "source_in": 0, "start": 0, "duration": 5},
+    {"id": "S02", "path": "renders/preview/S02-H3-preview.mp4", "source_in": 0, "start": 5, "duration": 5}
+  ],
+  "voiceovers": [
+    {"id": "user-voiceover-v2", "path": "audio/source/user-voiceover-v2.wav", "start": 0, "duration": 10, "text": "哇，这个水豚噜噜安全带肩套也太可爱了吧！你看它的小眼镜、小帽子，做工也特别精致。", "source": "user-provided"}
+  ],
+  "captions": [
+    {"id": "cap-1", "text": "哇，这个水豚噜噜安全带肩套\n也太可爱了吧！", "start": 0, "duration": 4.35},
+    {"id": "cap-2", "text": "你看它的小眼镜、小帽子，\n做工也特别精致。", "start": 4.8, "duration": 5.12, "top_percent": 27}
+  ],
+  "cta": {"text": "水豚噜噜安全带肩套", "start": 8.5, "duration": 1.5},
+  "variants": [
+    {"name": "ugc-a", "cta": "水豚噜噜安全带肩套"}
+  ]
+}

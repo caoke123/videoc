@@ -30,12 +30,16 @@ Always preview supported mutations with `dryRun: true`.
 
 ## Current preferred workflow roles
 
-- H3 multi-reference cloud: image/video/audio references and native synchronized audio.
+- H3 multi-reference cloud: image/video/audio references and native synchronized audio. Every H3 output must contain its assigned native dialogue or voiceover, including product-detail shots; this guides voice timing and mouth movement even if post later replaces the generated audio.
 - Codex Image Gen with GPT Image 2: the only approved image-generation path for product compositing. Generate and inspect the image through Codex's built-in Image Gen, then upload the approved result into the relevant DFCine upload node. DFCine should not run an internal image-generation workflow for this task.
 - Qwen multi-image edit: local product/character/scene composition benchmark.
 - Krea2 Turbo/HQ, Klein, ZImage: local T2I speed/quality benchmark.
 - Bernini/Scail: reference video editing, role replacement, or motion transfer when required.
 - Vox: optional post voice design or authorized voice cloning.
+
+## Audio handoff
+
+New jobs use an external Seed Audio 1.0 workflow: Codex prepares a per-shot brief with exact text, voice role, emotion, tone/delivery, timing, and target duration; the user generates audio outside Codex and imports it. Do not invoke ElevenLabs for new jobs. Read `.agents/skills/ecommerce-video-studio/references/seed-audio-handoff.md`.
 
 ## Product composite prompt rules
 

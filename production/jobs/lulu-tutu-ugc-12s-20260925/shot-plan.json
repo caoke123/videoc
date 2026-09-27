@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 5,
+      "purpose": "人物口播开场，第一秒同时看见白帽白框产品",
+      "generation_mode": "character_i2v",
+      "audio_mode": "post_tts",
+      "dialogue": "这个水豚噜噜也太可爱了吧！",
+      "voice_profile_id": "suanna-tw-female",
+      "audio_direction": "ElevenLabs 苏安娜，亲切、像车内随手分享；S01 若 H3 支持音频参考则用 TTS 音频驱动口型，最终混音仍使用原 ElevenLabs 音频。",
+      "references": [
+        {"path": "assets/approved/S01-installed-approved.png", "role": "经用户批准的人物 A、产品正确佩戴、场景与构图"},
+        {"path": "assets/source/product-front-user.png", "role": "白帽白框 SKU 完整身份真值"}
+      ],
+      "primary_action": "主驾看向镜头自然说一句话，表情微笑，不触碰产品。",
+      "camera": "未镜像仪表台正面近中景，车辆停稳；主驾左肩和左 B 柱在画面右，中控在画面左，肩带右上到左下；固定机位，仅轻微真实手机微动。",
+      "end_state": "人物微笑，产品仍稳定佩戴并清晰可辨。",
+      "dfcine_workflow_id": "h3.ref.cloud",
+      "status": "h3_generated_preview_pending_review",
+      "h3_output": "renders/preview/S01-H3-preview.mp4",
+      "dfcine_run_id": "7ecf8495-c0da-4d19-b16d-6b2ef9ef3977"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 5,
+      "end_seconds": 10,
+      "purpose": "产品近景展示白帽、白框眼镜及护肩套细节",
+      "generation_mode": "product_i2v",
+      "audio_mode": "post_tts",
+      "dialogue": "小眼镜、小帽子，做工也挺细致的。",
+      "voice_profile_id": "suanna-tw-female",
+      "audio_direction": "同一苏安娜音色作画外音，语气自然，停顿对齐小眼镜和小帽子画面。",
+      "references": [
+        {"path": "assets/approved/S02-detail-approved.png", "role": "经用户批准的同一 SKU 佩戴近景"},
+        {"path": "assets/source/product-front-user.png", "role": "白帽白框 SKU 完整身份真值"},
+        {"path": "assets/approved/S01-installed-approved.png", "role": "同一车内人物、光照、服装及安全带连续性"}
+      ],
+      "primary_action": "镜头克制地轻推近已经佩戴的产品；玩偶与护肩套作为一体保持稳定。",
+      "camera": "9:16 肩部至上胸近景，沿产品中心线轻微前推；安全带在护肩套上下连续可见，保持 S01 左舵方向。",
+      "end_state": "产品完整清楚，最后留出至少 1 秒画面供后期商品名字幕。",
+      "dfcine_workflow_id": "h3.ref.cloud",
+      "status": "h3_generated_preview_pending_review",
+      "h3_output": "renders/preview/S02-H3-preview.mp4",
+      "dfcine_run_id": "c48f789d-d6a7-4aea-9fb4-0c56a02ffdda"
+    }
+  ]
+}

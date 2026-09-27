@@ -1,0 +1,21 @@
+subject_definitions:
+<Subject 1> is the same adult Chinese female driver in <Picture 2>, with her recognizable face, dark half-up hair, pearl hair ornament and earrings, wearing the square-neck white puff-sleeve blouse and blue floral skirt visible there. She never speaks; her visible lips remain naturally closed.
+<Subject 2> is the complete pink Shui Tun Lulu plush permanently attached to the long black shoulder sleeve from <Picture 1>, retaining its sunglasses, top decoration, scarves, limbs, and original internal proportions. <Picture 2> supplies the accepted wearing position and scale.
+<Subject 3> is the same Chinese left-hand-drive sedan interior seen in <Picture 2>.
+
+summary:
+[reference generation] Create one four-second vertical natural-photography shot of the same driver in the white-and-blue floral outfit, with the pink product clearly and correctly installed.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - maintain her facial identity, hair, pearls, white puff sleeves, and visible blue floral skirt from <Picture 2>.
+<Subject 2> (Shot 1): fully_preserved - maintain the exact plush and complete sleeve of <Picture 1>, at the scale and orientation shown in <Picture 2>.
+<Subject 3> (Shot 1): partially_preserved - maintain the left-hand-drive cabin and camera side while exterior daylight evolves gently.
+
+detailed_description:
+Photoreal summer commute, stable focus and believable skin and cotton textures. [Shot 1] A medium seated view shows <Subject 1> steering smoothly with a calm, attentive gaze. Her white puff sleeves and blue floral lap are visible, with the woven bag only a minor passenger-side detail. Driver-side B-pillar and window are at image right; the inboard buckle is at image left. The same flat belt crosses her anatomical left shoulder from image upper-right toward image lower-left. <Subject 2> remains already installed there, its black sleeve visibly extending beyond the plush above and below. The belt enters and exits the sleeve at the centered seam with no change of direction; the sleeve follows the belt and rests against the blouse with realistic contact. Camera remains fixed. On a calm straight stretch, she makes one very brief, natural glance toward the lens (under 0.3 seconds) and immediately returns her gaze to the road, without turning her head or releasing the wheel. She does not speak or lip-sync; all narration will be added only in post-production. Finish with the product stable and fully recognizable.
+
+overall_soundscape:
+Low steady cabin and road ambience, faint city traffic through the closed car; no speech, narrator, vocals, or highlighted sound effect.
+
+non_diegetic_music:
+N/A

@@ -1,0 +1,22 @@
+subject_definitions:
+<Subject 1> is the same adult Chinese woman whose face, hair, pearl accessories and refined natural makeup come from <Picture 3>, wearing the ivory-and-red polka-dot asymmetrical ruffle top and tailored red shorts from <Picture 2>. She is silent and drives attentively.
+<Subject 2> is the one exact physical Shui Tun Lulu shoulder-sleeve product in the 2048 x 2048 <Picture 1>. This image is the sole authority for the product's materials, colors, surface pattern and construction. The long rectangular black sleeve has dense high-relief, irregularly interlocking black-on-black looped yarn and small curled ridges, with fine dark recesses, a matte textile surface and stitched black binding at both ends. The pink capybara has short dense plush pile, pink oval sunglasses with black lenses, an orange fuzzy fruit and green leaf on top, a navy triangular scarf, red-and-white check fabric, small limbs and the same sewn attachment and proportions.
+<Subject 3> is the same left-hand-drive Chinese sedan cabin and front passenger-side mounted camera position shown in <Picture 3>. <Picture 3> fixes the shared woman's face, cabin, camera viewpoint and seatbelt placement for all five clips; <Picture 2> supplies only this clip's outfit and how it fits her.
+
+summary:
+[reference generation] Generate this four-second 9:16 photoreal shot as part of one five-look weekday-commute montage: the same woman, same car, same route and same Shui Tun Lulu product appear in matching compositions on separate weekday mornings; only her outfit changes at the editorial hard cuts.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - retain the approved woman's facial identity, hair, pearl accessories, current outfit and natural driving pose from the stated image references.
+<Subject 2> (Shot 1): fully_preserved - retain the precise black textile relief, irregular loop pattern, stitched ends, matte finish, pad dimensions, pink plush pile, glasses, fruit, scarf, gingham and sewn assembly from <Picture 1>; the installed position follows <Picture 3>.
+<Subject 3> (Shot 1): fully_preserved - retain the same left-hand-drive cabin layout, passenger-side camera angle, window view and morning-light direction from <Picture 3>.
+
+detailed_description:
+Natural live-action camera texture with clear product detail. [Shot 1] Show a fixed medium seated portrait from the same front passenger-side camera at the same height, distance, lens feel and crop as <Picture 3>. Keep the driver's face in the upper-left portion, the wheel in the lower-right, and the complete shoulder sleeve with plush at the same central screen position and scale in every clip. The left door and B-pillar remain at image right; the single flat seatbelt runs from upper-right across her anatomical left shoulder to lower-left, entering and leaving the sleeve along one straight centered axis. She drives smoothly along the same tree-lined city commute route under consistent soft morning daylight. At the opening and closing of this shot, her hands, wheel angle, gaze toward the road and body posture match the other four shots for a direct clothing-change match cut. She keeps her eyes on the road and settles into a stable final pose. The camera stays still; passing scenery provides gentle movement. The complete product stays unobstructed and sharply readable. The black pad's irregular raised loop-and-curl yarn relief, motif scale, fiber depth, matte black tone, stitched end binding, thickness and rectangular silhouette remain visually identical to the 2K product in <Picture 1> in every frame. The capybara's pink plush and all small accessories keep the same form and relative positions; toy and sleeve move as one sewn object. Her lips remain closed. Hold the final composition steady for the next match cut.
+
+overall_soundscape:
+Subtle enclosed-car tire and road ambience with quiet distant city traffic. No driver speech, narrator or vocals; narration is added in post-production.
+
+non_diegetic_music:
+N/A
+

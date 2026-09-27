@@ -1,0 +1,30 @@
+{
+  "run_name": "autodl-z0903-canvas-smoke-20260927",
+  "purpose": "One 480p product-consistency smoke test for the local video workbench.",
+  "status": "planned",
+  "workflow_id": "minimax_h3_z0903",
+  "request": {
+    "duration": 3,
+    "resolution": "480p竖(480*864)",
+    "seed": 48020260927,
+    "ref_audio_0": "https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav",
+    "ref_images": [
+      "assets/source/yellow-orange-plush-seatbelt-pad.png",
+      "assets/source/pink-plush-seatbelt-pad.png"
+    ],
+    "prompt": "Premium studio product film, 3 seconds, vertical. Present exactly two separate, unchanged product assemblies side by side on a clean matte black plinth: Reference image 1 is the yellow/orange plush character attached to its own black shoulder pad; Reference image 2 is the pink plush character attached to its own black shoulder pad. Preserve each product as an indivisible SKU. Do not mix colors or parts across references. Exact construction lock: black rectangular pads retain dense raised irregular curled-loop textile and stitched edge binding; keep original pad-to-toy proportions, toy silhouettes and attachment positions. Yellow SKU keeps amber tortoiseshell sunglasses, orange fruit with green leaf, navy blue neckerchief with blue-white check panel and pink button. Pink SKU keeps pale pink sunglasses, orange fruit with green leaf, navy blue neckerchief with red-white check panel and red striped button. Both products remain still and structurally unchanged, only a slow camera dolly-in and gentle studio light sweep. No humans, no car, no installation scene, no text, no logo, no extra characters, no merging, no duplicated limbs, no changes in fabric texture, no new accessories."
+  },
+  "product_lock_checks": [
+    "Do not combine parts, colours, glasses, scarves or buttons across the two source SKUs.",
+    "Keep the black pad's raised irregular curled-loop textile, edge binding and vertical proportions.",
+    "Keep each plush silhouette, pad-to-toy scale and attachment position unchanged.",
+    "No extra limbs, accessories, characters, logos or on-screen text.",
+    "No vehicle or safety-belt installation claims without an approved installed reference image.",
+    "Human review is required before any test result is reused as a storyboard or production reference."
+  ],
+  "output": {
+    "directory": "output",
+    "manual_review_required": true,
+    "capcut_export": "manual"
+  }
+}

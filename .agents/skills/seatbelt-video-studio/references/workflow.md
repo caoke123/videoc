@@ -8,11 +8,11 @@ Do not skip `human_review` or `human_asset_approval`. Asset self-check is mandat
 
 ## Creative modes
 
-- `original`: derive the full film from the user's copy and brief.
+- `original`: derive concept, hook, script, role, scene, actions, keyframes, and shot plan from the product brief and verified facts. No reference video or prewritten script is required; use `ecommerce-video-studio/references/creative-workflow.md`.
 - `reference`: deconstruct an observed video, then apply a layer contract.
 - `hybrid`: retain selected hook/rhythm/camera functions while using original copy, character, product, scene, and CTA.
 
-## Default 15-second architecture
+## Example 15-second architecture
 
 | Time | Function | Preferred generation |
 |---|---|---|

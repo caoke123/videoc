@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "job_id": "lulu-tutu-ugc-12s-20260925",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": "shuiba-tutu-black-pad-v1",
+  "product_display_name": "水豚噜噜安全带肩套",
+  "mode": "original",
+  "platform": "douyin-qianchuan",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 10,
+  "audience": "20–24 岁都市女性车主及喜欢可爱车内小物的消费者",
+  "use_occasion": "白天停车位，车已停稳，女车主在中国左舵主驾座位对镜分享",
+  "creative_concept": "先以角色 A 的真实车内口播建立亲近感，清楚展示已佩戴的白帽白框水豚噜噜；随后切产品近景，用可见的小眼镜、小帽子支撑对细节和做工的主观评价。两镜头、不展示安装过程。",
+  "character_profile": "已批准角色 A（urban-woman-a-v1）：20–24 岁观感、长深棕发、轻妆、亲切自然。车内穿米白针织上衣；保留已批准的脸型、眉眼与发型。使用苏安娜台湾女声音色生成普通话口播。",
+  "scene_plan": "中国左舵轿车停稳。未镜像的仪表台／挡风玻璃正面机位朝车尾：人物左肩、左门和左 B 柱在画面右，中控和右髋锁扣在画面左；安全带及白帽白框 SKU 从画面右上斜向左下。S02 是同一佩戴状态的近景。",
+  "action_plan": "S01 角色 A 看向镜头自然口播、轻微微笑，不触摸产品；S02 镜头轻微靠近小眼镜、小帽子和黑色护肩套的织物细节。产品从第一帧已经佩戴，不触摸、不调整、不安装。",
+  "spoken_script": "这个水豚噜噜也太可爱了吧！小眼镜、小帽子，做工也挺细致的。",
+  "raw_copy": "口播：这个水豚噜噜也太可爱了吧！小眼镜、小帽子，做工也挺细致的。\n结尾屏幕文字：水豚噜噜安全带肩套",
+  "hook": "这个水豚噜噜也太可爱了吧！",
+  "cta": "水豚噜噜安全带肩套",
+  "verified_claims": ["用户提供的该 SKU 实物图可见白色绒毛帽、白色圆框眼镜和黑色护肩套；‘可爱’与‘做工挺细致’仅作说话人的主观感受"],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system",
+    "unverified comfort or material claims",
+    "installation, removal, fastening, adjustment or sliding of the product"
+  ],
+  "reference_video": null,
+  "notes": "2026-09-25 17:24:40 +08:00 开始计时。用户指定角色 A、白帽白框水豚噜噜 SKU 与 10–12 秒 UGC；所附产品图与目录中 shuiba-tutu-black-pad-v1 原图 SHA-256 相同。2026-09-25 用户通过 S01 和 S02 两张生成关键帧，准许继续 H3。旧飞行员 SKU 不得混入。"
+}

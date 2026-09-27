@@ -1,0 +1,22 @@
+subject_definitions:
+<Subject 1> is the same adult Chinese woman in <Picture 2>, wearing the yellow thin-strap summer top and warm floral skirt, with the same face, hair and pearl accessories. She remains silent and attentive to driving.
+<Subject 2> is the exact complete pink Shui Tun Lulu seatbelt-shoulder-sleeve product in <Picture 1>, at the installed scale and position shown in <Picture 2>. Preserve the pink plush's round face, dense short pile, oval pink sunglasses with black lenses, orange fruit and green leaf, navy scarf, red-and-white checked detail, small limbs, sewn attachment, and original proportions. The sleeve is a long rectangular padded piece of matte black textile with the same dense raised small curled-loop pattern, motif scale and direction, pile, seams, bound edges, thickness, shape, and proportions visible in <Picture 1>.
+<Subject 3> is the Chinese left-hand-drive sedan cabin shown in <Picture 2>, viewed from the front passenger and center-console side.
+
+summary:
+[reference generation] Create one four-second vertical photoreal commute shot of <Subject 1> driving in <Subject 3>, with the exact <Subject 2> product already installed and visually unchanged.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - preserve the same face, hair, pearl accessories, approved outfit and calm driving demeanor from <Picture 2>.
+<Subject 2> (Shot 1): fully_preserved - preserve the exact plush, attachment, dimensions, black sleeve material, raised curled-loop surface pattern, texture scale, pile, seams, bound edges and installed geometry from <Picture 1> and <Picture 2>.
+<Subject 3> (Shot 1): partially_preserved - retain the left-hand-drive cabin and passenger-side view while exterior daylight moves gently.
+
+detailed_description:
+Natural live-action camera texture, soft summer daylight, realistic skin and clothing, stable exposure and focus. [Shot 1] <Subject 1> steers smoothly in the yellow-and-floral outfit. Fixed medium seated framing; preserve left-hand-drive orientation, with door and B-pillar at image right and inner buckle at image left. Keep the full product centered, unobstructed, prominent, sharply focused, and large enough for its fabric weave to remain legible. The same curled-loop textile pattern remains crisp and consistent across the whole black sleeve in every frame; its belt enters and exits centrally on one straight diagonal. Plush and sleeve remain sewn together at fixed scale. Subtle passing tree light only. On a calm straight stretch, she briefly glances at the lens and returns her eyes to the road. End stable for a straight cut. The matte black sleeve retains the same dense, small raised curled-loop textile pattern, motif scale, direction and pile visible in <Picture 1>; keep its bound edges, seams, rectangular silhouette and thickness unchanged and clearly legible throughout. The seatbelt stays flat, continuous and centered as it enters and exits the sleeve. The pink plush and black pad remain a single sewn assembly, fixed in scale and position with natural contact against the driver's left shoulder and upper chest. No product interaction. The driver's lips remain closed; all narration is added only in post.
+
+overall_soundscape:
+Quiet enclosed-car road ambience with faint distant city traffic; no speech, narrator, vocals or prominent event.
+
+non_diegetic_music:
+N/A
+

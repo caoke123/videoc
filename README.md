@@ -1,45 +1,57 @@
-# 安全带护肩套短视频生产项目
+# 电商 UGC 短视频生产项目
 
-这是以 Codex 为主工作区、DFcine 为画布、ComfyUI/AutoDL 为生成算力的批量短视频生产项目。
+Codex 从商品资料出发，原创策划脚本、人物、场景、动作和分镜，制作写实的 9:16 短视频。参考爆款视频是可选输入。项目以类目配置管理产品真实结构和拍摄约束，目前有已启用的安全带护肩套类目，以及待补商品资料的包包挂饰类目。
 
-当前生成主链路为 MiniMax H3：`seatbelt-video-studio` 负责总生产规范，H3 prompt-writing 负责提示词编译，DFCinema 的 `h3.ref.cloud` 负责多参考视频与原生音频生成。参考视频拆解使用 claude-video 的 `/watch` 工作流，结果只进入 brief/shot plan，不绕过人工审核。
+## 直接提出需求
 
-## 你可以直接对 Codex 说
+- “为这款安全带护肩套原创一条 10 秒女车主口播视频，先给我脚本和分镜。”
+- “为包包挂饰建立 SKU 和场景设定，使用我提供的产品照片。”
+- “为当前批次生成写实人物和产品关键帧，先检查产品比例和物理接触。”
+- “对同一套素材分别试 H3 和其他可用视频模型，记录可用率、时间和成本。”
+- “上传一条参考视频，提炼镜头节奏，再用我的人物、商品和文案重新创作。”
 
-- “创建一个原创带货视频批次，主题是第一人称车内口播。”
-- “上传这条爆款参考视频，先拆成 1–2 秒时序镜头，再替换为我的产品。”
-- “为当前批次生成角色、场景和产品已安装参考图，不要出现安装动作。”
-- “把批准的镜头放进 DFCine，先预览参数，不要开始付费生成。”
-- “我人工看完第 3 镜头了，肩套位置漂移，请做 AI 复检并给修复提示词。”
-- “比较 GPT-Image2 和当前 ComfyUI 生图工作流的速度、产品一致性和可用率。”
+## 生产入口
 
-## 项目结构
+- `.agents/skills/ecommerce-video-studio/`：通用原创策划、写实人物、分镜、生成和审核规则。
+- `.agents/skills/seatbelt-video-studio/`：安全带护肩套的 SKU、车辆空间、佩戴和 DFCine/H3 细则。
+- `.agents/skills/ecommerce-video-edit/`：后期统筹；ClipSkills 决定粗剪节奏、镜头、声音和字幕，主要交付为可编辑剪映专业版草稿。用户在剪映人工精剪并手动导出；HyperFrames 仅作可选预览/旧项目路径。
+- `production/config/categories.json` 与 `production/categories/`：类目清单及各自约束。新增类目先建立独立配置。
+- `production/config/products.json`：已知 SKU 与批准的产品资产。
+- `production/jobs/<批次名>/`：每条或每组视频的 brief、脚本、分镜、素材、运行记录和成片。
+- `production/integrations/dfcine-mcp-capabilities.md`：DFCine MCP 工具清单及其在生产链路中的调用顺序。
+- `production/integrations/seed-audio-1.0/brief-contract.md`：新项目外部配音交接与导入检查规则。
+- `production/integrations/jianying-draft-export-assessment.md`：剪映草稿导出技能评估及接入验证门槛。
+- `production/jobs/lulu-commute-10s-20260925/`：历史 10 秒双镜头小样；原有 ElevenLabs/HyperFrames 文件只用于复现，不代表新项目默认工作流。当前重制按用户要求暂停。
 
-- `.agents/skills/seatbelt-video-studio/`：Codex 的生产规则、操作流程和批次工具。
-- `production/config/project.json`：项目默认设置。
-- `production/jobs/<批次名>/`：每一条或每一组视频的完整生产资料。
-- `assets/source/`：原始产品、角色、场景和参考视频，只读保留。
-- `assets/approved/`：人工批准后才允许进入视频生成的素材。
-- `renders/preview/`：低成本预览。
-- `renders/accepted/`：人工确认可用的镜头。
-- `delivery/`：最终成片。
+新批次示例：
 
-## 固定生产顺序
+```text
+python .agents/skills/ecommerce-video-studio/scripts/init_batch.py --id commute-ugc-01 --category seatbelt-shoulder-pad --mode original
+```
 
-1. 建立批次并填写需求、文案和事实性卖点。
-2. 原创创作，或把参考视频拆成 1–2 秒的通用时序镜头。
-3. 上传真实产品图和正确安装后的参考图；不生成安装过程。
-4. 准备角色、场景、产品合成图，并由人工批准。
-5. 写镜头计划；每个镜头只保留一个主要动作和一个主要运镜。
-6. 在 DFCine 中准备节点、引用和参数，先做低成本预览。
-7. 用户确认后才运行付费/GPU 生成。
-8. 用户先人工查看；只有明确提出时，AI 才复检和给修复建议。
-9. 完成配音、字幕、音乐、卖点和 CTA 后期，并交付成片。
+`original` 是默认模式，从商品资料独立完成创意。`reference` 分析参考视频的通用镜头结构；`hybrid` 将参考节奏与原创人物、文案和商品结合。
 
-## 三种生产模式
+AutoDL 开发者 Token 填入本地 `production/config/autodl.env` 的 `AUTODL_TOKEN=` 后面。该文件已排除在 Git 之外；`production/config/autodl.env.example` 是不含密钥的示例。当前仅建立配置入口，尚未接入实例管理或启动云主机。
 
-- `original`：完全根据文案和创意制作。
-- `reference`：复用参考视频的动态结构，但删除其人物身份、品牌和具体场景元素。
-- `hybrid`：参考爆款结构，同时加入自己的口播、产品展示和 CTA；默认推荐。
+## 从创意到成片
 
-配音可以逐镜头选择视频模型原生口播、后期 TTS，或先生成无声画面。产品名称、价格、字幕、Logo 和 CTA 默认后期叠加，以提高稳定性和返工效率。
+1. 确认 SKU、真实商品资料、目标人群、场景和经核实的卖点。
+2. 提出几种原创 Hook 与故事角度，选定一条并写口播脚本、人物设定和动作。
+3. 写镜头合同，准备人物、场景和产品关键帧；按类目检查产品结构与真实接触。
+4. 人工批准素材、确认实际工作流和算力后，通过 DFCine/H3 生成短镜头。自建 H3 Gateway 仍需单独部署验证。
+5. 审核镜头并收到用户外部生成的 Seed Audio 后，写 `edit/edit-plan.json`：ClipSkills 负责粗剪判断，生成可编辑剪映专业版草稿，包含分镜片段、配音、字幕等分轨素材。
+6. 用户把草稿导入/打开到剪映后人工精剪，核对产品、口型、字幕安全区、声音和时长，并由用户手动导出成片。项目不自动执行剪映导出。
+
+旧版 HyperFrames 样片工程保留在 `production/jobs/lulu-commute-10s-20260925/edit/hyperframes/`，只用于历史复现/按需预览，不作为新批次默认后期路线。剪映 11.5 的草稿生成、播放、字幕轨和关闭重开已通过一次诊断草稿验证；记录见 `production/integrations/jianying-draft-export-assessment.md`。
+
+每个新 H3 镜头必须带与外部 Seed Audio 文案完全一致的原生口播/画外音，以引导表演和口型。Codex 提供逐镜头文案、角色定位、情绪、语气、节奏、时长和停顿提示，用户在 Seed Audio 1.0 外部生成，返回文件后再导入。字幕依据实际音频定时。
+
+历史 HyperFrames 预览工程可以按需重建：
+
+```text
+python production/postproduction/build_hyperframes.py production/jobs/lulu-commute-10s-20260925/edit/edit-plan.json --allow-missing-audio --carve
+```
+
+这段命令仅供旧 HyperFrames 工程预览，不是新批次交付路线。新项目必须先有用户返回的 Seed Audio，并完成剪映草稿导出器验证。
+
+原始素材保存在 `assets/source/`，不可覆盖；批准素材在 `assets/approved/`。付费 DFCine 或 GPU 运行需要用户明确确认。人物、场景和产品以写实为主，人物皮肤、受力、衣物、光线与镜头行为遵循通用写实人物指南。安全带商品另须遵循正确佩戴和车辆结构规则；这些规则不套用到其他类目。

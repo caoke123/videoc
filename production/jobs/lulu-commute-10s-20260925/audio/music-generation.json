@@ -1,0 +1,12 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "music_v2_5",
+  "theme": "清晨出发：轻盈、温暖、克制的通勤纯音乐",
+  "force_instrumental": true,
+  "music_length_ms": 10000,
+  "output_format": "auto",
+  "prompt_file": "audio/music-prompt.md",
+  "output_file": "audio/generated/elevenlabs/BGM-morning-commute-v1.mp3",
+  "status": "generated",
+  "notes": "为苏安娜普通话口播预留中频空间；音乐独立生成，尚未与视频或口播混音。"
+}

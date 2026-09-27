@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "job_id": "weekday-commute-five-outfits-20260926",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": "",
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 18,
+  "audience": "喜欢夏季通勤穿搭与车内可爱配饰的都市女性",
+  "use_occasion": "工作日通勤驾车",
+  "creative_concept": "同一位女司机在同一辆左舵车、同一条通勤路线的五个工作日穿不同夏装；五段镜头以相同机位、人物姿态和产品画面位置作匹配剪切，每段约3.6秒，总长18秒。商品以用户指定的2048×2048原图为唯一材质真值。",
+  "character_profile": "以已批准的 pink-plush-driver-summer-v1.png 锁定同一位成年中国女性的脸、发型、发饰、妆容和整体气质；本轮只更换服装与搭配。",
+  "scene_plan": "同一辆中国左舵轿车主驾，副驾侧向主驾拍摄，夏季日光与城市通勤道路。车身左侧B柱、安全带、内侧锁扣与方向盘关系保持一致。",
+  "action_plan": "每张图仅呈现女主自然专注驾驶；粉色水豚噜噜黑色护肩套从画面开始即正确佩戴，不出现安装、触摸、移动或拉扯。",
+  "spoken_script": "通勤穿搭天天换，车里这只水豚噜噜却没换过。\n黄色这套，配它也太出片了。\n换成蓝色，水豚噜噜还是很抢眼。\n小墨镜、小围巾，细节越看越喜欢。\n我的通勤车内小搭子，分享给你们。",
+  "raw_copy": "工作日通勤的路上，有水豚噜噜陪伴。",
+  "hook": "通勤穿搭天天换，车里这只水豚噜噜却没换过。",
+  "cta": "我的通勤车内小搭子，分享给你们。",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system"
+  ],
+  "reference_video": null,
+  "notes": "v1五段已因护肩套材质偏差被用户拒收；v2已有五段输出，用户已查看的前四段因镜头间缺乏联系且产品纹理失真而拒收，S05 v2尚无人工结论。用户指定D盘2048×2048商品图为新产品参考，实际文件位于D:\\迅雷下载\\粉色噜噜护肩套_2048x2048.png，已复制到本任务并替换DFCine的共用产品输入。S02-S05另接同一张女主/车内基准图作为第三参考；v3提示词统一机位、路线、起止姿态和产品位置。司机安静专心驾驶，旁白完全后期加入。音频及最终剪辑继续等待视频人工通过。"
+}

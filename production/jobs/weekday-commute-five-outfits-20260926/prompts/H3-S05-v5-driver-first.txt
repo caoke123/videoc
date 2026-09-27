@@ -1,0 +1,21 @@
+subject_definitions:
+<Subject 1> is the approved adult Chinese woman whose face, dark half-up hair, pearl details and natural makeup come from <Picture 3>, wearing the red-polka-dot one-shoulder top and red shorts from <Picture 2>.
+<Subject 2> is the same physical Shui Tun Lulu seatbelt shoulder sleeve in the 2048 x 2048 <Picture 1>. Its black rectangular shoulder pad has dense, irregular, raised black-on-black looped textile with small curled ridges, dark recessed channels, matte finish and stitched black end binding. The sewn pink short-pile capybara retains its pink oval sunglasses with black lenses, orange fuzzy fruit and green leaf, navy triangular scarf, red-and-white gingham, small limbs and exact proportions. <Picture 1> defines the product's physical construction and materials.
+<Subject 3> is the left-hand-drive sedan cabin and fixed front passenger-side camera view in <Picture 3>.
+
+summary:
+[reference generation] Create the Friday four-second 9:16 photoreal segment of a five-day commute montage. The same driver, car, route and shoulder-sleeve product recur; today's outfit is red-polka-dot one-shoulder top and red shorts. The driver remains the subject until a single final product close-up at the end.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - her approved identity from <Picture 3> and the visible red-polka-dot one-shoulder top from <Picture 2>; she remains attentive to the road.
+<Subject 2> (Shots 1-2): fully_preserved - retain the same product shape, black raised-loop textile, matte finish, sewn pink plush and accessory details from <Picture 1>; its normal installation follows <Picture 3>.
+<Subject 3> (Shots 1-2): fully_preserved - retain the cabin layout, seatbelt direction and camera side from <Picture 3>.
+
+detailed_description:
+Natural photoreal live-action with restrained documentary camera behavior. [Shot 1] One continuous natural live-action shot from the fixed front passenger-side camera inside the same left-hand-drive sedan on the same tree-lined weekday commute route. A seated medium view keeps the driver's face, upper-body clothing, hands and steering wheel visible. The shoulder sleeve sits on the diagonal seatbelt at its normal wearable size; it remains visible as part of the driver's outfit and never becomes the subject of a separate shot. The camera, lens, crop, focus and viewing direction remain unchanged throughout the four seconds. The driver looks forward through the windshield for the entire shot, drives attentively with both hands naturally controlling the wheel, and makes only a subtle steering adjustment. The same car interior, morning daylight, road direction, shoulder-belt angle, wheel position and opening and closing driver pose provide visual continuity for the adjacent outfit-change hard cuts. The Friday red-polka-dot top is clearly readable while she faces the road; maintain this uninterrupted driver view from the beginning until 00:02.800. [Shot 2] At 00:02.800, make one clean editorial cut to a steady close-up of <Subject 2> installed on the same seatbelt inside the same car. Fill the closing frame with the pink plush capybara and enough of the black rectangular pad to show its irregular raised looped textile, stitched end binding and original sewn assembly from <Picture 1>. Hold this single product close-up through the end. The driver continues driving off-frame; this is the only product close-up in the five-part sequence. No spoken dialogue, on-screen text or generated narration.
+
+overall_soundscape:
+Quiet enclosed-car tire and road ambience with distant city traffic. The driver is silent. Narration is added only in post-production.
+
+non_diegetic_music:
+N/A

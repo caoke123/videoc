@@ -1,31 +1,27 @@
 {
-  "project_name": "Seatbelt Shoulder Pad Video Studio",
-  "default_mode": "hybrid",
+  "project_name": "Ecommerce UGC Video Studio",
+  "default_mode": "original",
+  "default_category_id": "seatbelt-shoulder-pad",
+  "category_catalog": "production/config/categories.json",
   "default_aspect_ratio": "9:16",
   "default_review_policy": "human_first",
   "automatic_ai_review": false,
   "automatic_retry": false,
   "asset_self_check_required": true,
   "asset_self_check_policy": "required before promotion; no automatic regeneration; human approval remains required",
-  "vehicle_defaults": {
-    "market": "China",
-    "traffic_side": "right-hand traffic",
-    "steering_layout": "left-hand drive",
-    "driver_seat": "vehicle-left",
-    "front_passenger_seat": "vehicle-right",
-    "spatial_rules": "../../.agents/skills/seatbelt-video-studio/references/vehicle-spatial-rules.md"
-  },
-  "show_installation_process": false,
-  "installed_reference_required": true,
   "product_catalog": "production/config/products.json",
-  "product_geometry_review_required": true,
-  "product_geometry_tolerance_percent": 5,
   "paid_runs_require_confirmation": true,
   "integrations": {
     "reference_video_analysis": "claude-video-watch",
     "video_generation": "minimax-h3",
     "prompt_compiler": "h3-prompt-writing",
-    "audio_policy": "prefer_h3_native_for_short_dialogue"
+    "voice_generation": "seed-audio-1.0-external-user-step",
+    "voice_policy": "assistant-prepares-per-shot-brief-user-generates-and-imports",
+    "h3_audio_policy": "required-native-dialogue-or-voiceover-for-every-h3-shot-then-replace-as-needed",
+    "voiceover_handoff": "production/integrations/seed-audio-1.0/brief-contract.md",
+    "edit_assembly": "jianying-pro-editable-draft",
+    "optional_preview_assembly": "hyperframes-on-explicit-request",
+    "legacy_voice_catalog": "production/config/voices.json"
   },
   "dfcine": {
     "compute_provider": "AutoDL",

@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "job_id": "lulu-commute-10s-20260925",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": "shuiba-lulu-brown-black-pad-v1",
+  "product_display_name": "水豚噜噜安全带肩套",
+  "mode": "original",
+  "platform": "douyin",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 10,
+  "audience": "喜欢布置车内空间、重视个性与情绪氛围的年轻女性车主",
+  "use_occasion": "工作日白天短途通勤；车辆停稳后在主驾驶位拍摄",
+  "creative_concept": "车主每天上车时和安全带上的飞行员噜噜打招呼，以轻松的日常口吻把产品呈现为车内小搭档。先看人物和情境，再用近景清楚展示已安装的真实 SKU。",
+  "character_profile": "沿用已批准安装参考中的成年女性主驾驶角色、深棕长发和浅绿色针织上衣；自然通勤状态，轻微微笑，普通话口吻随和、不像硬广。生成帧保留真实毛孔、眼下纹理、细小绒毛、自然唇纹、零散发丝和轻微肤质差异；姿态和视线自然。",
+  "scene_plan": "中国左舵轿车停在白天的城市停车位。主驾驶位车辆左侧；方向盘在驾驶员正前方。固定为未镜像的仪表台/挡风玻璃前方正面机位：左门、左 B 柱和驾驶员左肩在画面右，中控和右髋内侧锁扣在画面左，肩带从画面右上斜向左下。车不行驶。",
+  "action_plan": "第一镜人物自然转眼看向安全带上的噜噜，再看回镜头并轻笑；第二镜缓慢靠近已经安装好的护肩套和玩偶，产品、肩带与人物同步保持稳定。不得触摸、调整或安装产品。",
+  "spoken_script": "每天上车，我先跟它打个招呼。飞行员噜噜，陪我出发。",
+  "raw_copy": "每天上车，我先跟它打个招呼。飞行员噜噜，陪我出发。\n屏幕 CTA：给通勤加个小搭档｜看看飞行员噜噜",
+  "hook": "每天上车，我先跟它打个招呼。",
+  "cta": "给通勤加个小搭档｜看看飞行员噜噜",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system",
+    "unverified comfort, pressure relief, friction reduction, or safety claims",
+    "installation, removal, fastening, adjustment, pulling, sliding, or repositioning"
+  ],
+  "reference_video": null,
+  "notes": "10 秒两镜头小样已在 DFCine 画布中配置：S01 使用已批准 installed-driver-v1 与 SKU 身份图；S02 接入待人工审核的细节草图、SKU 身份图及已批准安装参考。H3 负责无口播画面，中文口播由 ElevenLabs 音色苏安娜（台湾女声，voice ID 9lHjugDhwqoxA5MhX0az）分镜生成并在后期替换音轨；音色资料记录在 production/config/voices.json。S02 草图审核通过或替换前不得运行。节点与提示词保持 idle；当前尚未检测到 ElevenLabs API key，也未提交付费语音/视频任务或启动 AutoDL。"
+}

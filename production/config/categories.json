@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "categories": [
+    {
+      "category_id": "seatbelt-shoulder-pad",
+      "name": "安全带护肩套",
+      "status": "active",
+      "profile": "production/categories/seatbelt-shoulder-pad.md",
+      "vehicle_defaults": {
+        "market": "China",
+        "traffic_side": "right-hand traffic",
+        "steering_layout": "left-hand drive",
+        "driver_seat": "vehicle-left",
+        "front_passenger_seat": "vehicle-right",
+        "spatial_rules": ".agents/skills/seatbelt-video-studio/references/vehicle-spatial-rules.md"
+      },
+      "show_installation_process": false,
+      "installed_reference_required": true,
+      "product_geometry_review_required": true,
+      "product_geometry_tolerance_percent": 5
+    },
+    {
+      "category_id": "bag-charm",
+      "name": "包包挂饰",
+      "status": "draft",
+      "profile": "production/categories/bag-charm.md"
+    }
+  ]
+}

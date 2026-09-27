@@ -1,0 +1,22 @@
+{
+  "submitted_at": "2026-09-27T05:29:24.588Z",
+  "task_id": "10a9e7b8-ed56-4dfe-8fcf-0801a21e0e29",
+  "status": "SUCCESS",
+  "request": {
+    "workflow_id": "minimax_h3_z0903",
+    "duration": 3,
+    "resolution": "480p竖(480*864)",
+    "seed": 48020260927,
+    "ref_images": 2,
+    "ref_audio": "official-blank.wav"
+  },
+  "updated_at": "2026-09-27T05:32:28.818Z",
+  "autodl": {
+    "duration": 183,
+    "started_at": "2026-09-27 13:29:25"
+  },
+  "last_response_at": "2026-09-27T05:32:28.570Z",
+  "output_file": "E:\\videoC\\videoC\\production\\jobs\\autodl-z0903-canvas-smoke-20260927\\output\\10a9e7b8-ed56-4dfe-8fcf-0801a21e0e29.mp4",
+  "reviewed": false,
+  "result_url_received_at": "2026-09-27T05:32:28.817Z"
+}

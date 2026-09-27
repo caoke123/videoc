@@ -1,0 +1,21 @@
+subject_definitions:
+<Subject 1> is the same adult Chinese female driver in <Picture 2>, with the same recognizable face, dark half-up hair, pearl ornament and earrings, wearing the ivory-and-red polka-dot asymmetrical ruffle top and tailored red shorts shown there. She never speaks; her visible lips remain naturally closed.
+<Subject 2> is the complete pink Shui Tun Lulu plush and long black fabric seatbelt shoulder sleeve from <Picture 1>, preserving sunglasses, orange-and-green top ornament, scarves, limbs, texture, attachment and original proportions. <Picture 2> defines its installed position.
+<Subject 3> is the same Chinese left-hand-drive sedan interior and daylight road setting in <Picture 2>.
+
+summary:
+[reference generation] Create one four-second vertical photoreal closing commute shot of the same driver in her red-and-white outfit with the same installed product, leaving a steady ending for a post-production message.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - retain facial identity, hair and pearl accessories, red polka-dot ruffle top, visible red shorts, and natural driving posture from <Picture 2>.
+<Subject 2> (Shot 1): fully_preserved - retain the entire plush-and-sleeve geometry of <Picture 1> and its installed scale from <Picture 2>.
+<Subject 3> (Shot 1): partially_preserved - retain vehicle geometry and passenger-side camera while the exterior road continues moving.
+
+detailed_description:
+Realistic warm daytime camera image. [Shot 1] <Subject 1> drives steadily while looking ahead, a subtle natural smile forming without a head turn. The red-dotted ruffle top and red shorts remain visible in the medium seated composition; a small red handbag is only secondary. The left B-pillar appears at image right, inboard buckle at image left, and wheel in front of the driver. One continuous flat belt travels upper-right to lower-left across her left shoulder. <Subject 2> is already wrapped around the belt at the shoulder-to-upper-chest zone, with the black sleeve and plush moving together and bare webbing centered at both sleeve ends. A slight camera push-in toward her face and product settles before the final second, leaving clear lower-frame space for text to be added later in editing. She keeps her attention on the road and does not speak or lip-sync; all narration will be added only in post-production. End on a stable, product-readable frame.
+
+overall_soundscape:
+Soft continuous road and cabin ambience with distant urban traffic. No speech, narrator, vocals, or conspicuous effect.
+
+non_diegetic_music:
+N/A

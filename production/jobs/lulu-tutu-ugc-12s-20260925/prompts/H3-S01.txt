@@ -1,0 +1,12 @@
+subject_definitions:
+<Subject 1> is the approved young adult Chinese woman driver shown in <Picture 1>: the same facial identity, long groomed dark hair, natural elegant makeup, ivory knit top, and realistic skin texture. <Subject 2> is the exact 水豚噜噜 seatbelt shoulder pad: preserve the black rectangular fabric backing, fluffy white hat with brown ears and a small red pompom, white round glasses, yellow-orange plush face, cream clothing, and small yellow feet shown in <Picture 2>. <Picture 1> defines how <Subject 2> is already worn on the continuous diagonal seatbelt at her left shoulder inside a parked, left-hand-drive car.
+summary:
+A five-second vertical 9:16 photorealistic UGC selfie-style shot. <Subject 1> smiles toward the phone camera and naturally says “这个水豚噜噜也太可爱了吧！” while <Subject 2> remains clearly visible and correctly installed.
+retention_analysis:
+The appealing driver and distinctive plush product share the opening frame. A gentle glance to the shoulder pad and a genuine smile keep attention without a scene change.
+detailed_description:
+0.0–0.6s: A medium-close handheld phone composition closely follows the approved framing in <Picture 1>, with the woman seated in the parked driver's seat, the diagonal belt and shoulder pad visible. 0.6–3.4s: She turns her eyes briefly toward the pad, then back to camera, saying the exact Chinese line with natural lip synchronization to <Audio 1> as a reference for timing, pronunciation, and Taiwan female voice character. 3.4–5.0s: She finishes with a small delighted smile; camera has restrained real handheld drift. Preserve natural anatomy, seatbelt continuity and direction, product scale, SKU details, and realistic car-window daylight. The steering wheel remains on the driver's side. No driving, installation action, product morphing, added text, or extra speech.
+overall_soundscape:
+Quiet parked-car cabin ambience and newly generated natural dialogue guided by <Audio 1> as a reference; the original audio signal is not copied.
+non_diegetic_music:
+None; music is added only in post-production.

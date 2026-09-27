@@ -1,0 +1,12 @@
+subject_definitions:
+<Subject 1> is the exact 水豚噜噜 seatbelt shoulder pad shown in <Picture 1> and verified by the original SKU photo <Picture 2>: black rectangular backing, fluffy white hat, brown ears, tiny red pompom, white round glasses, yellow-orange plush face, cream outfit, yellow feet. <Subject 2> is the same approved young Chinese woman, ivory knit top, dark hair, and parked left-hand-drive car environment established by <Picture 3>. <Picture 1> defines the close-up placement of <Subject 1> on the continuous diagonal belt at her left shoulder.
+summary:
+A five-second vertical photorealistic UGC product-detail shot in the same parked car. The camera lingers on the worn plush pad as a female voice says “小眼镜、小帽子，做工也挺细致的。”
+retention_analysis:
+The white glasses, little hat, and tactile stitching are instantly readable. A subtle camera move reveals material detail while preserving product identity and continuity with the preceding shot.
+detailed_description:
+0.0–0.8s: Close-up composition follows <Picture 1>, the pad securely sitting on the continuous diagonal seatbelt across the ivory top. 0.8–3.8s: A very slow handheld push-in reveals the real soft fibers, glasses, red pompom, seams and black woven backing without changing the SKU. The spoken Chinese line follows <Audio 1> as reference for wording, timing, pronunciation, and Taiwan female voice character; the woman's mouth is not visible, so this is an off-camera voiceover. 3.8–5.0s: Hold on the accurately shaped plush face and neat sewn details. Maintain consistent daylight, real fabric texture, believable belt tension, identical product size and colors. No installation action, extra hands, driving, new decorations, text, or extra speech.
+overall_soundscape:
+Soft stationary-car room tone and newly generated female voiceover guided by <Audio 1> as a reference; do not copy the source audio signal.
+non_diegetic_music:
+None; music is added only in post-production.

@@ -1,0 +1,12 @@
+{
+  "default_policy": "human_first",
+  "automatic_ai_review": false,
+  "automatic_retry": false,
+  "shots": {
+    "S01": {"decision": "rejected", "reviewer": "user", "note": "v1、v2用户拒收。v3使用2K产品参考图和1MP输出，代理自检仍见黑色护肩被生成成较平的绒面，未保住原图密集的不规则凸起圈纹；不标为通过。"},
+    "S02": {"decision": "rejected", "reviewer": "user", "note": "v1已拒收；v2人工复核仍不通过：镜头间缺乏联系，黑色护肩纹理失真。"},
+    "S03": {"decision": "rejected", "reviewer": "user", "note": "v1已拒收；v2人工复核仍不通过：镜头间缺乏联系，黑色护肩纹理失真。"},
+    "S04": {"decision": "rejected", "reviewer": "user", "note": "v1已拒收；v2人工复核仍不通过：镜头间缺乏联系，黑色护肩纹理失真。"},
+    "S05": {"decision": "pending", "reviewer": "user", "note": "v1已拒收；v2已在DFCine生成，但用户表示目前只检查了前四段，S05 v2尚无人工结论。v3统一提示词已准备。"}
+  }
+}

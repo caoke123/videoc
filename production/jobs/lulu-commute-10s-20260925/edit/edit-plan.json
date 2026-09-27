@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "canvas": {"width": 1080, "height": 1920, "fps": 24},
+  "duration_seconds": 10,
+  "category_id": "seatbelt-shoulder-pad",
+  "format": "ugc",
+  "editorial_note": "以人物开场、产品细节收束；两镜硬切，保留真实摄影质感。H3 原音静音，由 ElevenLabs 口播和音乐重新混音。",
+  "shots": [
+    {"id": "S01", "path": "renders/preview/S01-H3-preview.mp4", "source_in": 0, "start": 0, "duration": 5},
+    {"id": "S02", "path": "renders/preview/S02-H3-preview.mp4", "source_in": 0, "start": 5, "duration": 5}
+  ],
+  "voiceovers": [
+    {"id": "S01-vo", "path": "audio/generated/elevenlabs/S01-voiceover.mp3", "start": 0.55, "duration": 2.58, "text": "每天上车，我先跟它打个招呼。"},
+    {"id": "S02-vo", "path": "audio/generated/elevenlabs/S02-voiceover.mp3", "start": 5.55, "text": "飞行员噜噜，陪我出发。"}
+  ],
+  "music": {"path": "audio/generated/elevenlabs/BGM-morning-commute-v1.mp3", "start": 0, "duration": 10, "volume": 0.28},
+  "captions": [
+    {"id": "cap-1", "text": "每天上车，我先跟它打个招呼。", "start": 0.55, "duration": 2.8},
+    {"id": "cap-2", "text": "飞行员噜噜，陪我出发。", "start": 5.55, "duration": 2.8}
+  ],
+  "cta": {"text": "水豚噜噜安全带肩套", "start": 8.5, "duration": 1.5},
+  "variants": [
+    {"name": "commute-a", "cta": "水豚噜噜安全带肩套"},
+    {"name": "commute-b", "cta": "水豚噜噜安全带肩套｜陪我出发"}
+  ]
+}

@@ -1,0 +1,21 @@
+subject_definitions:
+<Subject 1> is the adult Chinese female driver in <Picture 2>, with the same recognizable face, dark half-up hair, pearl hair ornament, pearl earrings, refined natural makeup, and sleeveless ivory summer blouse. She never speaks; her visible lips remain naturally closed.
+<Subject 2> is the complete pink Shui Tun Lulu plush and long black fabric seatbelt shoulder sleeve from <Picture 1>, retaining its sunglasses, orange-and-green top detail, blue scarf, checked red detail, original proportions, and sewn attachment. <Picture 2> defines its approved installed scale and placement.
+<Subject 3> is the Chinese left-hand-drive sedan interior in <Picture 2>, viewed from the front passenger and center-console side toward the driver.
+
+summary:
+[reference generation] Create one four-second vertical photoreal weekday-commute shot of <Subject 1> driving with <Subject 2> correctly installed in <Subject 3>. Preserve the approved woman, product, outfit, cabin layout, and understated summer daylight.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - her face, hair, pearl accessories, ivory blouse, and natural driving demeanor remain consistent with <Picture 2>.
+<Subject 2> (Shot 1): fully_preserved - the complete plush and black sleeve remain one attached assembly, matching <Picture 1> and the wearing geometry of <Picture 2>.
+<Subject 3> (Shot 1): partially_preserved - the left-hand-drive cabin and camera orientation remain fixed while the city street outside moves naturally.
+
+detailed_description:
+Live-action natural camera texture, realistic skin and fabric, clear product detail. [Shot 1] A medium seated portrait shows <Subject 1> looking ahead and steering smoothly. Her left-side B-pillar and door are at image right; the inboard buckle is at image left. One flat seatbelt runs from image upper-right across her left shoulder to image lower-left. <Subject 2> wraps the shoulder-to-upper-chest segment; the bare belt enters and exits the sleeve at its center on one continuous diagonal, with the sleeve about 1.4 times the local belt width. The plush and sleeve move together with the driver and never separate. The camera makes only a very gentle push-in, then settles. She concentrates on driving and does not speak or lip-sync; all narration will be added only in post-production. Keep the final frame stable for a straight cut to the next outfit.
+
+overall_soundscape:
+Subtle enclosed car ambience, a soft steady road-and-tire texture, and quiet distant city traffic. No speech, narrator, vocals, prominent honks, or mechanical events.
+
+non_diegetic_music:
+N/A

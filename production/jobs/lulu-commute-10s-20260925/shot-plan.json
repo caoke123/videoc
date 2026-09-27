@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 5,
+      "purpose": "日常口播开场和人物建立",
+      "generation_mode": "character_i2v",
+      "audio_mode": "post_tts",
+      "dialogue": "每天上车，我先跟它打个招呼。",
+      "voice_profile_id": "suanna-tw-female",
+      "voice_id": "9lHjugDhwqoxA5MhX0az",
+      "voice_label": "苏安娜（台湾女声）",
+      "audio_direction": "使用 ElevenLabs 音色“苏安娜”（台湾女声，voice ID 9lHjugDhwqoxA5MhX0az）生成自然、像随手分享的普通话口播。每镜单独生成口播文件，后期替换 H3 音轨；保留轻微车厢环境声，无音乐。车辆停稳。",
+      "references": [
+        {
+          "path": "production/assets/products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "首帧、人物、主驾驶座位、左舵车空间、产品佩戴关系和屏幕比例；已批准"
+        },
+        {
+          "path": "production/assets/products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "完整 SKU 身份锁定；原始商品图"
+        }
+      ],
+      "primary_action": "人物把目光从前方自然移向噜噜，再回看镜头轻笑；不触碰产品。",
+      "camera": "固定未镜像仪表台/挡风玻璃前方正面近中景，轻微真实手持微动，不推拉。左门、左 B 柱、人物左肩在画面右；中控及右髋内侧锁扣在画面左；主驾肩带画面右上至左下。",
+      "end_state": "人物目光落回镜头，产品仍清楚可辨且已正确佩戴；车厢和人物保持停稳状态。",
+      "dfcine_workflow_id": "h3.ref.cloud",
+      "dfcine_node_id": "fb4023ec-2cda-434f-84d1-2434958f24ee",
+      "status": "canvas_configured_idle"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 5,
+      "end_seconds": 10,
+      "purpose": "展示 SKU 细节并收束记忆点",
+      "generation_mode": "product_i2v",
+      "audio_mode": "post_tts",
+      "dialogue": "飞行员噜噜，陪我出发。",
+      "voice_profile_id": "suanna-tw-female",
+      "voice_id": "9lHjugDhwqoxA5MhX0az",
+      "voice_label": "苏安娜（台湾女声）",
+      "audio_direction": "使用同一 ElevenLabs 音色“苏安娜”（台湾女声，voice ID 9lHjugDhwqoxA5MhX0az）生成轻松、温柔、不过度播音的普通话画外音。每镜单独生成口播文件，后期替换 H3 音轨；保留轻微车厢底噪，无音乐。",
+      "references": [
+        {
+          "path": "production/jobs/lulu-commute-10s-20260925/assets/generated/s02-product-detail-draft-v1.png",
+          "role": "S02 构图草图和待审核的产品细节参考；未获人工批准前不可提升或作为正式生成输入"
+        },
+        {
+          "path": "production/assets/products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "完整 SKU 身份、颜色、玩偶细节与护肩套比例锁定；原始商品图"
+        },
+        {
+          "path": "production/assets/products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "中国左舵主驾安装位置、连续肩带路径和相对比例；已批准"
+        }
+      ],
+      "primary_action": "镜头以缓慢、克制的前推展示已经安装好的护肩套和飞行员噜噜；产品不单独摆动。",
+      "camera": "9:16 肩部至上胸细节近景，沿安全带和产品中心线缓慢前推；保持 S01 的未镜像方向，护肩套与玩偶作为一个刚性组合。",
+      "end_state": "产品完整清楚，连续安全带在护肩套上下均可见；下方安全区留给后期 CTA，最后停留约 1 秒。",
+      "dfcine_workflow_id": "h3.ref.cloud",
+      "dfcine_node_id": "eb25546a-394d-4919-9926-74d1293e7d80",
+      "status": "canvas_configured_idle_pending_human_asset_review"
+    }
+  ]
+}

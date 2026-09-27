@@ -1,0 +1,21 @@
+subject_definitions:
+<Subject 1> is the same adult Chinese female driver in <Picture 2>, with her recognizable face, dark half-up hair, pearl hair ornament and earrings, wearing the cobalt-blue tiny-dot asymmetrical ruffle top and white wide-leg trousers visible there. She never speaks; her visible lips remain naturally closed.
+<Subject 2> is the complete pink Shui Tun Lulu plush and black shoulder sleeve in <Picture 1>, preserving its pink sunglasses, orange-and-green top detail, blue scarf, checked red detail, limbs, and original proportions. <Picture 2> fixes its installed scale and belt relationship.
+<Subject 3> is the left-hand-drive sedan interior and summer street perspective in <Picture 2>.
+
+summary:
+[reference generation] Create one four-second vertical photoreal driving shot with the same heroine in her blue-and-white outfit, and the same complete installed product.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - keep her face, hair, accessories, blue dotted cascading ruffles, and visible white-trouser lap from <Picture 2>.
+<Subject 2> (Shot 1): fully_preserved - keep the complete plush-and-sleeve identity of <Picture 1> and placement from <Picture 2>.
+<Subject 3> (Shot 1): partially_preserved - preserve cabin geometry while exterior city scenery moves naturally.
+
+detailed_description:
+Believable real-camera texture, soft daylight through the window. [Shot 1] In a steady medium portrait, <Subject 1> drives smoothly and looks toward the road ahead. The blue ruffles move only minimally with her breathing and do not cover the product. The steering wheel stays in front of the driver. The driver-side left B-pillar remains at image right and the inboard buckle at image left. A continuous untwisted belt runs from image upper-right through the left shoulder to image lower-left. <Subject 2> wraps that belt in the shoulder-to-upper-chest zone; the black sleeve is visibly wider than the bare belt, which passes through the sleeve's center without a bend. The toy and sleeve remain one unit at a fixed realistic scale. Keep the camera fixed as the city outside moves slowly. She keeps her attention on the road and does not speak or lip-sync; all narration will be added only in post-production. Settle on a stable final frame for a clean cut.
+
+overall_soundscape:
+Quiet, consistent vehicle road hum with soft distant urban traffic; no speech, narrator, vocals, or conspicuous sound event.
+
+non_diegetic_music:
+N/A

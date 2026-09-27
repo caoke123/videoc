@@ -1,0 +1,22 @@
+subject_definitions:
+<Subject 1> is the same adult Chinese woman whose facial identity, dark half-up hair, pearl details and refined makeup come from <Picture 3>; she wears the white puff-sleeve blouse and blue floral skirt shown in <Picture 2>.
+<Subject 2> is the single physical Shui Tun Lulu seatbelt shoulder sleeve in the 2048 x 2048 <Picture 1>, which is the material and construction authority: an elongated rectangular matte-black textile sleeve with densely packed, irregular raised black-on-black looped yarn, tiny curled ridges and dark recessed channels; stitched black binding at both ends; a firmly sewn pink short-pile capybara with pink oval sunglasses and black lenses, orange fuzzy fruit with one green leaf, navy triangular scarf, red-and-white gingham, small limbs, and the exact photographed proportions.
+<Subject 3> is the left-hand-drive sedan cabin and fixed front passenger-side camera view from <Picture 3>.
+
+summary:
+[reference generation] Create the Thursday four-second 9:16 photoreal commute segment in a five-look series. The driver, car, route, camera, lighting and product recur identically; the white puff-sleeve blouse and blue floral skirt is this day's deliberate change.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - approved identity from <Picture 3> and the white puff-sleeve blouse and blue floral skirt from <Picture 2>.
+<Subject 2> (Shot 1): fully_preserved - use <Picture 1> as the sole product material, texture, color, shape and assembly reference, including its visibly sculpted black looped textile.
+<Subject 3> (Shot 1): fully_preserved - retain the same cabin architecture and mounted camera view from <Picture 3>.
+
+detailed_description:
+Natural photoreal live-action, clear daylight, finely resolved real textile. [Shot 1] This is the same weekday commute repeated on five mornings, with a clothing-change hard cut between clips. One uninterrupted four-second live-action take from the same fixed front passenger-side camera, the same left-hand-drive car, the same seat and B-pillar, the same tree-lined boulevard and office-building background, and the same soft morning daylight. Frame the driver's face upper-left, the steering wheel lower-right, and the entire installed sleeve and pink capybara near center. Give the product approximately one quarter of the image width so its black-on-black raised loops remain individually legible. The single seatbelt passes straight through the sleeve over her anatomical left shoulder. Keep the pad rectangular and the toy sewn to it as one physical object. At both the opening and closing, match the other four clips in camera height, lens, crop, seatbelt angle, product screen position, steering-wheel angle, hand placement, head position and forward gaze; these are the visual anchors for precise outfit-change match cuts. The driver remains quiet and attentive to the road. The car and passing scenery move naturally while the mounted camera remains steady. Preserve the original product's loop scale, curled ridges, recessed channels, matte black color, end binding, short pink plush, sunglasses, fruit, leaf and scarf in every frame. The white puff sleeves and a visible portion of the blue floral skirt read clearly in the seated frame. She makes one tiny, natural steering correction while watching the road, then settles back to the same wheel angle and forward gaze. End on a stable forward-driving frame for the next hard cut. Screen titles and narration will be added in post.
+
+overall_soundscape:
+Quiet enclosed-car tire and road ambience with distant city traffic. The driver does not speak; no narration or vocals are generated.
+
+non_diegetic_music:
+N/A
+

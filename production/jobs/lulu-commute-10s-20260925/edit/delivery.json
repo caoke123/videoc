@@ -1,0 +1,20 @@
+{
+  "status": "exported_for_human_review",
+  "product_display_name": "水豚噜噜安全带肩套",
+  "platform": "douyin-qianchuan",
+  "output": "hyperframes/renders/20260925_水豚噜噜安全带肩套_10s_1080x1920_v1_千川.mp4",
+  "sha256": "1EB147F09A9839F10A730E3204C6BAB04B521727111F93CBC54F7E1BB668C780",
+  "bytes": 22991620,
+  "duration_seconds": 10,
+  "video": {"codec": "h264", "width": 1080, "height": 1920, "fps": 24, "color": "bt709"},
+  "audio": {"codec": "aac", "channels": 2, "sample_rate_hz": 48000},
+  "voice_profile_id": "suanna-tw-female",
+  "subtitle_file": "subtitles.srt",
+  "burned_in_subtitles": true,
+  "checks": {
+    "hyperframes": "passed_0_errors_0_warnings",
+    "visual_frames": "passed_1.2s_6.7s_9.2s",
+    "black_frames": "none_detected",
+    "sku_vs_approved_source": "visually_consistent"
+  }
+}

@@ -1,16 +1,16 @@
 ---
 name: seatbelt-video-studio
-description: Plan, prepare, orchestrate, and review batch short-form videos for a seat-belt shoulder-pad product. Use for original ad concepts, viral-reference remixes, scripts, shot plans, character/scene/product images, DFCine canvas nodes, ComfyUI image/video workflows, native model dialogue or optional post TTS, human-first review, on-demand AI diagnosis, and batch production tracking.
+description: Apply approved SKU identity, correct installation, realistic vehicle geometry, and DFCine/H3 guidance to seat-belt shoulder-pad short videos. Use alongside ecommerce-video-studio for this category.
 ---
 
 # Seatbelt Video Studio
 
-Operate the project as a production system. Keep product facts and approved installation references authoritative; use Codex for planning, assets, prompts, DFCine orchestration, and post-production. Use ComfyUI only for selected image/video generation tasks.
+Use this as the `seatbelt-shoulder-pad` category supplement to `ecommerce-video-studio`. Keep product facts and approved installation references authoritative; use Codex for planning, assets, prompts, DFCine orchestration, and post-production. Use ComfyUI only for selected image/video generation tasks. For people, apply the shared realistic-character guidance at `../ecommerce-video-studio/references/realistic-characters.md`.
 
 ## Start
 
-1. Inspect `production/config/project.json` and the selected job under `production/jobs/`.
-2. If no job exists, run `scripts/init_batch.py --id <job-id> --mode original|reference|hybrid`.
+1. Inspect `production/config/project.json`, the category profile, and the selected job under `production/jobs/`.
+2. If no job exists, run `../ecommerce-video-studio/scripts/init_batch.py --id <job-id> --category seatbelt-shoulder-pad --mode original|reference|hybrid`.
 3. Read only the references needed for the current stage:
    - Pipeline and state transitions: `references/workflow.md`
    - Data files and required fields: `references/schemas.md`
@@ -23,13 +23,13 @@ Operate the project as a production system. Keep product facts and approved inst
 
 ## Production Rules
 
-- Support `original`, `reference`, and `hybrid` jobs.
+- Support `original`, `reference`, and `hybrid` jobs. For an original job, develop the hook, script, role, scene, actions, and shot plan without depending on an outside reference video.
 - Do not generate the product installation process. Start product-on-belt shots from a human-approved installed reference.
 - Treat real product photos as identity truth. Generated product geometry is not authoritative.
 - Keep each video clip to one primary action and one motivated camera move.
 - Prefer simple cuts, occlusion cuts, or post-production transitions over complex generated interactions.
-- Allow audio per shot: `native`, `post_tts`, or `silent_plate`.
-- Prefer H3 `native` audio for short dialogue-led shots when the spoken line is explicit and reviewable; keep subtitles, claims, price, logo, and CTA text as post overlays.
+- Every new MiniMax H3 shot must use native audio and contain the exact spoken dialogue or off-screen narration, even when post will replace that audio. Do not plan a silent H3 plate.
+- Prepare a per-shot Seed Audio 1.0 handoff (exact text, speaker role, emotion, tone/delivery, timing, duration) for the user to generate externally; do not call ElevenLabs under the current project policy.
 - Default review to `human_first`. Do not run AI quality analysis or retries unless requested.
 - Separate preview and final runs. Use low-cost parameters for previews, then promote accepted shots.
 - Keep text, price, logo, claims, subtitles, and CTA as post-production overlays unless the user explicitly requests model-rendered text.
@@ -48,8 +48,8 @@ Operate the project as a production system. Keep product facts and approved inst
 8. **Run**: write prompts and params with dry run, ask for confirmation, run, wait, download, and record result paths.
 9. **Human review**: mark `accepted`, `needs_ai_review`, `regenerate`, or `post_fix`.
 10. **AI review on request**: inspect only the reported clip/time range; diagnose and propose fixes. Never auto-run the fix.
-11. **Post**: assemble accepted clips, optional TTS, subtitles, music, SFX, logo, claims, and CTA.
-12. **Validate**: run `scripts/validate_batch.py <job-dir>` before final delivery.
+11. **Post**: import the user's Seed Audio file, align captions to its actual timing, and assemble accepted clips and editable overlays in a Jianying Pro draft. Keep H3 native audio in source files but mute it in the final mix when replaced.
+12. **Validate**: run `../ecommerce-video-studio/scripts/validate_batch.py <job-dir>` before final delivery.
 
 ## DFCine Discipline
 

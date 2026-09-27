@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S01", "start_seconds": 0, "end_seconds": 3,
+      "purpose": "黄橙款开场与产品身份建立", "generation_mode": "product_i2v", "audio_mode": "native",
+      "dialogue": "带上好心情，出发。", "audio_direction": "自然普通话女声画外音，轻快但不夸张，在前 2.5 秒完整说出原句；干净人声，无额外词语。",
+      "references": ["assets/source/yellow-orange-plush-seatbelt-pad.png"],
+      "primary_action": "黄橙款静物保持原样，柔和暖光掠过护肩套织物。", "camera": "正面慢速推近；无旋转。", "end_state": "黄橙款完整可见，可用硬切接粉色款。",
+      "dfcine_workflow_id": "minimax_h3_z0903", "status": "planned"
+    },
+    {
+      "shot_id": "S02", "start_seconds": 3, "end_seconds": 6,
+      "purpose": "粉色款独立亮相", "generation_mode": "product_i2v", "audio_mode": "native",
+      "dialogue": "甜甜的，也酷酷的。", "audio_direction": "与 S01 同一自然普通话女声画外音，轻柔带笑，在 3 秒镜头内说完原句；干净人声，无额外词语。",
+      "references": ["assets/source/pink-plush-seatbelt-pad.png"],
+      "primary_action": "粉色款静物保持原样，柔和粉白侧光掠过织物。", "camera": "正面慢速推近；无旋转。", "end_state": "粉色款完整可见，可用硬切接双款同框。",
+      "dfcine_workflow_id": "minimax_h3_z0903", "status": "planned"
+    },
+    {
+      "shot_id": "S03", "start_seconds": 6, "end_seconds": 10,
+      "purpose": "双款同框英雄镜头与提问收尾", "generation_mode": "multi_reference_product_i2v", "audio_mode": "native",
+      "dialogue": "今天的通勤搭子，你选哪一个？", "audio_direction": "与前两镜同一自然普通话女声画外音，语气邀请式，最后‘哪一个’轻微上扬，在 4 秒内说完；干净人声，无额外词语。",
+      "references": ["assets/source/yellow-orange-plush-seatbelt-pad.png", "assets/source/pink-plush-seatbelt-pad.png"],
+      "primary_action": "两款各自完整地并排立于深灰棚拍台面，产品本体不动。", "camera": "正面轻微拉远，完整展示两件黑色护肩套。", "end_state": "双款完整定格，顶部留后期文案空间。",
+      "dfcine_workflow_id": "minimax_h3_z0903", "status": "planned"
+    }
+  ]
+}

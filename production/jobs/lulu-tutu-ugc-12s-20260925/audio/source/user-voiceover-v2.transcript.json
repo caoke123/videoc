@@ -1,0 +1,22 @@
+{
+  "source": "user-voiceover-v2.wav",
+  "duration_seconds": 10.0,
+  "recognizer": "faster-whisper small, local CPU",
+  "language": "zh",
+  "transcript": "哇，这个水豚噜噜安全带肩套也太可爱了吧！你看它的小眼镜、小帽子，做工也特别精致。",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 4.2,
+      "text": "哇，这个水豚噜噜安全带肩套也太可爱了吧！",
+      "timing_note": "Speech begins at 0.0s; brief pause begins around 4.2s."
+    },
+    {
+      "start": 4.8,
+      "end": 9.92,
+      "text": "你看它的小眼镜、小帽子，做工也特别精致。",
+      "timing_note": "Speech begins around 4.8s; ending near 9.92s."
+    }
+  ],
+  "normalization_note": "ASR product-name homophones were normalized to the provided product name 水豚噜噜; pronoun 他 was normalized to the object pronoun 它. Wording otherwise follows the supplied audio."
+}

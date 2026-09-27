@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "job_id": "pair-plush-tvc-10s-20260927",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": "",
+  "product_skus": [
+    {"sku_id": "yellow-orange-black-pad-source-20260927", "source_product_asset": "assets/source/yellow-orange-plush-seatbelt-pad.png", "identity_status": "user_supplied_standalone_source"},
+    {"sku_id": "pink-black-pad-source-20260927", "source_product_asset": "assets/source/pink-plush-seatbelt-pad.png", "identity_status": "user_supplied_standalone_source"}
+  ],
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 10,
+  "target_resolution": "720x1280",
+  "provider_generation_resolution": "768p竖(768*1376)",
+  "audience": "喜欢可爱通勤配件的短视频观众",
+  "use_occasion": "棚拍产品展示；不呈现安装或车内佩戴状态",
+  "creative_concept": "通勤双搭子：黄橙款和粉色款分别亮相，最后并列让观众选择。",
+  "character_profile": "无真人出镜；两款玩偶护肩套保持原图身份和比例。",
+  "scene_plan": "S01 黄橙款暖白棚拍；S02 粉色款淡粉棚拍；S03 双款深灰棚拍同框。",
+  "action_plan": "每镜头只做轻微摄影机推近或拉远，产品本体保持结构稳定。",
+  "spoken_script": "带上好心情，出发。甜甜的，也酷酷的。今天的通勤搭子，你选哪一个？",
+  "raw_copy": "带上好心情，出发。甜甜的，也酷酷的。今天的通勤搭子，你选哪一个？",
+  "hook": "两款高辨识度玩偶产品快速亮相",
+  "cta": "今天的通勤搭子，你选哪一个？",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system",
+    "unverified comfort or material claims"
+  ],
+  "reference_video": null,
+  "notes": "使用用户提供的两张完整产品原图作为唯一身份依据。没有对应两款的批准安装状态图，因此本片只采用棚拍静物镜头。先生成三段候选镜头并做人工审片，未批准的候选片段不称为最终成片。"
+}

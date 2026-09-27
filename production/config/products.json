@@ -3,6 +3,7 @@
   "products": [
     {
       "sku_id": "shuiba-tutu-black-pad-v1",
+      "category_id": "seatbelt-shoulder-pad",
       "name": "水豚噜噜黑色安全带护肩套",
       "status": "approved",
       "source_product_asset": "production/assets/products/shuiba-tutu-black-pad-v1/source/product-front.png",
@@ -70,7 +71,9 @@
     },
     {
       "sku_id": "shuiba-lulu-brown-black-pad-v1",
+      "category_id": "seatbelt-shoulder-pad",
       "name": "水豚噜噜棕色飞行员黑色安全带护肩套",
+      "display_name": "水豚噜噜安全带肩套",
       "status": "approved",
       "source_product_asset": "production/assets/products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
       "approved_installed_asset": "production/assets/products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "canvas": {"width": 1080, "height": 1920, "fps": 24},
+  "duration_seconds": 18,
+  "category_id": "seatbelt-shoulder-pad",
+  "format": "ugc",
+  "status": "paused_pending_v3_generation_and_human_review",
+  "editorial_note": "五段v1已拒收；用户又拒收已查看的四段v2，原因是镜头间缺乏联系及黑色护肩纹理失真。v3改用2K商品原图、统一女主与车辆基准图、固定匹配剪切机位及1MP输出。时间线仍按五段各3.6秒，总长18秒；只有五段人工通过后恢复剪辑。旁白和配乐另待提供。",
+  "shots": [
+    {"id": "S01", "path": "assets/generated/video/S01-h3-continuity-texture-v3.mp4", "source_in": 0, "start": 0, "duration": 3.6},
+    {"id": "S02", "path": "assets/generated/video/S02-h3-continuity-texture-v3.mp4", "source_in": 0, "start": 3.6, "duration": 3.6},
+    {"id": "S03", "path": "assets/generated/video/S03-h3-continuity-texture-v3.mp4", "source_in": 0, "start": 7.2, "duration": 3.6},
+    {"id": "S04", "path": "assets/generated/video/S04-h3-continuity-texture-v3.mp4", "source_in": 0, "start": 10.8, "duration": 3.6},
+    {"id": "S05", "path": "assets/generated/video/S05-h3-continuity-texture-v3.mp4", "source_in": 0, "start": 14.4, "duration": 3.6}
+  ],
+  "voiceovers": [],
+  "music": null,
+  "captions": [],
+  "cta": {"text": "工作日通勤的路上，有水豚噜噜陪伴", "start": 16.5, "duration": 1.5},
+  "variants": []
+}

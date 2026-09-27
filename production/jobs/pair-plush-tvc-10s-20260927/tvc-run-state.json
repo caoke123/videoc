@@ -1,0 +1,44 @@
+{
+  "job_id": "pair-plush-tvc-10s-20260927",
+  "status": "AWAITING_REVIEW",
+  "shots": {
+    "S01": {
+      "status": "SUCCESS",
+      "task_id": "88773c8a-602c-41c6-b894-6a50c7fcf7c7",
+      "submitted_at": "2026-09-27T06:02:40.336Z",
+      "seed": 2026092701,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 254,
+      "last_polled_at": "2026-09-27T06:06:55.759Z",
+      "output_file": "E:\\videoC\\videoC\\production\\jobs\\pair-plush-tvc-10s-20260927\\renders\\preview\\S01.mp4",
+      "downloaded_at": "2026-09-27T06:06:57.202Z"
+    },
+    "S02": {
+      "status": "SUCCESS",
+      "task_id": "febdf843-77ac-4fee-9969-506a1cf7a7e4",
+      "submitted_at": "2026-09-27T06:02:40.597Z",
+      "seed": 2026092702,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 214,
+      "last_polled_at": "2026-09-27T06:06:19.407Z",
+      "output_file": "E:\\videoC\\videoC\\production\\jobs\\pair-plush-tvc-10s-20260927\\renders\\preview\\S02.mp4",
+      "downloaded_at": "2026-09-27T06:06:19.721Z"
+    },
+    "S03": {
+      "status": "SUCCESS",
+      "task_id": "d987313b-e979-49a8-b6ed-a8fb62fd93c2",
+      "submitted_at": "2026-09-27T06:02:41.077Z",
+      "seed": 2026092703,
+      "duration": 4,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 371,
+      "last_polled_at": "2026-09-27T06:08:57.070Z",
+      "output_file": "E:\\videoC\\videoC\\production\\jobs\\pair-plush-tvc-10s-20260927\\renders\\preview\\S03.mp4",
+      "downloaded_at": "2026-09-27T06:08:57.472Z"
+    }
+  },
+  "created_at": "2026-09-27T06:02:39.901Z",
+  "updated_at": "2026-09-27T06:08:57.473Z"
+}

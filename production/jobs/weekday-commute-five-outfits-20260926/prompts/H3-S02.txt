@@ -1,0 +1,21 @@
+subject_definitions:
+<Subject 1> is the same adult Chinese female driver in <Picture 2>, with her recognizable face, dark half-up hair, pearl hair ornament and earrings, now wearing the yellow thin-strap summer top and warm floral skirt visible in that image. She never speaks; her visible lips remain naturally closed.
+<Subject 2> is the complete pink Shui Tun Lulu plush and black fabric shoulder sleeve from <Picture 1>, preserving all facial, sunglasses, top-decoration, scarf, limb, and sleeve details as one assembly. <Picture 2> defines its approved installed position.
+<Subject 3> is the Chinese left-hand-drive sedan interior in <Picture 2>, filmed from the front passenger and center-console side toward the driver.
+
+summary:
+[reference generation] Create one four-second photoreal vertical commute shot of <Subject 1> driving in her yellow-and-floral outfit, with <Subject 2> already installed in <Subject 3>.
+
+retention_analysis:
+<Subject 1> (Shot 1): fully_preserved - keep the face and hair identity of <Picture 2>, yellow camisole, visible floral lap, pearl accessories, and seated driver posture.
+<Subject 2> (Shot 1): fully_preserved - keep the exact plush-to-sleeve proportions of <Picture 1> and the wearing scale of <Picture 2>.
+<Subject 3> (Shot 1): partially_preserved - keep the same left-hand-drive cabin and camera orientation while daylight and exterior trees move gently.
+
+detailed_description:
+Natural live-action summer daylight and restrained motion. [Shot 1] The driver keeps her attention on the road and steers steadily. The yellow top and floral skirt are readable in a medium seated portrait; a yellow handbag may remain secondary at the passenger side. The driver's left door and B-pillar appear at image right, the buckle at image left. One flat belt runs from upper-right through the left shoulder to lower-left. <Subject 2> sits on its shoulder-to-upper-chest segment, with the belt entering and leaving the center of the complete black sleeve on the same diagonal. The sleeve is about 1.4 times the adjacent belt width, and the toy stays firmly attached with natural contact shadow. Keep the camera almost fixed; only passing tree light changes softly. On a calm straight stretch, she makes one very brief, natural glance toward the lens (under 0.3 seconds) and immediately returns her gaze to the road, without turning her head or releasing the wheel. She does not speak or lip-sync; all narration will be added only in post-production. End on the same stable driving pose for a straight outfit cut.
+
+overall_soundscape:
+Soft car-cabin road ambience and distant, unobtrusive city traffic; no speech, narrator, vocals, or foreground sound effect.
+
+non_diegetic_music:
+N/A
