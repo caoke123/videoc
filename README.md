@@ -22,6 +22,13 @@ Codex 从商品资料出发，原创策划脚本、人物、场景、动作和�
 - `production/integrations/seed-audio-1.0/brief-contract.md`：新项目外部配音交接与导入检查规则。
 - `production/integrations/jianying-draft-export-assessment.md`：剪映草稿导出技能评估及接入验证门槛。
 - `production/jobs/lulu-commute-10s-20260925/`：历史 10 秒双镜头小样；原有 ElevenLabs/HyperFrames 文件只用于复现，不代表新项目默认工作流。当前重制按用户要求暂停。
+- `production/tools/autodl_pro.py`：直接调用 H3 做 AutoDL Pro 生命周期测试的小工具，读取 `production/config/autodl.env`。
+- `production/assets/unsorted-imports/`：待人工分类归档的散落参考图，处理完请分拣到对应的 `production/assets/*` 子目录或具体批次后删除。
+
+## 辅助目录（不进正式生产流程）
+
+- `scratch/`：纯本地实验/测试输出（图片生成试验、音频测试、临时冒烟批次等），整目录已加入 `.gitignore`，不受版本控制，可随时清空。
+- `autodl-video-workbench/`：一个独立的可视化 AutoDL 视频生成工作台静态站点（H3 节点编排、画布交互），已于 2026-09-27 测试通过节点拖拽与画布连线功能，尚未接入本项目的批次生产流程，作为后续调用 H3 的候选前端工具保留。
 
 新批次示例：
 

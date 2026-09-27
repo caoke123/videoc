@@ -32,3 +32,6 @@ __pycache__/
 
 # Node 依赖（防止未来其它子项目引入 node_modules 又被误提交）
 node_modules/
+
+# autodl-video-workbench 部署打包快照：内容与 dist/ 重复，需要时现场重新打包
+autodl-video-workbench/*.tar.gz
