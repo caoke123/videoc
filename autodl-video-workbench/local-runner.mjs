@@ -3,6 +3,7 @@ import { readFile, writeFile, mkdir, access, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { dirname, extname, join, normalize, resolve } from 'node:path';
 import { listJobs, getJobDetail } from './job-store.mjs';
+import { patchShotField, submitShot, pollShot } from './job-actions.mjs';
 
 const here = resolve(new URL('.', import.meta.url).pathname.replace(/^\/(.:)/, '$1'));
 const repoRoot = resolve(here, '..');
@@ -21,6 +22,18 @@ let activeTask = null;
 
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json; charset=utf-8' };
 const sendJson = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(body)); };
+async function readJsonBody(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  if (chunks.length === 0) return {};
+  try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new Error('Invalid JSON body'); }
+}
+function schedulePollShot(jobId, shotId, taskId, token, delayMs = 5000) {
+  setTimeout(async () => {
+    const result = await pollShot(allJobsRoot, jobId, shotId, taskId, { token }).catch(error => ({ done: true, status: 'ERROR', error: safeError(error) }));
+    if (!result.done) schedulePollShot(jobId, shotId, taskId, token, 5000);
+  }, delayMs);
+}
 const safeError = error => error instanceof Error ? error.message.replace(/AUTODL_COMFYUI_TOKEN\S*/g, '[redacted]') : 'Unknown error';
 
 async function tokenFromLocalConfig() {
@@ -176,6 +189,27 @@ const server = createServer(async (req, res) => {
       if (!detail) return sendJson(res, 404, { error: 'Job not found' });
       return sendJson(res, 200, detail);
     } catch (error) { return sendJson(res, 500, { error: safeError(error) }); }
+  }
+  const shotFieldMatch = req.method === 'PATCH' && /^\/api\/jobs\/([^/]+)\/shots\/([^/]+)$/.exec(url.pathname);
+  if (shotFieldMatch) {
+    const [, jobId, shotId] = shotFieldMatch;
+    try {
+      const body = await readJsonBody(req);
+      if (!body.field || body.value === undefined) return sendJson(res, 400, { error: 'Body must include { field, value }' });
+      const result = await patchShotField(allJobsRoot, jobId, shotId, body.field, body.value);
+      return sendJson(res, 200, result);
+    } catch (error) { return sendJson(res, 400, { error: safeError(error) }); }
+  }
+  const shotSubmitMatch = req.method === 'POST' && /^\/api\/jobs\/([^/]+)\/shots\/([^/]+)\/submit$/.exec(url.pathname);
+  if (shotSubmitMatch) {
+    const [, jobId, shotId] = shotSubmitMatch;
+    try {
+      const body = await readJsonBody(req);
+      const token = await tokenFromLocalConfig();
+      const result = await submitShot(allJobsRoot, jobId, shotId, { token, reason: body.reason });
+      schedulePollShot(jobId, shotId, result.taskId, token, 1500);
+      return sendJson(res, 202, result);
+    } catch (error) { return sendJson(res, 409, { error: safeError(error) }); }
   }
   if (req.method === 'GET' && url.pathname === '/api/tvc/assets/yellow') return serveFile(join(tvcRoot, 'assets', 'source', 'yellow-orange-plush-seatbelt-pad.png'), 'image/png', res);
   if (req.method === 'GET' && url.pathname === '/api/tvc/assets/pink') return serveFile(join(tvcRoot, 'assets', 'source', 'pink-plush-seatbelt-pad.png'), 'image/png', res);

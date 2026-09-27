@@ -106,11 +106,13 @@
 
 - 待办（推到 Phase 4）：`production/config/formats.json` + profile md 尚未创建——Phase 1 先验证了数据能读出来，形式注册表放到 Phase 4 和"9 宫格分镜"验证案例一起做，避免提前设计出用不上的字段
 
-### Phase 2 — 人工操作闭环（后端，仍不涉及画布）
-- `run-log.jsonl` 新增 `prompt_edit`/`manual_submit` 事件类型
-- 新增 `PATCH .../shots/:shotId`、`POST .../shots/:shotId/submit` 接口
-- 把 `production/tools/autodl_pro.py` 里的提交/轮询逻辑接到这两个接口背后（Python 脚本 vs 用 Node 重写一份，见第 6 节决策点）
-- 验收：用 `curl` 手动改一个镜头的 `dialogue` 字段、手动触发一次提交，`run-log.jsonl` 和 `shot-plan.json` 按预期更新
+### Phase 2 — 人工操作闭环（后端，仍不涉及画布）✅ 已完成 2026-09-27
+- 新增 `autodl-video-workbench/job-actions.mjs`：`patchShotField()`、`submitShot()`、`pollShot()`
+- **范围更正**（比原计划文字更准确）：可编辑、可提交的字段是 `request-plan.json` 里逐镜头的 `prompt`（这是真正发给 AutoDL 的英文提示词），不是 `shot-plan.json` 的 `dialogue` 等编辑用字段——后者是创意/文案层面的记录，不直接驱动生成。只有已经有 `request-plan.json` 的 job（走 AutoDL 直连路径的）才支持人工编辑/提交；走 DFCine 等其他工作流的 job 没有这个文件，这两个新接口会明确报错"不支持"，不会硬凑。
+- `local-runner.mjs` 新增 `PATCH /api/jobs/:jobId/shots/:shotId`（编辑字段）、`POST /api/jobs/:jobId/shots/:shotId/submit`（人工触发生成，复用 `submitTask`/`pollTask` 的同一套 AutoDL 提交/轮询逻辑，泛化成支持任意 job/shot）
+- 每次编辑、每次人工提交都追加一条 `run-log.jsonl`：`{"actor":"user","type":"prompt_edit",...}` / `{"actor":"user","type":"manual_submit",...}`，与现有 `submitted`/`success`/`failed` 事件共存，不改变旧字段含义
+- 保留原有的"进行中禁止重复提交"防护；单镜头冒烟测试 job 保留原有的"提交过一次就永久锁定"防重复计费护栏，多镜头 job（真正的"重新抽卡"场景）允许在非进行中状态下重新提交
+- 验收方式做了调整：`submitShot` 会真的调用 AutoDL 付费接口，**没有用真实 job 数据做端到端提交测试**，避免误触发计费任务。验证方式：在一个隔离的临时 job（测试完已删除，未污染真实数据）上验证了 PATCH 编辑 → 写回 `request-plan.json` → 追加 `run-log.jsonl` 的完整链路；并验证了所有会在调用 AutoDL 前拦截的报错路径（镜头不存在、字段不可编辑、job 没有 `request-plan.json`）。真实一次人工提交需要你在准备付费测试时手动验证。
 
 ### Phase 3 — React Flow 画布骨架
 - 引入 `autodl-video-workbench/web/`（React + TS + Vite），先只做"任务列表 + 点进去看只读详情"，对接 Phase 1 的 API
