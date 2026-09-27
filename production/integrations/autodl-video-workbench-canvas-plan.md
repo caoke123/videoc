@@ -114,10 +114,18 @@
 - 保留原有的"进行中禁止重复提交"防护；单镜头冒烟测试 job 保留原有的"提交过一次就永久锁定"防重复计费护栏，多镜头 job（真正的"重新抽卡"场景）允许在非进行中状态下重新提交
 - 验收方式做了调整：`submitShot` 会真的调用 AutoDL 付费接口，**没有用真实 job 数据做端到端提交测试**，避免误触发计费任务。验证方式：在一个隔离的临时 job（测试完已删除，未污染真实数据）上验证了 PATCH 编辑 → 写回 `request-plan.json` → 追加 `run-log.jsonl` 的完整链路；并验证了所有会在调用 AutoDL 前拦截的报错路径（镜头不存在、字段不可编辑、job 没有 `request-plan.json`）。真实一次人工提交需要你在准备付费测试时手动验证。
 
-### Phase 3 — React Flow 画布骨架
-- 引入 `autodl-video-workbench/web/`（React + TS + Vite），先只做"任务列表 + 点进去看只读详情"，对接 Phase 1 的 API
-- 现有 `dist/` 的手写版本先保留，新版本完成并验证后再替换
-- 验收：能看到 `production/jobs/*/` 的真实任务列表，点开能看到该批次的镜头节点图（只读）
+### Phase 3 — React Flow 画布骨架 ✅ 已完成 2026-09-27
+- 新增 `autodl-video-workbench/web/`：React 18 + TypeScript + Vite 5 + `@xyflow/react`（React Flow）
+- `JobList.tsx`（任务历史列表）+ `JobDetail.tsx`（React Flow 画布 + 资产/成片/操作历史侧栏）+ `ShotNode.tsx`（自定义节点），对接 Phase 1 的 `/api/jobs`、`/api/jobs/:id`
+- Vite dev server 通过 `server.proxy` 把 `/api` 转发到本机 `local-runner.mjs`（127.0.0.1:4173），开发时两个进程独立跑；`build.outDir` 指向 `../web-dist`，不会覆盖现有 `dist/`——满足决策点 4（旧版 `dist/` 保持可用并行跑）
+- 新增 `.claude/launch.json`，登记 `autodl-workbench-web` dev server 配置
+- **过程中修的两个真实 bug**（都是实测截图发现的，不是纸面设计）：
+  1. `job-store.mjs` 的 `getJobDetail()` 原本没有返回 `request-plan.json`（真正发给 AutoDL 的提示词），只返回了 `shot-plan.json` 的编辑字段——导致需求 1"点开任务能看到提示词"这条实际上没做到。已补上 `request_plan` 字段，画布点击镜头节点会显示对应的完整提示词原文。
+  2. React Flow 的 MiniMap 渲染成一个不成比例的白色方块——根因是 CSS Grid 子项没有可计算的高度（`.job-canvas` 缺少明确 `height`，父级 grid 也没设 `grid-template-rows`），React Flow 的画布容器需要明确尺寸才能正常布局。已修复。
+  3. 顺带修正节点状态显示：原来直接读 `shot-plan.json` 里静态的编辑期 `status`（永远是 `planned`），现在优先读 `run_state`/`run-log` 里真实的生成结果状态（`success`/`failed`/进行中），静态字段仅作兜底。
+- 验收（浏览器实测，非纸面）：任务列表显示全部 10 个真实批次；点开 `pair-plush-tvc-10s-20260927` 能看到 S01/S02/S03 三个节点，状态均正确显示"生成完成"；点击节点侧栏显示对应的真实 AutoDL 提示词原文；资产/成片/操作历史三个面板都是真实数据；点开没有 `shot-plan.json` 的旧批次（`canvas1-lulu-20260816`）能优雅降级显示提示文字，不报错、不崩溃
+
+> 已知遗留、不影响本阶段验收：`npm install` 报了一条 esbuild/Vite dev server 的中等严重性安全提示（只影响本地开发服务器读写权限，不影响生产构建产物），`npm audit fix --force` 会强制升级到 Vite 8（破坏性变更），本阶段未处理，留作后续可选项。
 
 ### Phase 4 — 形式模板注册机制（验证需求 3 真的可扩展）
 - 用 `formats.json` 驱动节点类型和布局，而不是硬编码

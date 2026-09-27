@@ -35,3 +35,7 @@ node_modules/
 
 # autodl-video-workbench 部署打包快照：内容与 dist/ 重复，需要时现场重新打包
 autodl-video-workbench/*.tar.gz
+
+# autodl-video-workbench/web 的 Vite 构建产物：真正的构建输出，不是源码，
+# 旧版手写 dist/ 在切换前继续保留、继续跟踪
+autodl-video-workbench/web-dist/

@@ -127,6 +127,9 @@ export async function getJobDetail(jobsRoot, jobId) {
 
   const brief = files.includes('brief.json') ? await readJsonIfExists(join(jobDir, 'brief.json')) : null;
   const shotPlan = files.includes('shot-plan.json') ? await readJsonIfExists(join(jobDir, 'shot-plan.json')) : null;
+  // The literal prompt string sent to AutoDL lives here, not in shot-plan.json
+  // (whose fields are editorial/narrative). See job-actions.mjs's same distinction.
+  const requestPlan = files.includes('request-plan.json') ? await readJsonIfExists(join(jobDir, 'request-plan.json')) : null;
   const review = files.includes('review.json') ? await readJsonIfExists(join(jobDir, 'review.json')) : null;
   const runState = await findRunStateFile(jobDir, files);
   const runLogTail = files.includes('run-log.jsonl') ? await readJsonlTail(join(jobDir, 'run-log.jsonl'), 200) : [];
@@ -137,6 +140,7 @@ export async function getJobDetail(jobsRoot, jobId) {
     format_id: inferFormatId(brief, shotPlan),
     brief,
     shot_plan: shotPlan,
+    request_plan: requestPlan,
     review,
     run_state: runState,
     run_log: runLogTail,

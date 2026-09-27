@@ -1,0 +1,52 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, "Segoe UI", sans-serif; background: #0b1017; color: #d9e4f1; }
+#root { height: 100vh; }
+
+.job-list { padding: 32px 40px; max-width: 900px; margin: 0 auto; }
+.job-list h1 { margin: 0 0 4px; font-size: 22px; }
+.job-list-hint { color: #8294aa; font-size: 13px; margin: 0 0 20px; }
+.job-list ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.job-card { background: #151f2e; border: 1px solid #26344a; border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: border-color .15s; }
+.job-card:hover { border-color: #6d8cad; }
+.job-card-title { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+.job-card-meta { display: flex; gap: 10px; align-items: center; font-size: 11px; color: #8294aa; flex-wrap: wrap; }
+.status-pill, .format-pill { padding: 3px 8px; border-radius: 6px; background: #223047; color: #b9c9de; }
+.status-pill.status-success { background: #1e3a2c; color: #8fe3bb; }
+.status-pill.status-failed { background: #3a1e1e; color: #f0a2a2; }
+.status-pill.status-running { background: #34361e; color: #e0d982; }
+.job-card-date { margin-left: auto; }
+
+.job-detail { display: flex; flex-direction: column; height: 100%; }
+.job-detail-toolbar { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #1c2635; }
+.job-detail-toolbar button { background: #1c2635; border: 1px solid #2c3a52; color: #d9e4f1; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+.job-detail-toolbar h2 { font-size: 15px; margin: 0; flex: 1; }
+.job-detail-body { flex: 1; display: grid; grid-template-columns: 1fr 320px; grid-template-rows: 1fr; min-height: 0; }
+.job-canvas { position: relative; height: 100%; min-height: 0; background: #0b1017; }
+.job-canvas .react-flow__minimap { background: #0e1622; }
+.job-side-panel { border-left: 1px solid #1c2635; padding: 16px 18px; overflow-y: auto; }
+.job-side-panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #8294aa; margin: 18px 0 8px; }
+.job-side-panel section:first-child h3 { margin-top: 0; }
+.asset-group h4 { font-size: 11px; color: #b9c9de; margin: 8px 0 4px; }
+.asset-group ul { list-style: none; margin: 0; padding: 0; font-size: 11px; color: #8294aa; }
+.asset-group li { padding: 2px 0; overflow-wrap: anywhere; }
+.empty-hint { color: #556577; font-size: 12px; padding: 20px; }
+.prompt-text { font-size: 11px; line-height: 1.6; color: #becde0; background: #0e1724; border: 1px solid #26344a; border-radius: 8px; padding: 10px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 220px; overflow-y: auto; }
+
+.run-log-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 11px; }
+.run-log-list li { display: flex; gap: 6px; align-items: center; color: #8294aa; }
+.log-time { font-variant-numeric: tabular-nums; }
+.log-shot { color: #b9c9de; }
+.log-actor-badge { background: #3a2c1e; color: #f0c98a; border-radius: 4px; padding: 1px 6px; margin-left: auto; }
+
+.shot-node { width: 220px; background: #151f2e; border: 1px solid #26344a; border-radius: 12px; padding: 12px 14px; font-size: 12px; }
+.shot-node-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.shot-node-status { font-size: 10px; padding: 2px 6px; border-radius: 5px; background: #223047; color: #b9c9de; }
+.shot-node.status-success .shot-node-status { background: #1e3a2c; color: #8fe3bb; }
+.shot-node.status-failed .shot-node-status { background: #3a1e1e; color: #f0a2a2; }
+.shot-node-purpose { margin: 0 0 6px; color: #b9c9de; line-height: 1.4; }
+.shot-node-dialogue { margin: 0 0 6px; color: #8294aa; font-style: italic; }
+.shot-node-refs { margin: 0; color: #556577; font-size: 10px; }
+
+.panel-error { padding: 20px; color: #f0a2a2; }
+.panel-loading { padding: 20px; color: #8294aa; }
