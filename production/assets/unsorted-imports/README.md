@@ -1,15 +1,7 @@
 # 待分类素材
 
-以下文件原先散落在仓库外（`E:\videoC` 根目录）或仓库根目录，未归属任何批次/类目，现整体归档到这里防止丢失。请按实际用途手动分拣到 `production/assets/{characters,products,vehicle-references,material-references}/` 或具体的 `production/jobs/<批次>/assets/` 下，分拣完成后可删除本目录。
+- `护肩产品参考图-4K.png`：仓库外散落文件，生成时间 2026-09-27，文件名指向"参考图"而非生成图，需人工确认它是实拍参考照片还是某次生图产出，再归到 `production/assets/material-references/`（实拍参考）或某个 `production/outputs/<批次>/`（生图产出）。
 
-- `car-seatbelt-puppy-plush-1x1.png`
-- `cream-car-puppy-seatbelt-scene-1x1.png`
-- `douyin-kv-cream-car-symmetric-1x1.png`
-- `douyin-kv-golden-hour-editorial-1x1.png`
-- `white-rabbit-driver-corrected-install-1x1.png`
-- `white-rabbit-driver-install-corrected-v2-1x1.png`
-- `white-rabbit-driver-pad-length-corrected-1x1.png`
-- `white-rabbit-driver-pad-top-shortened-1x1.png`
-- `white-rabbit-lhd-driver-cabin-corrected-1x1.png`
-- `护肩产品参考图-4K.png`
-- `水豚噜噜-礼盒替换-9x16.png`
+此前的 10 张探索性生图已按产品归档：
+- `mua` 白兔/米色兔安全带护肩套（2026-09-13）→ [production/outputs/mua-white-rabbit-seatbelt-pair-20260913/](../../outputs/mua-white-rabbit-seatbelt-pair-20260913/)
+- 水豚噜噜礼盒场景图（2026-08-17）→ [production/outputs/douyin-shuitun-lulu-giftbox-9x16-20260817/](../../outputs/douyin-shuitun-lulu-giftbox-9x16-20260817/)
