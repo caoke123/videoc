@@ -1,0 +1,35 @@
+.tvc-shell .workspace{grid-template-rows:86px 52px minmax(0,1fr) 45px}
+.tvc-topbar{padding-inline:24px}
+.project-switcher{cursor:default}
+.shot-navigation .nav-item{gap:9px;font-size:12px}
+.shot-navigation .nav-item>span{font-size:10px;color:#8d9fb5;min-width:20px}
+.archive-link{display:block;margin:8px 8px 0;color:#a9c4e9;text-decoration:none;font-size:12px;line-height:1.5}
+.archive-link:hover{color:#e7fa83}
+.tvc-tabs{display:flex;align-items:center;gap:8px;padding:0 18px;background:#0d1420;border-bottom:1px solid #263247;overflow-x:auto}
+.shot-tab{font:600 12px Inter,"Microsoft YaHei",sans-serif;white-space:nowrap;border:1px solid #2d3c51;border-radius:8px;background:#172131;color:#a8bad2;padding:8px 12px;cursor:pointer}
+.shot-tab span{margin-left:7px;font-size:10px;color:#8d9db1;font-weight:400}
+.shot-tab.active{color:#edffd7;border-color:#8bc46e;background:#26372b}
+.shot-tab.active span{color:#c8e7ba}
+.source-grid.single{grid-template-columns:1fr}
+.source-grid.single img{height:190px}
+.voice-note{display:block;margin-top:3px;color:#8e9eb5}
+.audio-visual strong{font-size:13px}
+.final-view{overflow:auto;background:#0c1420;padding:26px 32px}
+.final-view[hidden]{display:none}
+.final-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:24px}
+.final-heading h2{font-size:24px;margin:2px 0 8px}
+.final-heading p:last-child{font-size:12px;color:#9eafc6;line-height:1.6;margin:0}
+.final-heading>span{font-size:11px;border:1px solid #526e55;color:#b9e8b8;border-radius:20px;padding:7px 10px;white-space:nowrap}
+.final-grid{display:grid;grid-template-columns:minmax(290px,480px) minmax(280px,1fr);gap:24px;max-width:1100px}
+.final-player{background:#152131;border:1px solid #35465b;border-radius:15px;padding:16px}
+.final-player .result-placeholder{height:560px;white-space:pre-line}
+.final-player video{width:100%;max-height:600px;object-fit:contain;background:#080d14;border-radius:10px}
+.final-player video[hidden],#finalDownload[hidden]{display:none}
+#finalDownload{display:block;margin-top:15px;text-align:center;padding:12px;background:#e5ff74;color:#17200d;text-decoration:none;font-weight:800;border-radius:8px;font-size:12px}
+.final-shot-list{display:grid;gap:11px;align-content:start}
+.final-shot{display:flex;gap:13px;align-items:center;width:100%;border:1px solid #33445a;border-radius:11px;padding:10px;background:#182335;color:#e3edfa;text-align:left;cursor:pointer}
+.final-shot img{width:54px;height:72px;object-fit:contain;background:white;border-radius:5px}
+.final-shot div{display:grid;gap:5px}
+.final-shot strong{font-size:13px}.final-shot span{font-size:11px;color:#9eacc2}
+@media(max-width:850px){.tvc-topbar h1{font-size:16px}.tvc-topbar .ghost{display:none}.final-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.tvc-tabs{padding:10px}.tvc-shell .workspace{grid-template-rows:auto auto minmax(560px,1fr) auto}.final-view{padding:16px}}

@@ -1,78 +1,277 @@
-const nodeInfo = {
-  reference: { kicker: 'REFERENCE ASSET', title: '水豚噜噜护肩套', copy: '产品身份图。用于锁定形状、粉色主体、黑色织物纹理与安装比例。', rows: [['文件', 'product-front.png'], ['用途', '图 1 · 产品身份'], ['状态', '已批准']], actions: ['替换参考图', '在新镜头复用'] },
-  audio: { kicker: 'AUDIO REFERENCE', title: 'S01-driver-line.wav', copy: '用于引导演员口型和节奏。最终配音与剪辑由人工在剪映中完成。', rows: [['时长', '4.0 秒'], ['用途', '音频 1 · 口播参考'], ['状态', '已连接']], actions: ['替换音频', '查看口播文案'] },
-  prompt: { kicker: 'SHOT CONTRACT', title: 'S01 · 开心通勤开场', copy: '镜头任务、人物动作、产品真实性和镜头运动都保存在这里。Codex 可读取并改写，但不会直接提交付费请求。', rows: [['画幅', '9:16'], ['时长', '4 秒'], ['原生声音', '需要']], actions: ['编辑镜头合同', '复制提示词'] },
-  generation: { kicker: 'GENERATION NODE', title: 'AutoDL H3 六图三音频', copy: '此节点只指向 minimax_h3_z0903。实际请求由本地执行器读取，不会把 Token 发送到浏览器或写入项目文件。', rows: [['工作流', 'minimax_h3_z0903'], ['图像槽', '1 / 6 已连接'], ['音频槽', '1 / 3 已连接'], ['参数', '4 秒 · 768p 竖 · 2026']], actions: ['复制请求计划', '打开生成预检'] },
-  result: { kicker: 'RESULT SLOT', title: '候选结果', copy: '生成成功后保存 MP4、任务 ID、参数快照和素材指纹。筛选通过的片段再由人工导入剪映。', rows: [['状态', '未生成'], ['输出', '等待 AutoDL 结果'], ['自动剪映导出', '关闭']], actions: ['查看运行记录'] }
-};
-const content = document.querySelector('#inspectorContent');
-const toast = document.querySelector('#toast');
-const viewport = document.querySelector('#viewport');
-const stage = document.querySelector('#stage');
-const lines = document.querySelector('.connections');
-let active = 'reference', scale = 1, pan = { x: 0, y: 0 }, moving = null, draggingNode = null;
+const $ = selector => document.querySelector(selector);
+const viewport = $('#viewport');
+const stage = $('#stage');
+const lines = $('.connections');
+const toast = $('#toast');
+const nodes = [...document.querySelectorAll('.node')];
+let project = null;
+let health = null;
+let scale = 1;
+let pan = { x: 0, y: 0 };
+let moving = null;
+let draggingNode = null;
+let suppressNodeClick = false;
+let pollTimer = null;
 
-function renderInspector(key) {
-  const data = nodeInfo[key];
-  content.innerHTML = `<p class="detail-kicker">${data.kicker}</p><h2 class="detail-title">${data.title}</h2><p class="detail-copy">${data.copy}</p><div class="detail-list">${data.rows.map(([a,b]) => `<div class="detail-row"><span>${a}</span><b>${b}</b></div>`).join('')}</div><div class="detail-actions">${data.actions.map(a => `<button data-action="${a}">${a} <span style="float:right">→</span></button>`).join('')}</div>`;
-  document.querySelectorAll('.node').forEach(n => n.classList.toggle('selected', n.dataset.node === key));
+function notify(message) {
+  toast.textContent = message;
+  toast.classList.add('show');
+  window.setTimeout(() => toast.classList.remove('show'), 3200);
 }
-function applyTransform(){ const t = `translate(${pan.x}px,${pan.y}px) scale(${scale})`; stage.style.transform = t; lines.style.transform = t; document.querySelector('#zoomValue').textContent = `${Math.round(scale*100)}%`; }
-function renderConnections(){
+
+function applyTransform() {
+  const transform = `translate(${pan.x}px, ${pan.y}px) scale(${scale})`;
+  stage.style.transform = transform;
+  lines.style.transform = transform;
+  $('#zoomValue').textContent = `${Math.round(scale * 100)}%`;
+}
+
+function fitCanvas() {
+  const left = Math.min(...nodes.map(node => node.offsetLeft));
+  const top = Math.min(...nodes.map(node => node.offsetTop));
+  const right = Math.max(...nodes.map(node => node.offsetLeft + node.offsetWidth));
+  const bottom = Math.max(...nodes.map(node => node.offsetTop + node.offsetHeight));
+  const width = right - left;
+  const height = bottom - top;
+  scale = Math.max(.55, Math.min(1, (viewport.clientWidth - 58) / width, (viewport.clientHeight - 100) / height));
+  pan = {
+    x: (viewport.clientWidth - width * scale) / 2 - left * scale,
+    y: (viewport.clientHeight - height * scale) / 2 - top * scale
+  };
+  applyTransform();
+}
+
+function renderConnections() {
   document.querySelectorAll('.connections path').forEach(path => {
     const [fromNode, fromPort] = path.dataset.from.split(':');
     const [toNode, toPort] = path.dataset.to.split(':');
-    const source = document.querySelector(`.node[data-node="${fromNode}"] .node-port.${fromPort}`);
-    const target = document.querySelector(`.node[data-node="${toNode}"] .node-port.${toPort}`);
+    const source = $(`.node[data-node="${fromNode}"] .node-port.${fromPort}`);
+    const target = $(`.node[data-node="${toNode}"] .node-port.${toPort}`);
     if (!source || !target) return;
     const sx = source.parentElement.offsetLeft + source.offsetLeft + source.offsetWidth / 2;
     const sy = source.parentElement.offsetTop + source.offsetTop + source.offsetHeight / 2;
     const tx = target.parentElement.offsetLeft + target.offsetLeft + target.offsetWidth / 2;
     const ty = target.parentElement.offsetTop + target.offsetTop + target.offsetHeight / 2;
-    const bend = Math.max(56, Math.abs(tx - sx) * .42);
-    path.setAttribute('d', `M ${sx} ${sy} C ${sx + bend} ${sy}, ${tx - bend} ${ty}, ${tx} ${ty}`);
+    const dx = tx - sx;
+    const dy = ty - sy;
+    if (Math.abs(dy) > Math.abs(dx) * 1.2) {
+      const bend = Math.max(65, Math.abs(dy) * .45);
+      path.setAttribute('d', `M ${sx} ${sy} C ${sx} ${sy + bend}, ${tx} ${ty - bend}, ${tx} ${ty}`);
+    } else {
+      const bend = Math.max(55, Math.abs(dx) * .42);
+      path.setAttribute('d', `M ${sx} ${sy} C ${sx + bend} ${sy}, ${tx - bend} ${ty}, ${tx} ${ty}`);
+    }
   });
 }
-function notify(message){ toast.textContent = message; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 2500); }
-function openDialog(){ document.querySelector('#runDialog').showModal(); }
-renderInspector(active); applyTransform(); renderConnections();
 
-document.querySelectorAll('.node').forEach(node => {
-  node.addEventListener('click', (event) => { active = node.dataset.node; renderInspector(active); event.stopPropagation(); });
-  node.addEventListener('pointerdown', (event) => {
-    if (event.target.closest('button')) return;
-    draggingNode = { node, startX: event.clientX, startY: event.clientY, left: node.offsetLeft, top: node.offsetTop, moved: false };
+function focusNode(name) {
+  const node = $(`.node[data-node="${name}"]`);
+  if (!node) return;
+  pan.x = viewport.clientWidth / 2 - (node.offsetLeft + node.offsetWidth / 2) * scale;
+  pan.y = viewport.clientHeight / 2 - (node.offsetTop + node.offsetHeight / 2) * scale;
+  applyTransform();
+  nodes.forEach(item => item.classList.toggle('selected', item === node));
+}
+
+function renderInspector(name) {
+  const labels = { reference: '产品原图', audio: '音频参考', prompt: '分镜与提示词', generation: 'AutoDL 视频生成', result: '最终视频' };
+  const details = {
+    reference: '黄橙款与粉色款分别绑定各自的原始图片。黑色卷曲护肩套、玩偶比例和配件组合必须保持一致。',
+    audio: '工作流要求第一个音频槽。本次使用 AutoDL 官方静音参考，视频中没有口播。',
+    prompt: '画布中显示的是这次实际提交给 AutoDL 的完整英文提示词，滚动提示词区域即可阅读全部内容。',
+    generation: '这里显示工作流 ID、任务 ID、排队或生成状态及运行耗时。绿色跑马灯表示正在生成。',
+    result: '视频文件保存在本机项目中。播放、放大和下载均读取同一个 MP4 文件。'
+  };
+  $('#inspectorContent').innerHTML = `<p class="detail-kicker">CANVAS NODE</p><h2 class="detail-title">${labels[name]}</h2><p class="detail-copy">${details[name]}</p>`;
+  $('#inspector').classList.add('open');
+}
+
+function setProcessStep(status) {
+  const steps = [...document.querySelectorAll('#processSteps span')];
+  const completedCount = status === 'SUCCESS' ? 4 : status === 'RUNNING' ? 2 : status === 'QUEUED' ? 1 : 0;
+  const current = status === 'QUEUED' ? 1 : status === 'RUNNING' ? 2 : -1;
+  steps.forEach((step, index) => {
+    step.classList.toggle('done', index < completedCount || status === 'SUCCESS');
+    step.classList.toggle('current', index === current);
+  });
+}
+
+function renderProject() {
+  if (!project) return;
+  const { request, sources, audio, run } = project;
+  $('#yellowImage').src = sources[0].url;
+  $('#yellowLink').href = sources[0].url;
+  $('#pinkImage').src = sources[1].url;
+  $('#pinkLink').href = sources[1].url;
+  $('#audioPlayer').src = audio.url;
+  $('#promptContent').textContent = request.prompt;
+  $('#taskId').textContent = run.taskId || '尚未提交';
+  const status = run.status;
+  const generation = $('.generation-node');
+  generation.classList.toggle('is-running', status === 'QUEUED' || status === 'RUNNING');
+  generation.classList.toggle('is-success', status === 'SUCCESS');
+  generation.classList.toggle('is-failed', status === 'FAILED' || status === 'ERROR');
+  setProcessStep(status);
+
+  const labels = { PLANNED: '待提交', QUEUED: '排队中', RUNNING: '正在生成', SUCCESS: '生成完成', FAILED: '生成失败', ERROR: '状态异常' };
+  const label = labels[status] || status;
+  $('#generationBadge').textContent = label;
+  $('#generationStatus').textContent = label;
+  $('#generationTime').textContent = run.elapsedSeconds == null ? (run.submittedAt ? '已提交，等待进度' : '素材与提示词已就绪') : `AutoDL 运行 ${run.elapsedSeconds} 秒`;
+  $('#topStatus').textContent = `AutoDL · ${label}`;
+  $('#topStatus').className = `top-status ${status === 'SUCCESS' ? 'success' : ['QUEUED','RUNNING'].includes(status) ? 'running' : ''}`;
+  $('#footerStatus').textContent = run.videoReady ? '视频已保存到本机 · 等待人工审片' : `任务状态：${label}`;
+  $('#resultBadge').textContent = run.videoReady ? 'MP4 已保存' : label;
+
+  const placeholder = $('#resultPlaceholder');
+  const video = $('#resultVideo');
+  const actions = $('#resultActions');
+  if (run.videoReady) {
+    placeholder.hidden = true;
+    video.hidden = false;
+    actions.hidden = false;
+    $('#reviewNote').hidden = false;
+    if (video.getAttribute('src') !== run.videoUrl) video.src = run.videoUrl;
+    video.poster = run.posterUrl || '';
+    $('#downloadVideo').href = run.downloadUrl;
+    $('#largeDownload').href = run.downloadUrl;
+    $('#resultMeta').textContent = '480 × 864 · 3.05 秒 · 点击播放或下载';
+    $('#openRun').innerHTML = '查看视频 <span>→</span>';
+  } else {
+    placeholder.hidden = false;
+    placeholder.textContent = ['QUEUED','RUNNING'].includes(status) ? `${label}\n结果准备中…` : status === 'PLANNED' ? '等待生成视频' : run.error || '尚无可播放结果';
+    actions.hidden = true;
+    video.hidden = true;
+    $('#reviewNote').hidden = true;
+    $('#openRun').innerHTML = status === 'PLANNED' ? '提交测试 <span>→</span>' : '查看任务 <span>→</span>';
+  }
+  renderConnections();
+}
+
+async function loadProject() {
+  try {
+    const [projectResponse, healthResponse] = await Promise.all([fetch('/api/project', { cache: 'no-store' }), fetch('/api/health', { cache: 'no-store' })]);
+    if (!projectResponse.ok) throw new Error('本机项目读取失败');
+    project = await projectResponse.json();
+    health = healthResponse.ok ? await healthResponse.json() : null;
+    renderProject();
+    if (['QUEUED','RUNNING'].includes(project.run.status)) schedulePoll();
+  } catch (error) {
+    $('#promptContent').textContent = '本机执行器未连接。请确认 127.0.0.1:4173 正在运行。';
+    $('#generationStatus').textContent = '连接失败';
+    $('#resultPlaceholder').textContent = '无法读取本机结果';
+    $('#topStatus').textContent = '本机执行器未连接';
+    console.error(error);
+  }
+}
+
+function schedulePoll() {
+  if (pollTimer) return;
+  pollTimer = window.setInterval(async () => {
+    await loadProject();
+    if (!project || !['QUEUED','RUNNING'].includes(project.run.status)) { clearInterval(pollTimer); pollTimer = null; }
+  }, 5000);
+}
+
+function openRunDialog() {
+  if (project?.run.videoReady) return focusNode('result');
+  if (project && ['QUEUED','RUNNING'].includes(project.run.status)) return focusNode('generation');
+  const alreadySubmitted = Boolean(health?.alreadySubmitted || project?.run.taskId);
+  $('#tokenState').textContent = health?.comfyuiTokenConfigured ? '✓ 本机 ComfyUI Token 已就绪' : '○ 需要本机 ComfyUI Token';
+  $('#submitStatus').textContent = alreadySubmitted ? '此测试已提交过一次，已锁定再次提交。' : health?.comfyuiTokenConfigured ? '准备就绪。点击后会提交一次 AutoDL 任务。' : '请在本机配置 AUTODL_COMFYUI_TOKEN。';
+  $('#savePlan').disabled = alreadySubmitted || !health?.comfyuiTokenConfigured;
+  $('#runDialog').showModal();
+}
+
+async function submitSmokeTest() {
+  if (health?.alreadySubmitted || project?.run.taskId) return;
+  const button = $('#savePlan');
+  button.disabled = true;
+  button.textContent = '提交中…';
+  try {
+    const response = await fetch('/api/submit-smoke-test', { method: 'POST' });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || '提交失败');
+    $('#runDialog').close();
+    notify(`任务已提交：${result.taskId}`);
+    await loadProject();
+    focusNode('generation');
+  } catch (error) {
+    $('#submitStatus').textContent = error.message;
+    button.disabled = false;
+  } finally { button.textContent = '提交 1 次测试'; }
+}
+
+nodes.forEach(node => {
+  node.addEventListener('click', event => {
+    if (suppressNodeClick) { suppressNodeClick = false; return; }
+    if (event.target.closest('a,button,video,audio,.prompt-content')) return;
+    nodes.forEach(item => item.classList.toggle('selected', item === node));
+    renderInspector(node.dataset.node);
+  });
+  node.addEventListener('pointerdown', event => {
+    if (event.target.closest('a,button,video,audio,.prompt-content')) return;
+    draggingNode = { node, x: event.clientX, y: event.clientY, left: node.offsetLeft, top: node.offsetTop, moved: false };
     node.setPointerCapture(event.pointerId);
     event.stopPropagation();
   });
-  node.addEventListener('pointermove', (event) => {
-    if (!draggingNode || draggingNode.node !== node) return;
-    const dx = (event.clientX - draggingNode.startX) / scale;
-    const dy = (event.clientY - draggingNode.startY) / scale;
-    if (Math.abs(dx) + Math.abs(dy) > 3) draggingNode.moved = true;
-    node.style.left = `${Math.max(20, draggingNode.left + dx)}px`;
-    node.style.top = `${Math.max(20, draggingNode.top + dy)}px`;
+  node.addEventListener('pointermove', event => {
+    if (draggingNode?.node !== node) return;
+    const dx = (event.clientX - draggingNode.x) / scale;
+    const dy = (event.clientY - draggingNode.y) / scale;
+    if (Math.abs(dx) + Math.abs(dy) > 4) draggingNode.moved = true;
+    node.style.left = `${Math.max(18, draggingNode.left + dx)}px`;
+    node.style.top = `${Math.max(18, draggingNode.top + dy)}px`;
     renderConnections();
   });
-  node.addEventListener('pointerup', (event) => {
+  node.addEventListener('pointerup', event => {
     if (draggingNode?.node !== node) return;
-    const didMove = draggingNode.moved;
+    suppressNodeClick = draggingNode.moved;
     draggingNode = null;
-    if (didMove) notify('节点位置已更新');
     node.releasePointerCapture?.(event.pointerId);
   });
 });
-content.addEventListener('click', e => { const action = e.target.closest('button')?.dataset.action; if (!action) return; if (action.includes('预检')) openDialog(); else if (action.includes('复制')) { navigator.clipboard?.writeText(JSON.stringify({workflow_id:'minimax_h3_z0903',duration:4,resolution:'768p竖',seed:2026},null,2)); notify('请求计划已复制（不含令牌）'); } else notify(`${action}：此原型已记录操作入口`); });
-document.querySelector('#openRun').addEventListener('click', openDialog);
-document.querySelector('#closeDialog').addEventListener('click', () => document.querySelector('#runDialog').close());
-document.querySelector('#savePlan').addEventListener('click', () => { document.querySelector('#runDialog').close(); notify('已保存 z0903 生成计划；尚未提交 AutoDL'); });
-document.querySelector('#closeInspector').addEventListener('click', () => document.querySelector('#inspector').style.display='none');
-document.querySelector('#zoomIn').addEventListener('click', () => { scale=Math.min(1.4,scale+.1); applyTransform(); });
-document.querySelector('#zoomOut').addEventListener('click', () => { scale=Math.max(.55,scale-.1); applyTransform(); });
-document.querySelector('#fitCanvas').addEventListener('click', () => { scale=.78; pan={x:12,y:45}; applyTransform(); });
-document.querySelector('#addShot').addEventListener('click', () => { notify('已建立 S04 空镜头合同；接下来可由 Codex 填入素材与提示词'); });
-document.querySelectorAll('.mode').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.mode').forEach(b=>b.classList.remove('active')); button.classList.add('active'); notify(`已切换为${button.textContent}工作方式`); }));
-viewport.addEventListener('wheel', (event) => { event.preventDefault(); scale = Math.min(1.4, Math.max(.55, scale + (event.deltaY < 0 ? .06 : -.06))); applyTransform(); }, {passive:false});
-viewport.addEventListener('pointerdown', event => { if (event.target.closest('.node')) return; moving={x:event.clientX,y:event.clientY,px:pan.x,py:pan.y}; viewport.setPointerCapture(event.pointerId); viewport.classList.add('grabbing'); });
-viewport.addEventListener('pointermove', event => { if(!moving)return; pan.x=moving.px+event.clientX-moving.x;pan.y=moving.py+event.clientY-moving.y;applyTransform(); });
-viewport.addEventListener('pointerup', () => { moving=null;viewport.classList.remove('grabbing'); });
+
+viewport.addEventListener('wheel', event => {
+  if (event.target.closest('.prompt-content')) return;
+  event.preventDefault();
+  scale = Math.min(1.35, Math.max(.5, scale + (event.deltaY < 0 ? .06 : -.06)));
+  applyTransform();
+}, { passive: false });
+viewport.addEventListener('pointerdown', event => {
+  if (event.target.closest('.node')) return;
+  moving = { x: event.clientX, y: event.clientY, panX: pan.x, panY: pan.y };
+  viewport.setPointerCapture(event.pointerId);
+  viewport.classList.add('grabbing');
+});
+viewport.addEventListener('pointermove', event => {
+  if (!moving) return;
+  pan.x = moving.panX + event.clientX - moving.x;
+  pan.y = moving.panY + event.clientY - moving.y;
+  applyTransform();
+});
+viewport.addEventListener('pointerup', () => { moving = null; viewport.classList.remove('grabbing'); });
+
+$('#fitCanvas').addEventListener('click', fitCanvas);
+$('#zoomIn').addEventListener('click', () => { scale = Math.min(1.35, scale + .1); applyTransform(); });
+$('#zoomOut').addEventListener('click', () => { scale = Math.max(.5, scale - .1); applyTransform(); });
+$('#openRun').addEventListener('click', openRunDialog);
+$('#closeDialog').addEventListener('click', () => $('#runDialog').close());
+$('#savePlan').addEventListener('click', submitSmokeTest);
+$('#closeInspector').addEventListener('click', () => $('#inspector').classList.remove('open'));
+$('#previewVideo').addEventListener('click', () => { $('#largeVideo').src = project.run.videoUrl; $('#previewDialog').showModal(); });
+$('#closePreview').addEventListener('click', () => { $('#largeVideo').pause(); $('#previewDialog').close(); });
+$('#previewDialog').addEventListener('close', () => $('#largeVideo').pause());
+document.querySelectorAll('.nav-item').forEach((button, index) => button.addEventListener('click', () => {
+  if (index === 0) fitCanvas();
+  if (index === 1) focusNode('prompt');
+  if (index === 2) focusNode('result');
+  if (index === 3) focusNode('reference');
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item === button));
+}));
+document.querySelectorAll('.mode').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.mode').forEach(item => item.classList.toggle('active', item === button)); notify(`已切换为${button.textContent}工作方式`); }));
+window.addEventListener('resize', fitCanvas);
+
+renderConnections();
+window.requestAnimationFrame(fitCanvas);
+loadProject();

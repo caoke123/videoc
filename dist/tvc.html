@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>镜场 · 双款 TVC</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./canvas-fixes.css" />
+    <link rel="stylesheet" href="./visual-nodes.css" />
+    <link rel="stylesheet" href="./tvc.css" />
+  </head>
+  <body>
+    <main class="app-shell tvc-shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">▶</span><span>镜场</span><small>WORKBENCH</small></div>
+        <div class="project-switcher"><span class="project-dot"></span><span>双款玩偶 · 10 秒 TVC</span></div>
+        <nav aria-label="项目导航" class="shot-navigation">
+          <button class="nav-item active" data-shot="S01"><span>01</span> 黄橙款 <kbd>0–3s</kbd></button>
+          <button class="nav-item" data-shot="S02"><span>02</span> 粉色款 <kbd>3–6s</kbd></button>
+          <button class="nav-item" data-shot="S03"><span>03</span> 双款同框 <kbd>6–10s</kbd></button>
+          <button class="nav-item" data-shot="FINAL"><span>▷</span> 10 秒预览 <kbd>合成</kbd></button>
+        </nav>
+        <div class="sidebar-section"><p>画布项目</p><a class="archive-link" href="./index.html">查看 480p 测试记录 →</a></div>
+        <div class="side-footer"><div class="local-status"><span></span> 本机生成记录</div><p>三个镜头各自锁定参考图。视频完成后可在节点中预览和下载。</p></div>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar tvc-topbar">
+          <div><p class="eyebrow">PRODUCT TVC · AUTO DL H3</p><h1>通勤双搭子 · 10 秒 TVC</h1></div>
+          <div class="top-actions"><span class="top-status" id="overallStatus">读取任务中…</span><button class="ghost" id="fitCanvas">适配画布</button><button class="run-button" id="finalShortcut">查看合成 <span>→</span></button></div>
+        </header>
+        <section class="tvc-tabs" aria-label="分镜选择">
+          <button class="shot-tab active" data-shot="S01">S01 黄橙款 <span id="tabStatusS01">读取中</span></button>
+          <button class="shot-tab" data-shot="S02">S02 粉色款 <span id="tabStatusS02">读取中</span></button>
+          <button class="shot-tab" data-shot="S03">S03 双款同框 <span id="tabStatusS03">读取中</span></button>
+          <button class="shot-tab" data-shot="FINAL">10 秒预览 <span id="tabStatusFinal">待合成</span></button>
+        </section>
+
+        <section class="canvas-wrap" id="shotCanvas" aria-label="TVC 镜头画布">
+          <div class="canvas-help"><span class="grid-dot"></span><span id="canvasHint">产品原图 → 分镜提示词 → AutoDL → 镜头视频</span></div>
+          <div class="zoom-controls"><button id="zoomOut" aria-label="缩小">−</button><output id="zoomValue">100%</output><button id="zoomIn" aria-label="放大">＋</button></div>
+          <div class="canvas-viewport" id="viewport">
+            <svg class="connections" viewBox="0 0 1200 940" preserveAspectRatio="none" aria-hidden="true">
+              <path data-from="reference:out" data-to="prompt:p1" />
+              <path data-from="audio:out" data-to="prompt:p2" />
+              <path data-from="prompt:out" data-to="generation:in" />
+              <path data-from="generation:out" data-to="result:in" />
+            </svg>
+            <div class="canvas-stage" id="stage">
+              <article class="node asset-node selected" data-node="reference" style="left:40px;top:90px">
+                <div class="node-head"><span class="node-icon image">▧</span><span>产品原图</span><span class="node-tag" id="sourceCount">1 张</span></div>
+                <div class="source-grid" id="sourceGrid"></div>
+                <strong id="sourceTitle">读取产品中…</strong><small>点击图片可查看原始大图</small>
+                <div class="lock-summary"><span>材质纹路</span><span>原图比例</span><span>配件组合</span></div>
+                <div class="node-port out"></div>
+              </article>
+              <article class="node asset-node audio-node" data-node="audio" style="left:40px;top:510px">
+                <div class="node-head"><span class="node-icon audio">⌁</span><span>声音与台词</span><span class="node-tag">原生音频</span></div>
+                <div class="audio-visual"><span class="audio-symbol">♫</span><div><strong id="voiceLine">读取台词中…</strong><small>同一普通话女声 · 画外音</small></div></div>
+                <small class="voice-note">H3 生成音频作为候选；最终配音以人工审片和外部配音为准。</small>
+                <div class="node-port out"></div>
+              </article>
+              <article class="node prompt-node" data-node="prompt" style="left:390px;top:90px">
+                <div class="node-head"><span class="node-icon prompt">✦</span><span>分镜与提示词</span><span class="node-tag" id="promptShotId">S01</span></div>
+                <strong id="shotTitle">读取分镜中…</strong>
+                <div class="shot-summary" id="shotSummary">读取镜头动作中…</div>
+                <div class="node-meta"><span id="shotResolution">768p → 720p</span><span id="shotDuration">3 秒</span><span>9:16</span></div>
+                <div class="prompt-label">提交给 AutoDL 的完整提示词</div>
+                <div class="prompt-content" id="promptContent" tabindex="0">读取中…</div>
+                <div class="prompt-lock"><b>产品身份锁定</b><span>不改变织物纹路</span><span>比例稳定</span><span>两款不混搭</span></div>
+                <div class="node-port in p1"></div><div class="node-port in p2"></div><div class="node-port out"></div>
+              </article>
+              <article class="node generation-node" data-node="generation" style="left:780px;top:90px">
+                <svg class="running-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="98" height="98" rx="3" /></svg>
+                <div class="node-head"><span class="node-icon api">↗</span><span>AutoDL 视频生成</span><span class="node-tag lime" id="generationBadge">读取中</span></div>
+                <strong>MiniMax H3 六图三音频</strong><small>minimax_h3_z0903</small>
+                <div class="slots"><span id="referenceSlot">参考图 1 / 6</span><span>音频 1 / 3</span></div>
+                <div class="generation-status" aria-live="polite"><span class="status-orb"></span><div><b id="generationStatus">读取任务中…</b><small id="generationTime">等待状态</small></div></div>
+                <div class="process-steps" id="processSteps"><span>素材</span><span>排队</span><span>生成</span><span>保存</span></div>
+                <div class="task-id">任务 ID <code id="taskId">—</code></div>
+                <div class="node-meta"><span>768p 竖</span><span id="generationDuration">3 秒</span><span id="seedDisplay">Seed 固定</span></div>
+                <div class="node-port in"></div><div class="node-port out"></div>
+              </article>
+              <article class="node result-node" data-node="result" style="left:780px;top:465px">
+                <div class="node-head"><span class="node-icon result">▷</span><span>镜头结果</span><span class="node-tag muted" id="resultBadge">读取中</span></div>
+                <div class="result-placeholder" id="resultPlaceholder">正在查询 AutoDL 任务…</div>
+                <video id="resultVideo" controls playsinline preload="metadata" hidden aria-label="当前分镜视频预览"></video>
+                <div class="result-actions" id="resultActions" hidden><button type="button" id="previewVideo">放大预览</button><a id="downloadVideo" href="#" download>下载镜头 MP4 ↓</a></div>
+                <small id="resultMeta">完成后可在此播放与下载</small>
+                <div class="node-port in"></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="final-view" id="finalView" hidden>
+          <div class="final-heading"><div><p class="eyebrow">REVIEW ASSEMBLY</p><h2>10 秒合成预览</h2><p>3 秒黄橙款 → 3 秒粉色款 → 4 秒双款同框。候选片段需审片后再确定最终版本。</p></div><span id="finalBadge">待合成</span></div>
+          <div class="final-grid"><div class="final-player"><div class="result-placeholder" id="finalPlaceholder">三个镜头生成完成后提供合成预览</div><video id="finalVideo" controls playsinline preload="metadata" hidden aria-label="10 秒 TVC 合成预览"></video><a id="finalDownload" href="#" download hidden>下载 720 × 1280 合成 MP4 ↓</a></div><div class="final-shot-list" id="finalShotList"></div></div>
+        </section>
+
+        <section class="bottom-strip"><div><span class="strip-label">片长</span><strong>0–3s 黄橙</strong><span class="timeline on"></span><strong>3–6s 粉色</strong><span class="timeline on"></span><strong>6–10s 双款</strong></div><p id="footerStatus">读取任务中…</p></section>
+      </section>
+    </main>
+    <dialog id="previewDialog" class="preview-dialog"><div class="preview-heading"><strong id="previewTitle">镜头预览</strong><button type="button" id="closePreview" aria-label="关闭预览">×</button></div><video id="largeVideo" controls playsinline preload="metadata"></video><a id="largeDownload" href="#" download>下载原始 MP4 ↓</a></dialog>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="./tvc.js"></script>
+  </body>
+</html>
