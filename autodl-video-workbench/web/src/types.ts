@@ -2,6 +2,15 @@
 // Kept deliberately permissive (nullable/optional) because job schema
 // drifts across older batches — see job-store.mjs's tolerant-read comments.
 
+export interface FormatDefinition {
+  format_id: string;
+  name: string;
+  status: 'active' | 'draft' | string;
+  profile: string;
+  layout: 'sequential' | 'grid-3x3' | string;
+  node_count?: number;
+}
+
 export interface JobSummary {
   job_id: string;
   title: string;

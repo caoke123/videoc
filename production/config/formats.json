@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "formats": [
+    {
+      "format_id": "tvc-multi-shot",
+      "name": "多镜头 TVC",
+      "status": "active",
+      "profile": "production/formats/tvc-multi-shot.md",
+      "layout": "sequential"
+    },
+    {
+      "format_id": "ugc-single-shot",
+      "name": "单镜头口播 UGC",
+      "status": "active",
+      "profile": "production/formats/ugc-single-shot.md",
+      "layout": "sequential"
+    },
+    {
+      "format_id": "nine-grid-storyboard",
+      "name": "9 宫格分镜",
+      "status": "draft",
+      "profile": "production/formats/nine-grid-storyboard.md",
+      "layout": "grid-3x3",
+      "node_count": 9
+    }
+  ]
+}

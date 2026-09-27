@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ReactFlow, Background, Controls, MiniMap, type Node, type Edge, type NodeMouseHandler } from '@xyflow/react';
-import { getJobDetail } from './api';
-import type { JobDetail as JobDetailType, RequestPlan, ShotPlanEntry } from './types';
+import { getJobDetail, listFormats } from './api';
+import type { FormatDefinition, JobDetail as JobDetailType, RequestPlan, ShotPlanEntry } from './types';
 import ShotNode, { type ShotNodeData } from './ShotNode';
 
 const nodeTypes = { shot: ShotNode };
@@ -23,11 +23,24 @@ function shotRunStatus(runState: Record<string, unknown> | null, shotId: string)
   return undefined;
 }
 
-function buildGraph(shots: ShotPlanEntry[], runState: Record<string, unknown> | null): { nodes: Node<ShotNodeData>[]; edges: Edge[] } {
+// Layout kinds are the reusable primitive: "sequential" (a pipeline, edges show
+// play order) and "grid-3x3" (spatial layout, no play-order edges — see
+// production/formats/nine-grid-storyboard.md). Adding a format that reuses one
+// of these two doesn't touch this function; a genuinely new arrangement would.
+function layoutPosition(layout: string, index: number): { x: number; y: number } {
+  if (layout === 'grid-3x3') {
+    const col = index % 3;
+    const row = Math.floor(index / 3);
+    return { x: col * 280, y: row * 220 };
+  }
+  return { x: index * 260, y: 0 };
+}
+
+function buildGraph(shots: ShotPlanEntry[], runState: Record<string, unknown> | null, layout: string): { nodes: Node<ShotNodeData>[]; edges: Edge[] } {
   const nodes: Node<ShotNodeData>[] = shots.map((shot, index) => ({
     id: shot.shot_id,
     type: 'shot',
-    position: { x: index * 260, y: 0 },
+    position: layoutPosition(layout, index),
     data: {
       shotId: shot.shot_id,
       purpose: shot.purpose,
@@ -36,7 +49,9 @@ function buildGraph(shots: ShotPlanEntry[], runState: Record<string, unknown> | 
       referenceCount: shot.references?.length ?? 0
     }
   }));
-  const edges: Edge[] = shots.slice(1).map((shot, index) => ({
+  // Sequential layouts imply play order (drawn as edges); grid layouts are
+  // spatial-only — position already expresses the relationship, no edges.
+  const edges: Edge[] = layout === 'grid-3x3' ? [] : shots.slice(1).map((shot, index) => ({
     id: `${shots[index].shot_id}-${shot.shot_id}`,
     source: shots[index].shot_id,
     target: shot.shot_id
@@ -77,8 +92,13 @@ function RunLogPanel({ entries }: { entries: JobDetailType['run_log'] }) {
 
 export default function JobDetail({ jobId, onBack }: { jobId: string; onBack: () => void }) {
   const [job, setJob] = useState<JobDetailType | null>(null);
+  const [formats, setFormats] = useState<FormatDefinition[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedShotId, setSelectedShotId] = useState<string | null>(null);
+
+  useEffect(() => {
+    listFormats().then(setFormats).catch(() => setFormats([]));
+  }, []);
 
   useEffect(() => {
     setJob(null);
@@ -87,7 +107,8 @@ export default function JobDetail({ jobId, onBack }: { jobId: string; onBack: ()
     getJobDetail(jobId).then(setJob).catch(err => setError(err.message));
   }, [jobId]);
 
-  const graph = useMemo(() => (job?.shot_plan?.shots ? buildGraph(job.shot_plan.shots, job.run_state) : null), [job]);
+  const layout = formats.find(format => format.format_id === job?.format_id)?.layout || 'sequential';
+  const graph = useMemo(() => (job?.shot_plan?.shots ? buildGraph(job.shot_plan.shots, job.run_state, layout) : null), [job, layout]);
   const onNodeClick: NodeMouseHandler = (_event, node) => setSelectedShotId(node.id);
   const selectedPrompt = job ? resolvePrompt(job.request_plan, selectedShotId ?? '') : null;
 

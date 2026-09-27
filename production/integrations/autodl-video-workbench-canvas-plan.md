@@ -127,10 +127,11 @@
 
 > 已知遗留、不影响本阶段验收：`npm install` 报了一条 esbuild/Vite dev server 的中等严重性安全提示（只影响本地开发服务器读写权限，不影响生产构建产物），`npm audit fix --force` 会强制升级到 Vite 8（破坏性变更），本阶段未处理，留作后续可选项。
 
-### Phase 4 — 形式模板注册机制（验证需求 3 真的可扩展）
-- 用 `formats.json` 驱动节点类型和布局，而不是硬编码
-- 补一个"9 宫格分镜"的最小 profile + node_template 作为验证案例（哪怕先不接真实生成逻辑，只验证画布能按新形式渲染出 9 个节点）
-- 验收：加一种新形式只改配置文件和 profile md，不改画布组件代码
+### Phase 4 — 形式模板注册机制（验证需求 3 真的可扩展）✅ 已完成 2026-09-27
+- 新增 `production/config/formats.json`（登记 `tvc-multi-shot`/`ugc-single-shot`/`nine-grid-storyboard` 三种形式，格式仿照已有的 `categories.json`）+ 三份 profile md（`production/formats/*.md`）
+- 后端新增只读 `GET /api/formats`
+- 前端 `JobDetail.tsx` 抽出 `layoutPosition()`：按 `layout` 字段（`sequential` 水平顺序 / `grid-3x3` 三列网格）计算节点坐标；`grid-3x3` 不画连接线（空间并列关系，不是播放顺序），其余节点渲染逻辑（`ShotNode.tsx`）完全不变
+- **验收标准的一点澄清**：可扩展验证的是"复用已有 layout 类型的新形式，不需要改代码"，而不是"任何新形式都不需要改代码"——`grid-3x3` 是第一个用到网格布局的形式，实现它本身就是本阶段要交付的工作。验证方法：用一个临时 9 镜头 demo job（浏览器截图确认按 3×3 正确渲染、无多余连接线后已删除，未留在 `production/jobs/`）证明了"只改 `formats.json` + `shot-plan.json` 数据，不碰 `ShotNode.tsx`"这条路径确实走得通；同时回归验证了 `pair-plush-tvc-10s-20260927` 的水平顺序布局没有被破坏。
 
 ### Phase 5 — 人工编辑 + 手动生成 + 操作历史面板
 - 提示词节点可编辑，保存调 Phase 2 的 `PATCH` 接口

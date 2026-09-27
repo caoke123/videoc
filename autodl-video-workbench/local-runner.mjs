@@ -9,6 +9,7 @@ const here = resolve(new URL('.', import.meta.url).pathname.replace(/^\/(.:)/, '
 const repoRoot = resolve(here, '..');
 const staticRoot = join(here, 'dist');
 const allJobsRoot = join(repoRoot, 'production', 'jobs');
+const formatsConfigPath = join(repoRoot, 'production', 'config', 'formats.json');
 const jobRoot = join(repoRoot, 'production', 'jobs', 'autodl-z0903-canvas-smoke-20260927');
 const planPath = join(jobRoot, 'request-plan.json');
 const statePath = join(jobRoot, 'run-state.json');
@@ -180,6 +181,10 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && url.pathname === '/api/health') { const token = await tokenFromLocalConfig(); const state = await readState(); return sendJson(res, 200, { ready: true, comfyuiTokenConfigured: Boolean(token), alreadySubmitted: Boolean(state.submitted_at), activeTask }); }
   if (req.method === 'GET' && url.pathname === '/api/project') { try { return sendJson(res, 200, await projectSnapshot()); } catch (error) { return sendJson(res, 500, { error: safeError(error) }); } }
   if (req.method === 'GET' && url.pathname === '/api/tvc/project') { try { return sendJson(res, 200, await tvcSnapshot()); } catch (error) { return sendJson(res, 500, { error: safeError(error) }); } }
+  if (req.method === 'GET' && url.pathname === '/api/formats') {
+    try { return sendJson(res, 200, JSON.parse(await readFile(formatsConfigPath, 'utf8')).formats); }
+    catch (error) { return sendJson(res, 500, { error: safeError(error) }); }
+  }
   if (req.method === 'GET' && url.pathname === '/api/jobs') { try { return sendJson(res, 200, await listJobs(allJobsRoot)); } catch (error) { return sendJson(res, 500, { error: safeError(error) }); } }
   if (req.method === 'GET' && url.pathname.startsWith('/api/jobs/')) {
     const jobId = decodeURIComponent(url.pathname.slice('/api/jobs/'.length));

@@ -1,4 +1,4 @@
-import type { JobDetail, JobSummary } from './types';
+import type { FormatDefinition, JobDetail, JobSummary } from './types';
 
 async function getJson<T>(path: string): Promise<T> {
   const response = await fetch(path, { cache: 'no-store' });
@@ -12,4 +12,8 @@ export function listJobs(): Promise<JobSummary[]> {
 
 export function getJobDetail(jobId: string): Promise<JobDetail> {
   return getJson<JobDetail>(`/api/jobs/${encodeURIComponent(jobId)}`);
+}
+
+export function listFormats(): Promise<FormatDefinition[]> {
+  return getJson<FormatDefinition[]>('/api/formats');
 }
