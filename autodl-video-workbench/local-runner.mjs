@@ -2,10 +2,12 @@ import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir, access, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { dirname, extname, join, normalize, resolve } from 'node:path';
+import { listJobs, getJobDetail } from './job-store.mjs';
 
 const here = resolve(new URL('.', import.meta.url).pathname.replace(/^\/(.:)/, '$1'));
 const repoRoot = resolve(here, '..');
 const staticRoot = join(here, 'dist');
+const allJobsRoot = join(repoRoot, 'production', 'jobs');
 const jobRoot = join(repoRoot, 'production', 'jobs', 'autodl-z0903-canvas-smoke-20260927');
 const planPath = join(jobRoot, 'request-plan.json');
 const statePath = join(jobRoot, 'run-state.json');
@@ -165,6 +167,16 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && url.pathname === '/api/health') { const token = await tokenFromLocalConfig(); const state = await readState(); return sendJson(res, 200, { ready: true, comfyuiTokenConfigured: Boolean(token), alreadySubmitted: Boolean(state.submitted_at), activeTask }); }
   if (req.method === 'GET' && url.pathname === '/api/project') { try { return sendJson(res, 200, await projectSnapshot()); } catch (error) { return sendJson(res, 500, { error: safeError(error) }); } }
   if (req.method === 'GET' && url.pathname === '/api/tvc/project') { try { return sendJson(res, 200, await tvcSnapshot()); } catch (error) { return sendJson(res, 500, { error: safeError(error) }); } }
+  if (req.method === 'GET' && url.pathname === '/api/jobs') { try { return sendJson(res, 200, await listJobs(allJobsRoot)); } catch (error) { return sendJson(res, 500, { error: safeError(error) }); } }
+  if (req.method === 'GET' && url.pathname.startsWith('/api/jobs/')) {
+    const jobId = decodeURIComponent(url.pathname.slice('/api/jobs/'.length));
+    if (!jobId || jobId.includes('/') || jobId.includes('..')) return sendJson(res, 400, { error: 'Invalid job id' });
+    try {
+      const detail = await getJobDetail(allJobsRoot, jobId);
+      if (!detail) return sendJson(res, 404, { error: 'Job not found' });
+      return sendJson(res, 200, detail);
+    } catch (error) { return sendJson(res, 500, { error: safeError(error) }); }
+  }
   if (req.method === 'GET' && url.pathname === '/api/tvc/assets/yellow') return serveFile(join(tvcRoot, 'assets', 'source', 'yellow-orange-plush-seatbelt-pad.png'), 'image/png', res);
   if (req.method === 'GET' && url.pathname === '/api/tvc/assets/pink') return serveFile(join(tvcRoot, 'assets', 'source', 'pink-plush-seatbelt-pad.png'), 'image/png', res);
   if (req.method === 'GET' && /^\/api\/tvc\/(video|download)\/S0[1-3]$/.test(url.pathname)) {

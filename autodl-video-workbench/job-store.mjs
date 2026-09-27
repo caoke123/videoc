@@ -1,0 +1,149 @@
+// Phase 1 read-only job store: exposes production/jobs/*/ to the workbench UI.
+// Deliberately tolerant of schema drift across jobs — one malformed/legacy job
+// must never break the list or crash the detail endpoint for the others.
+// See production/integrations/autodl-video-workbench-canvas-plan.md for the plan this implements.
+
+import { readFile, readdir, stat } from 'node:fs/promises';
+import { join } from 'node:path';
+
+const STATUS_NORMALIZE = {
+  success: 'success', succeeded: 'success', done: 'success',
+  failed: 'failed', failure: 'failed', error: 'failed',
+  submitted: 'running', queued: 'running', running: 'running',
+  accepted: 'success', rejected: 'failed'
+};
+
+async function readJsonIfExists(path) {
+  try { return JSON.parse(await readFile(path, 'utf8')); } catch { return null; }
+}
+
+async function readJsonlTail(path, limit = 50) {
+  let raw;
+  try { raw = await readFile(path, 'utf8'); } catch { return []; }
+  const lines = raw.split('\n').map(line => line.trim()).filter(Boolean);
+  const tail = lines.slice(-limit);
+  const entries = [];
+  for (const line of tail) {
+    try { entries.push(JSON.parse(line)); } catch { /* skip malformed line, don't fail the whole read */ }
+  }
+  return entries;
+}
+
+async function listDirNames(path) {
+  try { return (await readdir(path, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name); }
+  catch { return []; }
+}
+
+async function listFileNames(path) {
+  try { return (await readdir(path, { withFileTypes: true })).filter(entry => entry.isFile()).map(entry => entry.name); }
+  catch { return []; }
+}
+
+async function findRunStateFile(jobDir, files) {
+  // Different jobs name their aggregate run-state file differently
+  // (run-state.json, tvc-run-state.json, <job-id>-run-state.json, ...).
+  const candidate = files.find(name => name.endsWith('run-state.json'));
+  if (!candidate) return null;
+  return readJsonIfExists(join(jobDir, candidate));
+}
+
+function normalizeStatus(rawStatus) {
+  if (!rawStatus || typeof rawStatus !== 'string') return null;
+  return STATUS_NORMALIZE[rawStatus.toLowerCase()] || rawStatus.toLowerCase();
+}
+
+async function deriveStatus(jobDir, files) {
+  const runState = await findRunStateFile(jobDir, files);
+  if (runState?.status) return normalizeStatus(runState.status);
+  const logCandidate = files.includes('run-log.jsonl') ? 'run-log.jsonl' : null;
+  if (logCandidate) {
+    const tail = await readJsonlTail(join(jobDir, logCandidate), 1);
+    if (tail[0]?.status) return normalizeStatus(tail[0].status);
+  }
+  return null;
+}
+
+function inferFormatId(brief, shotPlan) {
+  if (brief?.format_id) return brief.format_id;
+  const shotCount = shotPlan?.shots?.length ?? null;
+  if (shotCount == null) return null;
+  return shotCount > 1 ? 'tvc-multi-shot' : 'ugc-single-shot';
+}
+
+async function latestMtime(jobDir, files, dirs) {
+  const candidates = [...files, ...dirs];
+  let latest = 0;
+  for (const name of candidates) {
+    try { const info = await stat(join(jobDir, name)); if (info.mtimeMs > latest) latest = info.mtimeMs; } catch { /* ignore */ }
+  }
+  return latest ? new Date(latest).toISOString() : null;
+}
+
+export async function listJobs(jobsRoot) {
+  const jobIds = await listDirNames(jobsRoot);
+  const jobs = await Promise.all(jobIds.map(async jobId => {
+    const jobDir = join(jobsRoot, jobId);
+    const [files, dirs] = await Promise.all([listFileNames(jobDir), listDirNames(jobDir)]);
+    const brief = files.includes('brief.json') ? await readJsonIfExists(join(jobDir, 'brief.json')) : null;
+    const shotPlan = files.includes('shot-plan.json') ? await readJsonIfExists(join(jobDir, 'shot-plan.json')) : null;
+    const status = await deriveStatus(jobDir, files);
+    return {
+      job_id: jobId,
+      title: brief?.creative_concept || brief?.goal || jobId,
+      category_id: brief?.category_id ?? null,
+      format_id: inferFormatId(brief, shotPlan),
+      status,
+      shot_count: shotPlan?.shots?.length ?? null,
+      has_brief: Boolean(brief),
+      has_shot_plan: Boolean(shotPlan),
+      updated_at: await latestMtime(jobDir, files, dirs)
+    };
+  }));
+  jobs.sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''));
+  return jobs;
+}
+
+async function listAssetTree(jobDir) {
+  const assetsRoot = join(jobDir, 'assets');
+  const subdirs = await listDirNames(assetsRoot);
+  const tree = {};
+  for (const sub of subdirs) tree[sub] = await listFileNames(join(assetsRoot, sub));
+  return tree;
+}
+
+async function listRenderTree(jobDir) {
+  const rendersRoot = join(jobDir, 'renders');
+  const subdirs = await listDirNames(rendersRoot);
+  if (subdirs.length === 0) return { files: await listFileNames(rendersRoot) };
+  const tree = {};
+  for (const sub of subdirs) tree[sub] = await listFileNames(join(rendersRoot, sub));
+  return tree;
+}
+
+export async function getJobDetail(jobsRoot, jobId) {
+  const jobDir = join(jobsRoot, jobId);
+  const [files, dirs] = await Promise.all([listFileNames(jobDir), listDirNames(jobDir)]);
+  if (files.length === 0 && dirs.length === 0) return null;
+
+  const brief = files.includes('brief.json') ? await readJsonIfExists(join(jobDir, 'brief.json')) : null;
+  const shotPlan = files.includes('shot-plan.json') ? await readJsonIfExists(join(jobDir, 'shot-plan.json')) : null;
+  const review = files.includes('review.json') ? await readJsonIfExists(join(jobDir, 'review.json')) : null;
+  const runState = await findRunStateFile(jobDir, files);
+  const runLogTail = files.includes('run-log.jsonl') ? await readJsonlTail(join(jobDir, 'run-log.jsonl'), 200) : [];
+  const status = runState?.status ? normalizeStatus(runState.status) : (runLogTail.length ? normalizeStatus(runLogTail[runLogTail.length - 1]?.status) : null);
+
+  return {
+    job_id: jobId,
+    format_id: inferFormatId(brief, shotPlan),
+    brief,
+    shot_plan: shotPlan,
+    review,
+    run_state: runState,
+    run_log: runLogTail,
+    status,
+    assets: dirs.includes('assets') ? await listAssetTree(jobDir) : {},
+    renders: dirs.includes('renders') ? await listRenderTree(jobDir) : {},
+    top_level_files: files,
+    top_level_dirs: dirs
+  };
+}
