@@ -10,7 +10,7 @@ const toast = document.querySelector('#toast');
 const viewport = document.querySelector('#viewport');
 const stage = document.querySelector('#stage');
 const lines = document.querySelector('.connections');
-let active = 'reference', scale = 1, pan = { x: 0, y: 0 }, moving = null;
+let active = 'reference', scale = 1, pan = { x: 0, y: 0 }, moving = null, draggingNode = null;
 
 function renderInspector(key) {
   const data = nodeInfo[key];
@@ -18,11 +18,50 @@ function renderInspector(key) {
   document.querySelectorAll('.node').forEach(n => n.classList.toggle('selected', n.dataset.node === key));
 }
 function applyTransform(){ const t = `translate(${pan.x}px,${pan.y}px) scale(${scale})`; stage.style.transform = t; lines.style.transform = t; document.querySelector('#zoomValue').textContent = `${Math.round(scale*100)}%`; }
+function renderConnections(){
+  document.querySelectorAll('.connections path').forEach(path => {
+    const [fromNode, fromPort] = path.dataset.from.split(':');
+    const [toNode, toPort] = path.dataset.to.split(':');
+    const source = document.querySelector(`.node[data-node="${fromNode}"] .node-port.${fromPort}`);
+    const target = document.querySelector(`.node[data-node="${toNode}"] .node-port.${toPort}`);
+    if (!source || !target) return;
+    const sx = source.parentElement.offsetLeft + source.offsetLeft + source.offsetWidth / 2;
+    const sy = source.parentElement.offsetTop + source.offsetTop + source.offsetHeight / 2;
+    const tx = target.parentElement.offsetLeft + target.offsetLeft + target.offsetWidth / 2;
+    const ty = target.parentElement.offsetTop + target.offsetTop + target.offsetHeight / 2;
+    const bend = Math.max(56, Math.abs(tx - sx) * .42);
+    path.setAttribute('d', `M ${sx} ${sy} C ${sx + bend} ${sy}, ${tx - bend} ${ty}, ${tx} ${ty}`);
+  });
+}
 function notify(message){ toast.textContent = message; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 2500); }
 function openDialog(){ document.querySelector('#runDialog').showModal(); }
-renderInspector(active); applyTransform();
+renderInspector(active); applyTransform(); renderConnections();
 
-document.querySelectorAll('.node').forEach(node => node.addEventListener('click', (event) => { if (!moving) { active = node.dataset.node; renderInspector(active); } event.stopPropagation(); }));
+document.querySelectorAll('.node').forEach(node => {
+  node.addEventListener('click', (event) => { active = node.dataset.node; renderInspector(active); event.stopPropagation(); });
+  node.addEventListener('pointerdown', (event) => {
+    if (event.target.closest('button')) return;
+    draggingNode = { node, startX: event.clientX, startY: event.clientY, left: node.offsetLeft, top: node.offsetTop, moved: false };
+    node.setPointerCapture(event.pointerId);
+    event.stopPropagation();
+  });
+  node.addEventListener('pointermove', (event) => {
+    if (!draggingNode || draggingNode.node !== node) return;
+    const dx = (event.clientX - draggingNode.startX) / scale;
+    const dy = (event.clientY - draggingNode.startY) / scale;
+    if (Math.abs(dx) + Math.abs(dy) > 3) draggingNode.moved = true;
+    node.style.left = `${Math.max(20, draggingNode.left + dx)}px`;
+    node.style.top = `${Math.max(20, draggingNode.top + dy)}px`;
+    renderConnections();
+  });
+  node.addEventListener('pointerup', (event) => {
+    if (draggingNode?.node !== node) return;
+    const didMove = draggingNode.moved;
+    draggingNode = null;
+    if (didMove) notify('节点位置已更新');
+    node.releasePointerCapture?.(event.pointerId);
+  });
+});
 content.addEventListener('click', e => { const action = e.target.closest('button')?.dataset.action; if (!action) return; if (action.includes('预检')) openDialog(); else if (action.includes('复制')) { navigator.clipboard?.writeText(JSON.stringify({workflow_id:'minimax_h3_z0903',duration:4,resolution:'768p竖',seed:2026},null,2)); notify('请求计划已复制（不含令牌）'); } else notify(`${action}：此原型已记录操作入口`); });
 document.querySelector('#openRun').addEventListener('click', openDialog);
 document.querySelector('#closeDialog').addEventListener('click', () => document.querySelector('#runDialog').close());

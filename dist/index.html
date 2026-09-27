@@ -7,6 +7,7 @@
     <title>镜场 · Video Workbench</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%230b101d'/%3E%3Cpath d='M17 20h23l8 12-8 12H17z' fill='%23e9ff72'/%3E%3Cpath d='M29 26l9 6-9 6z' fill='%230b101d'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./canvas-fixes.css" />
   </head>
   <body>
     <main class="app-shell">
@@ -49,10 +50,10 @@
           <div class="zoom-controls"><button id="zoomOut" aria-label="缩小">−</button><output id="zoomValue">100%</output><button id="zoomIn" aria-label="放大">＋</button></div>
           <div class="canvas-viewport" id="viewport">
             <svg class="connections" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M320 293 C 394 293, 410 260, 488 260" />
-              <path d="M320 482 C 392 482, 414 350, 488 350" />
-              <path d="M720 307 C 786 307, 808 307, 878 307" />
-              <path d="M1112 307 C 1178 307, 1205 307, 1282 307" />
+              <path data-from="reference:out" data-to="prompt:p1" />
+              <path data-from="audio:out" data-to="prompt:p2" />
+              <path data-from="prompt:out" data-to="generation:in" />
+              <path data-from="generation:out" data-to="result:in" />
             </svg>
             <div class="canvas-stage" id="stage">
               <article class="node asset-node selected" data-node="reference" style="left:70px;top:196px">
