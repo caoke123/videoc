@@ -5,8 +5,8 @@ export type ProductionJob = { job_id: string; title: string; category_id: string
 export type ProductionNode = { id: string; kind: "asset" | "shot" | "render"; title: string; x: number; y: number; shotId?: string; path?: string; status?: string };
 export type ProductionConnection = { id: string; from: string; to: string };
 export type ProductionLayout = { nodes: ProductionNode[]; connections: ProductionConnection[] };
-export type ProductionBatchPlan = { shotIds: string[]; skipped: string[]; warnings?: string[] };
-export type ProductionBatchResult = { submitted: Array<{ shotId: string; taskId: string; status: string }>; skipped: string[]; failed?: { shotId: string; error: string }; remaining?: string[] };
+export type ProductionBatchPlan = { shotIds: string[]; skipped: string[]; blocked: string[]; warnings?: string[] };
+export type ProductionBatchResult = { submitted: Array<{ shotId: string; taskId: string; status: string }>; skipped: string[]; blocked: string[]; failed?: { shotId: string; error: string }; remaining?: string[] };
 export type ProductionJobDetail = {
     job_id: string;
     format_id: string | null;

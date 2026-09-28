@@ -383,7 +383,15 @@ export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
     return !run || (!run.task_id && !run.output_file && (['PLANNED', 'PREPARING'].includes(run.status || 'PLANNED') || (run.status === 'SUBMIT_FAILED' && run.retry_approved === true)));
   };
   const pending = plan.shots.filter(isFreshShot);
-  if (!pending.length) throw new Error('所有镜头已有任务编号；批量提交不会重复生成');
+  const blocked = plan.shots.filter(shot => {
+    const run = state.shots?.[shot.shot_id];
+    return !run?.task_id && (['SUBMITTING', 'NEEDS_ATTENTION'].includes(run?.status) || (run?.status === 'SUBMIT_FAILED' && run.retry_approved !== true));
+  }).map(shot => shot.shot_id);
+  if (!pending.length) {
+    if (blocked.length) throw new Error(`镜头 ${blocked.join('、')} 的提交结果尚未人工核对；请在任务页核对 AutoDL 是否创建任务后再提交`);
+    if (plan.shots.every(shot => state.shots?.[shot.shot_id]?.task_id)) throw new Error('所有镜头已有任务编号；批量提交不会重复生成');
+    throw new Error('没有可批量提交的镜头；请检查各镜头的生成状态');
+  }
   const check = await validateJobFiles(jobsRoot, jobId, { shotIds: pending.map(shot => shot.shot_id) });
   const errors = [...check.errors];
   for (const shot of pending) {
@@ -393,7 +401,7 @@ export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
     if (audioUrls.some(url => typeof url !== 'string' || !/^https:\/\//.test(url))) errors.push(`${shot.shot_id || '未知镜头'}：配音 URL 无效`);
   }
   if (errors.length) throw new Error(errors.join('；'));
-  return { shotIds: pending.map(shot => shot.shot_id), skipped: plan.shots.filter(shot => !isFreshShot(shot)).map(shot => shot.shot_id), warnings: check.warnings };
+  return { shotIds: pending.map(shot => shot.shot_id), skipped: plan.shots.filter(shot => !isFreshShot(shot)).map(shot => shot.shot_id), blocked, warnings: check.warnings };
 }
 
 export async function submitShot(jobsRoot, jobId, shotId, { token, reason }) {
@@ -422,6 +430,12 @@ export async function submitShot(jobsRoot, jobId, shotId, { token, reason }) {
   const currentState = await currentShotRunState(jobDir, files, shotId, normalized.shape);
   if (['SUBMITTING', 'NEEDS_ATTENTION'].includes(currentState?.status)) {
     throw new Error(`镜头 ${shotId} 上次提交没有得到 AutoDL 确认，任务可能已在远端创建；请先在 AutoDL 核对后再处理，禁止自动重发以免重复计费`);
+  }
+  if (currentState?.status === 'SUBMIT_FAILED' && currentState.retry_approved !== true) {
+    throw new Error(`镜头 ${shotId} 提交失败且尚未人工核对；请先在任务页核对 AutoDL 是否创建任务，再决定接管或重新提交`);
+  }
+  if (currentState?.status === 'SUBMIT_FAILED' && currentState.task_id) {
+    throw new Error(`镜头 ${shotId} 已有任务编号 ${currentState.task_id}；请先核对远端状态，禁止重复提交`);
   }
   if (currentState?.task_id && !['SUCCESS', 'FAILED', 'SUBMIT_FAILED'].includes(currentState.status)) {
     throw new Error(`镜头 ${shotId} 已有任务编号 ${currentState.task_id}；请先恢复状态查询，禁止重复提交`);
@@ -722,7 +736,7 @@ export async function resolveUnconfirmedSubmit(jobsRoot, jobId, shotId, { taskId
   if (submittingShots.has(`${jobId}:${shotId}`)) throw new Error(`镜头 ${shotId} 正在提交，请稍后再处理`);
   const files = await listFileNames(jobDir);
   const run = await currentShotRunState(jobDir, files, shotId, 'multi');
-  if (!['SUBMITTING', 'NEEDS_ATTENTION'].includes(run?.status)) throw new Error('该镜头没有待核对的提交');
+  if (run?.task_id || !(['SUBMITTING', 'NEEDS_ATTENTION'].includes(run?.status) || (run?.status === 'SUBMIT_FAILED' && run.retry_approved !== true))) throw new Error('该镜头没有待核对的提交');
   if (discard === true) {
     await writeShotRunState(jobDir, files, shotId, 'multi', { status: 'SUBMIT_FAILED', submit_intent_at: null, submit_error: '人工确认 AutoDL 未创建任务', retry_approved: true });
     await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, actor: 'user', type: 'submit_discarded' });

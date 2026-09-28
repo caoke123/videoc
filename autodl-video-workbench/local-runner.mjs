@@ -291,10 +291,10 @@ const server = createServer(async (req, res) => {
           schedulePollShot(jobId, shotId, result.taskId, token, 1500);
           submitted.push({ shotId, taskId: result.taskId, status: result.status });
         } catch (error) {
-          return sendJson(res, 207, { submitted, skipped: plan.skipped, failed: { shotId, error: safeError(error) }, remaining: shotIds.slice(submitted.length + 1), deferred });
+          return sendJson(res, 207, { submitted, skipped: plan.skipped, blocked: plan.blocked, failed: { shotId, error: safeError(error) }, remaining: shotIds.slice(submitted.length + 1), deferred });
         }
       }
-      return sendJson(res, 202, { submitted, skipped: plan.skipped, deferred });
+      return sendJson(res, 202, { submitted, skipped: plan.skipped, blocked: plan.blocked, deferred });
     }
     return sendJson(res, 404, { error: 'Not found' });
   } catch (error) {

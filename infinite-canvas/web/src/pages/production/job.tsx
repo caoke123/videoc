@@ -239,10 +239,14 @@ export default function ProductionJobPage() {
         const run = runStateFor(detail, String(shot.shot_id || "MAIN"));
         return !run || (!run.task_id && !run.output_file && (["PLANNED", "PREPARING"].includes(normalizeStatus(run.status)) || (normalizeStatus(run.status) === "SUBMIT_FAILED" && run.retry_approved === true)));
     }).length;
+    const unconfirmedShotIds = shots.map((shot) => String(shot.shot_id || "MAIN")).filter((shotId) => {
+        const state = runStateFor(detail, shotId);
+        return !state?.task_id && (["SUBMITTING", "NEEDS_ATTENTION"].includes(normalizeStatus(state?.status)) || (normalizeStatus(state?.status) === "SUBMIT_FAILED" && state?.retry_approved !== true));
+    });
     const audioPending = detail?.request_plan?.preparation_status === "audio_url_pending";
     const activeShot = activeNode?.kind === "shot" ? shots.find((shot) => String(shot.shot_id || "MAIN") === activeNode.shotId) : null;
     const run = activeNode?.shotId ? runStateFor(detail, activeNode.shotId) : null;
-    const needsSubmitRecovery = ["SUBMITTING", "NEEDS_ATTENTION"].includes(normalizeStatus(run?.status));
+    const needsSubmitRecovery = Boolean(activeNode?.shotId && unconfirmedShotIds.includes(activeNode.shotId));
     const hasPendingPolling = shots.some((shot) => {
         const state = runStateFor(detail, String(shot.shot_id || "MAIN"));
         return Boolean(state?.task_id) && ["QUEUED", "RUNNING"].includes(normalizeStatus(state?.status));
@@ -262,6 +266,7 @@ export default function ProductionJobPage() {
             if (plan.warnings?.length) message.warning(plan.warnings.join("；"));
             const result = await submitProductionBatch(jobId);
             if (result.failed) message.warning(`已提交 ${result.submitted.length} 个；${result.failed.shotId} 失败：${result.failed.error}`);
+            else if (result.blocked?.length) message.warning(`已提交 ${result.submitted.length} 个镜头；${result.blocked.join("、")} 仍需核对提交结果`);
             else message.success(`已提交 ${result.submitted.length} 个镜头，正在并行生成`);
             await refresh();
         } catch (error) {
@@ -329,7 +334,7 @@ export default function ProductionJobPage() {
                 setRecoveringShot(shotId);
                 try {
                     await resolveProductionSubmit(jobId, shotId, { discard: true });
-                    message.success(`${shotId} 已解除待核对状态`);
+                    message.success(`${shotId} 已核对，可重新批量提交`);
                     await refresh();
                 } catch (error) {
                     message.error(error instanceof Error ? error.message : "处理待核对提交失败");
@@ -364,11 +369,13 @@ export default function ProductionJobPage() {
                     <div className="min-w-0"><h1 className="truncate text-sm font-semibold">{String(detail.brief?.creative_concept || detail.job_id)}</h1><p className="truncate text-xs text-muted-foreground">{detail.job_id}</p></div>
                     <Tag color={detail.status === "success" ? "green" : detail.status === "failed" ? "red" : detail.status === "running" ? "blue" : "default"}>{normalizeStatus(detail.status)}</Tag>
                     {detail.review_status && detail.review_status.pending > 0 ? <Tag color="orange">待人工审片 {detail.review_status.pending}</Tag> : detail.review_status && detail.review_status.accepted > 0 && detail.review_status.rejected === 0 ? <Tag color="green">审片通过</Tag> : detail.review_status && detail.review_status.rejected > 0 ? <Tag color="red">有驳回 {detail.review_status.rejected}</Tag> : null}
+                    {unconfirmedShotIds.length > 0 && <Tag color="orange">提交待核对 {unconfirmedShotIds.length}</Tag>}
                 </div>
                 <div className="flex shrink-0 gap-2">
                     <Button icon={<Upload className="size-4" />} loading={uploading} onClick={() => uploadRef.current?.click()}>上传配音</Button>
                     {audioPending && <Button icon={<CloudUpload className="size-4" />} loading={publishingAudio} onClick={() => void publishAudio()}>发布配音</Button>}
-                    {detail.request_plan?.media_type !== "image" && <Button type="primary" icon={<WandSparkles className="size-4" />} loading={submittingBatch} disabled={!pendingBatchCount || audioPending} onClick={() => void submitBatch()}>{audioPending ? "等待发布配音" : `批量提交 ${pendingBatchCount} 镜头`}</Button>}
+                    {detail.request_plan?.media_type !== "image" && <Button type="primary" icon={<WandSparkles className="size-4" />} loading={submittingBatch} disabled={!pendingBatchCount || audioPending} onClick={() => void submitBatch()}>{audioPending ? "等待发布配音" : !pendingBatchCount && unconfirmedShotIds.length ? "核对后可继续提交" : `批量提交 ${pendingBatchCount} 镜头`}</Button>}
+                    {unconfirmedShotIds.length > 0 && <Button onClick={() => { const id = `shot:${unconfirmedShotIds[0]}`; setActiveId(id); setSelected([id]); }}>核对提交 {unconfirmedShotIds.length}</Button>}
                     {hasPendingPolling && <Button loading={resumingPolling} onClick={() => void resumePolling()}>继续轮询</Button>}
                     <Button icon={<Film className="size-4" />} disabled={!shotsWithRender.length} onClick={openCompose}>合成审片预览</Button>
                     <Button type="primary" icon={<ExternalLink className="size-4" />} loading={openingCanvas} onClick={() => void openInMyCanvas()}>在我的画布中打开</Button>
@@ -395,7 +402,7 @@ export default function ProductionJobPage() {
                             const selectedNode = selected.includes(node.id);
                             return (
                                 <article key={node.id} data-node-id={node.id} onClick={(event) => selectNode(event, node)} className="absolute cursor-pointer overflow-hidden rounded-xl border shadow-sm" style={{ left: node.x, top: node.y, width: 330, minHeight: node.kind === "shot" ? 190 : 235, background: theme.node.panel, borderColor: selectedNode ? theme.node.activeStroke : theme.node.stroke, color: theme.node.text }}>
-                                    <div className="flex items-center justify-between gap-2 border-b px-3 py-2" style={{ borderColor: theme.node.stroke }}><div className="min-w-0"><p className="text-[10px]" style={{ color: theme.node.muted }}>{kind}</p><p className="truncate text-sm font-medium">{node.title}</p></div>{status && <Tag color={status === "SUCCESS" ? "green" : status === "FAILED" || status === "ERROR" ? "red" : status === "RUNNING" || status === "QUEUED" ? "blue" : "default"}>{status}</Tag>}</div>
+                                    <div className="flex items-center justify-between gap-2 border-b px-3 py-2" style={{ borderColor: theme.node.stroke }}><div className="min-w-0"><p className="text-[10px]" style={{ color: theme.node.muted }}>{kind}</p><p className="truncate text-sm font-medium">{node.title}</p></div>{status && <Tag color={status === "SUCCESS" ? "green" : status === "FAILED" || status === "ERROR" || status === "SUBMIT_FAILED" ? "red" : status === "RUNNING" || status === "QUEUED" ? "blue" : "default"}>{status}</Tag>}</div>
                                     <div className="p-3">
                                         {node.kind === "shot" ? <><p className="line-clamp-5 whitespace-pre-wrap text-xs" style={{ color: theme.node.muted }}>{String(shots.find((shot) => String(shot.shot_id || "MAIN") === node.shotId)?.prompt || "（尚未填写提示词）")}</p><p className="mt-3 text-[10px]" style={{ color: theme.node.faint }}>镜头 · {node.shotId}</p></> : node.kind === "render" && !node.path ? <p className="py-12 text-center text-xs" style={{ color: theme.node.muted }}>{node.id === "render:final-preview" ? "所有镜头完成后，完整审片版会显示在这里。" : status === "RUNNING" || status === "QUEUED" ? "AutoDL 正在生成；完成后视频会显示在这里。" : "本镜头的视频结果会显示在这里。"}</p> : media === "image" ? <img src={url} alt={node.title} className="h-40 w-full rounded-md object-contain" /> : media === "video" ? <video src={url} controls preload="metadata" className="h-40 w-full rounded-md bg-black object-contain" /> : media === "audio" ? <audio src={url} controls className="w-full" /> : <a href={url} download className="truncate text-xs text-muted-foreground">{node.path}</a>}
                                     </div>
@@ -413,9 +420,9 @@ export default function ProductionJobPage() {
                         <div className="mt-3"><Button icon={<ExternalLink className="size-4" />} loading={openingCanvas} onClick={() => void openInMyCanvas()}>在我的画布中编辑</Button></div>
                         {audioPending ? <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">配音文件已入库，但尚未发布为 AutoDL 可访问 URL；发布后会自动映射到 H3 的音频输入。</p> : null}
                         {detail.request_plan?.media_type === "image" ? <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">九宫格已作为图像分镜画布接入；项目暂未登记 AutoDL 图像工作流，因此不会误用视频工作流提交。</p> : null}
-                        {run ? <div className="mt-5 rounded-lg border border-border p-3 text-xs"><p>当前生成状态：{normalizeStatus(run.status)}</p><p className="mt-1 break-all text-muted-foreground">任务 ID：{String(run.task_id || "—")}</p>{run.error ? <p className="mt-2 text-red-500">{String(run.error)}</p> : null}</div> : null}
+                        {run ? <div className="mt-5 rounded-lg border border-border p-3 text-xs"><p>当前生成状态：{normalizeStatus(run.status)}</p><p className="mt-1 break-all text-muted-foreground">任务 ID：{String(run.task_id || "—")}</p>{run.submit_error || run.error ? <p className="mt-2 text-red-500">{String(run.submit_error || run.error)}</p> : null}</div> : null}
                         {needsSubmitRecovery && activeNode.shotId ? <div className="mt-5 rounded-lg border border-amber-500 p-3 text-xs">
-                            <p className="font-medium">提交未得到 AutoDL 确认</p>
+                            <p className="font-medium">{normalizeStatus(run?.status) === "SUBMIT_FAILED" ? "提交失败，尚未人工核对" : "提交未得到 AutoDL 确认"}</p>
                             <p className="mt-1 text-muted-foreground">请先在 AutoDL 核对该镜头是否已创建任务。若已创建，填入远端任务 ID 接管；若确认未创建，再解除保护。</p>
                             <Input className="mt-3" value={recoveryTaskId} onChange={(event) => setRecoveryTaskId(event.target.value)} placeholder="AutoDL 任务 ID" />
                             <div className="mt-3 flex gap-2">
