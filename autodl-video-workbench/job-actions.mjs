@@ -527,7 +527,7 @@ export async function findBoundJob(jobsRoot, canvasId) {
 
 // canvas-binding.json remembers which shot each canvas node generates, so generating the same
 // node again re-rolls the same shot instead of creating a new one.
-const readBinding = async jobDir => (await readJson(join(jobDir, 'canvas-binding.json')).catch(() => null)) || { node_shots: {} };
+export const readBinding = async jobDir => (await readJson(join(jobDir, 'canvas-binding.json')).catch(() => null)) || { node_shots: {} };
 
 async function ensureCanvasJob(jobsRoot, jobId, canvasId) {
   const jobDir = join(jobsRoot, jobId);

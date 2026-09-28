@@ -10,7 +10,7 @@ import { listJobs, getJobDetail, getJobRunLog } from './job-store.mjs';
 import {
   createJob, patchShotField, saveCanvasLayout, submitShot, preflightBatchSubmission, uploadJobAsset,
   publishShotAudio, pollShot, canvasGenerate, canvasGenerationStatus, reconcileUnconfirmedSubmissions,
-  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob
+  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob, readBinding
 } from './job-actions.mjs';
 import { resolveAssetRef } from './asset-library.mjs';
 import { composeCut } from './compose.mjs';
@@ -183,7 +183,7 @@ const server = createServer(async (req, res) => {
     const canvasJob = route(req, 'GET', /^\/api\/canvas\/([^/]+)\/job$/, url);
     if (canvasJob) {
       const jobId = await findBoundJob(allJobsRoot, decode(canvasJob[1]));
-      return jobId ? sendJson(res, 200, { job_id: jobId }) : sendJson(res, 404, { error: 'Job not found' });
+      return jobId ? sendJson(res, 200, { job_id: jobId, node_shots: (await readBinding(join(allJobsRoot, jobId))).node_shots || {} }) : sendJson(res, 404, { error: 'Job not found' });
     }
     const jobValidate = route(req, 'GET', /^\/api\/jobs\/([^/]+)\/validate$/, url);
     if (jobValidate) {

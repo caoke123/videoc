@@ -266,8 +266,8 @@ function InfiniteCanvasPage() {
     useEffect(() => {
         const sync = () => void fetchBoundTask(projectId).then((detail) => {
             if (!detail) return;
-            const added = taskFinalAdditions(nodesRef.current, detail);
-            if (!added.nodes.length) return;
+            const added = taskFinalAdditions(nodesRef.current, connectionsRef.current, detail);
+            if (!added.nodes.length && !added.connections.length) return;
             setNodes((prev) => [...prev, ...added.nodes.filter((node) => !prev.some((item) => item.id === node.id))]);
             setConnections((prev) => [...prev, ...added.connections.filter((edge) => !prev.some((item) => item.id === edge.id))]);
         }).catch(() => undefined);
