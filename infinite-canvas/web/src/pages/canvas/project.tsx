@@ -263,9 +263,14 @@ function InfiniteCanvasPage() {
     const [referencePickerNodeId, setReferencePickerNodeId] = useState<string | null>(null);
 
     const nodesRef = useRef(nodes);
+    const boundShotNodeIdsRef = useRef<Set<string>>(new Set());
     useEffect(() => {
         const sync = () => void fetchBoundTask(projectId).then((detail) => {
-            if (!detail) return;
+            if (!detail) { boundShotNodeIdsRef.current = new Set(); return; }
+            boundShotNodeIdsRef.current = new Set([
+                ...Object.keys(detail.node_shots || {}),
+                ...(detail.shot_plan?.shots || []).map((shot) => `shot-${String(shot.shot_id || "")}`),
+            ]);
             const added = taskAdditions(nodesRef.current, connectionsRef.current, detail);
             if (!added.nodes.length && !added.connections.length) return;
             setNodes((prev) => [...prev, ...added.nodes.filter((node) => !prev.some((item) => item.id === node.id))]);
@@ -870,6 +875,9 @@ function InfiniteCanvasPage() {
     const deleteNodes = useCallback(
         (ids: Set<string>) => {
             if (!ids.size) return;
+            if ([...ids].some((id) => boundShotNodeIdsRef.current.has(id) || (projectId.startsWith("task-") && id.startsWith("shot-")))) {
+                message.info("任务镜头仍保存在 shot-plan；下次打开或切回画布时会补回节点");
+            }
             const allIds = new Set(ids);
             setNodes((prev) => {
                 const next = prev.filter((node) => !allIds.has(node.id));
@@ -896,7 +904,7 @@ function InfiniteCanvasPage() {
             setContextMenu((current) => (current?.type === "node" && allIds.has(current.nodeId) ? null : current));
             cleanupCanvasFiles({ projectId, nodes: nodesRef.current.filter((node) => !allIds.has(node.id)), chatSessions });
         },
-        [chatSessions, cleanupCanvasFiles, projectId],
+        [chatSessions, cleanupCanvasFiles, message, projectId],
     );
 
     const groupSelection = useCallback(() => {
@@ -983,6 +991,9 @@ function InfiniteCanvasPage() {
     }, [cancelPendingConnectionCreate]);
 
     const clearCanvas = useCallback(() => {
+        if (nodesRef.current.some((node) => boundShotNodeIdsRef.current.has(node.id))) {
+            message.info("任务镜头仍保存在 shot-plan；下次打开或切回画布时会补回节点");
+        }
         setNodes([]);
         setConnections([]);
         setInfoNodeId(null);
@@ -994,7 +1005,7 @@ function InfiniteCanvasPage() {
         deselectCanvas();
         setClearConfirmOpen(false);
         cleanupCanvasFiles({ projectId, nodes: [], chatSessions: [] });
-    }, [cleanupCanvasFiles, deselectCanvas, projectId]);
+    }, [cleanupCanvasFiles, deselectCanvas, message, projectId]);
 
     const duplicateNode = useCallback((nodeId: string) => {
         const source = nodesRef.current.find((node) => node.id === nodeId);
@@ -3411,6 +3422,7 @@ function InfiniteCanvasPage() {
                     }
                 >
                     <p className="text-sm opacity-60">{t("canvas.projectPage.clearDescription")}</p>
+                    {projectId.startsWith("task-") ? <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">任务镜头仍保存在 shot-plan；下次打开或切回画布时会补回节点。</p> : null}
                 </Modal>
 
                 <AssetPickerModal open={assetPickerOpen} onInsert={handleAssetInsert} onClose={() => setAssetPickerOpen(false)} />

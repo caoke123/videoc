@@ -27,17 +27,12 @@ def main() -> int:
     if job_dir.exists():
         raise SystemExit(f"job already exists: {job_dir}")
 
-    for sub in [
-        "assets/source", "assets/approved", "assets/generated", "prompts",
-        "dfcine", "renders/preview", "renders/accepted", "post", "delivery"
-    ]:
-        (job_dir / sub).mkdir(parents=True, exist_ok=True)
+    # Asset, provider, review, and delivery folders are created when real files need them.
+    job_dir.mkdir(parents=True)
 
     copies = {
         "brief.template.json": "brief.json",
-        "shot-plan.template.json": "shot-plan.json",
-        "review.template.json": "review.json",
-        "benchmark.template.json": "image-benchmark.json"
+        "shot-plan.template.json": "shot-plan.json"
     }
     for source, target in copies.items():
         shutil.copyfile(skill_dir / "assets" / source, job_dir / target)

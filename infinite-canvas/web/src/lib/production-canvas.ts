@@ -170,7 +170,7 @@ export function taskAdditions(existing: CanvasNodeData[], existingConnections: C
         if (!known.has(id)) {
             const stamp = /final-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/.exec(path);
             const when = stamp ? new Date(Date.UTC(+stamp[1], +stamp[2] - 1, +stamp[3], +stamp[4], +stamp[5], +stamp[6])).toLocaleString("zh-CN", { hour12: false }) : path;
-            nodes.push({ id, type: CanvasNodeType.Video, title: `成片｜${when}`, position: { x: maxX + 80, y: index * 300 }, width: 420, height: 236, metadata: { content: productionFileUrl(detail.job_id, path), status: "success", mimeType: "video/mp4", seconds: "6" } });
+            nodes.push({ id, type: CanvasNodeType.Video, title: `剪辑预览｜${when}`, position: { x: maxX + 80, y: index * 300 }, width: 420, height: 236, metadata: { content: productionFileUrl(detail.job_id, path), status: "success", mimeType: "video/mp4", seconds: "6" } });
         }
         const event = [...detail.run_log].reverse().find((entry) => entry.type === "cut_composed" && entry.output_file === path);
         for (const clip of Array.isArray(event?.clips) ? (event.clips as Array<{ shot_id?: string }>) : []) {

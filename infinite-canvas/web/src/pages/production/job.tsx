@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { App, Button, Checkbox, Empty, InputNumber, Modal, Select, Spin, Tag } from "antd";
+import { App, Button, Checkbox, Empty, Input, InputNumber, Modal, Select, Spin, Tag } from "antd";
 import { ArrowLeft, Check, CloudUpload, ExternalLink, Film, RefreshCw, Upload, WandSparkles, X } from "lucide-react";
 
 import { ConnectionPath } from "@/components/canvas/canvas-connections";
@@ -9,7 +9,7 @@ import { CanvasNodeType, type CanvasConnection, type CanvasNodeData, type Viewpo
 import { canvasThemes } from "@/lib/canvas-theme";
 import { composeTaskCut, fetchBoundTask, openTaskCanvas, syncTaskCanvasFinals } from "@/lib/production-canvas";
 import { useThemeStore } from "@/stores/use-theme-store";
-import { getProductionJob, preflightProductionBatch, productionFileUrl, publishProductionAudio, reviewProductionShot, submitProductionBatch, uploadProductionAsset, type ProductionConnection, type ProductionJobDetail, type ProductionLayout, type ProductionNode } from "@/services/api/production";
+import { getProductionJob, preflightProductionBatch, productionFileUrl, publishProductionAudio, resolveProductionSubmit, resumeProductionPolling, reviewProductionShot, submitProductionBatch, uploadProductionAsset, type ProductionConnection, type ProductionJobDetail, type ProductionLayout, type ProductionNode } from "@/services/api/production";
 
 const defaultViewport: ViewportTransform = { x: 260, y: 180, k: 0.65 };
 
@@ -94,8 +94,8 @@ function buildLayout(detail: ProductionJobDetail): ProductionLayout {
     const renderNodes: ProductionNode[] = shots.flatMap((shot, index) => {
         const shotId = String(shot.shot_id || "MAIN");
         const run = runStateFor(detail, shotId);
-        const path = typeof run?.output_file === "string" && assetFiles.has(run.output_file)
-            ? run.output_file
+        const path = run?.task_id
+            ? normalizeStatus(run.status) === "SUCCESS" && typeof run.output_file === "string" && assetFiles.has(run.output_file) ? run.output_file : undefined
             : detail.asset_files.find((file) => file.startsWith(`renders/runs/${shotId}/`) && mediaKind(file) === "video");
         if (!path) return [];
         const row = Math.floor(index / 3);
@@ -104,8 +104,10 @@ function buildLayout(detail: ProductionJobDetail): ProductionLayout {
     });
     const finalPath = detail.asset_files.filter((path) => /^renders\/preview\/(?:final|.*review).*\.mp4$/i.test(path)).sort().pop();
     const finalPreviewNode: ProductionNode | null = finalPath
-        ? { id: "render:final-preview", kind: "render", title: "完整视频｜审片版", status: "SUCCESS", path: finalPath, x: shots.length * 460, y: 250 }
+        ? { id: "render:final-preview", kind: "render", title: "剪辑预览", status: "SUCCESS", path: finalPath, x: shots.length * 460, y: 250 }
         : null;
+    const finalEvent = finalPath ? [...detail.run_log].reverse().find((entry) => entry.type === "cut_composed" && entry.output_file === finalPath) : null;
+    const finalShotIds = new Set((Array.isArray(finalEvent?.clips) ? finalEvent.clips : []).map((clip) => String((clip as { shot_id?: string }).shot_id || "")));
     const nodes = [...assetNodes, ...shotNodes, ...renderNodes, ...(finalPreviewNode ? [finalPreviewNode] : [])];
     const byPath = new Map(assetNodes.map((node) => [node.path, node.id]));
     const connections: ProductionConnection[] = [];
@@ -125,23 +127,14 @@ function buildLayout(detail: ProductionJobDetail): ProductionLayout {
             if (assetId) connections.push({ id: `ref:${assetId}:${shotNode}`, from: assetId, to: shotNode });
         }
         renderNodes.filter((node) => node.shotId === shotId).forEach((node) => connections.push({ id: `result:${shotNode}:${node.id}`, from: shotNode, to: node.id }));
-        if (finalPreviewNode) connections.push({ id: `final:${shotNode}:${finalPreviewNode.id}`, from: shotNode, to: finalPreviewNode.id });
+        if (finalPreviewNode && finalShotIds.has(shotId)) connections.push({ id: `final:${shotNode}:${finalPreviewNode.id}`, from: shotNode, to: finalPreviewNode.id });
     });
-    const saved = detail.canvas_layout;
-    if (!saved?.nodes?.length) return { nodes, connections };
-    const savedById = new Map(saved.nodes.map((node) => [node.id, node]));
-    const merged = nodes.map((node) => {
-        const position = savedById.get(node.id);
-        return position ? { ...node, x: position.x, y: position.y } : node;
-    });
-    const existingIds = new Set(merged.map((node) => node.id));
-    const manualConnections = (saved.connections || []).filter((connection) => connection.id.startsWith("edge:") && existingIds.has(connection.from) && existingIds.has(connection.to) && !connections.some((item) => item.from === connection.from && item.to === connection.to));
-    return { nodes: merged, connections: [...connections, ...manualConnections] };
+    return { nodes, connections };
 }
 
 export default function ProductionJobPage() {
     const { jobId = "" } = useParams();
-    const { message } = App.useApp();
+    const { message, modal } = App.useApp();
     const navigate = useNavigate();
     const themeName = useThemeStore((state) => state.theme);
     const theme = canvasThemes[themeName];
@@ -213,20 +206,26 @@ export default function ProductionJobPage() {
     const activeNode = layout.nodes.find((node) => node.id === activeId) || null;
     const shots = detail?.request_plan?.shots || (detail?.request_plan?.request ? [{ shot_id: "MAIN", ...detail.request_plan.request }] : detail?.shot_plan?.shots || []);
     const [reviewing, setReviewing] = useState<string | null>(null);
+    const [recoveryTaskId, setRecoveryTaskId] = useState("");
+    const [recoveringShot, setRecoveringShot] = useState<string | null>(null);
+    const [resumingPolling, setResumingPolling] = useState(false);
     const [rejectCategory, setRejectCategory] = useState("material");
     const [composeOpen, setComposeOpen] = useState(false);
     const [composing, setComposing] = useState(false);
     const [composeShots, setComposeShots] = useState<string[]>([]);
     const [composeTransition, setComposeTransition] = useState<"cut" | "fade">("cut");
     const [composeTrim, setComposeTrim] = useState({ head: 0.2, tail: 0.2, fade: 0.15 });
-    const shotsWithRender = shots.map((shot) => String(shot.shot_id || "MAIN")).filter((shotId) => detail?.asset_files.some((file) => file.startsWith(`renders/runs/${shotId}/`) && mediaKind(file) === "video"));
+    const shotsWithRender = shots.map((shot) => String(shot.shot_id || "MAIN")).filter((shotId) => {
+        const run = runStateFor(detail, shotId);
+        return normalizeStatus(run?.status) === "SUCCESS" && detail?.review_status?.shots?.[shotId]?.state === "accepted" && typeof run?.output_file === "string" && detail.asset_files.includes(run.output_file);
+    });
     const openCompose = () => { setComposeShots(shotsWithRender); setComposeOpen(true); };
     const runCompose = async () => {
         if (!detail) return;
         setComposing(true);
         try {
             const result = await composeTaskCut(detail, { shots: shotsWithRender.filter((id) => composeShots.includes(id)).map((shot_id) => ({ shot_id, trim_head: composeTrim.head, trim_tail: composeTrim.tail })), transition: composeTransition, fade_seconds: composeTrim.fade });
-            message.success(`已合成成片（${result.duration.toFixed(1)} 秒）`);
+            message.success(`已生成剪辑预览（${result.duration.toFixed(1)} 秒）`);
             setComposeOpen(false);
             await refresh();
             await fetch(`/api/jobs/${encodeURIComponent(detail.job_id)}/canvas-id`).then((r) => r.json()).then(async (data) => { const bound = await fetchBoundTask(data.canvas_id); if (bound) syncTaskCanvasFinals(data.canvas_id, bound); }).catch(() => undefined);
@@ -238,11 +237,16 @@ export default function ProductionJobPage() {
     };
     const pendingBatchCount = shots.filter((shot) => {
         const run = runStateFor(detail, String(shot.shot_id || "MAIN"));
-        return !run || (!run.task_id && !run.submitted_at && !run.output_file && ["PLANNED", "PREPARING"].includes(normalizeStatus(run.status)));
+        return !run || (!run.task_id && !run.output_file && (["PLANNED", "PREPARING"].includes(normalizeStatus(run.status)) || (normalizeStatus(run.status) === "SUBMIT_FAILED" && run.retry_approved === true)));
     }).length;
     const audioPending = detail?.request_plan?.preparation_status === "audio_url_pending";
     const activeShot = activeNode?.kind === "shot" ? shots.find((shot) => String(shot.shot_id || "MAIN") === activeNode.shotId) : null;
     const run = activeNode?.shotId ? runStateFor(detail, activeNode.shotId) : null;
+    const needsSubmitRecovery = ["SUBMITTING", "NEEDS_ATTENTION"].includes(normalizeStatus(run?.status));
+    const hasPendingPolling = shots.some((shot) => {
+        const state = runStateFor(detail, String(shot.shot_id || "MAIN"));
+        return Boolean(state?.task_id) && ["QUEUED", "RUNNING"].includes(normalizeStatus(state?.status));
+    });
     const mediaNodes = useMemo(() => layout.nodes.map((node): CanvasNodeData => ({ id: node.id, type: node.kind === "shot" ? CanvasNodeType.Text : node.kind === "render" ? CanvasNodeType.Video : mediaKind(node.path || "") === "image" ? CanvasNodeType.Image : mediaKind(node.path || "") === "audio" ? CanvasNodeType.Audio : CanvasNodeType.Text, title: node.title, position: { x: node.x, y: node.y }, width: 330, height: node.kind === "shot" ? 190 : 235 })), [layout.nodes]);
 
     const selectNode = (event: React.MouseEvent, node: ProductionNode) => {
@@ -301,6 +305,53 @@ export default function ProductionJobPage() {
         finally { setReviewing(null); }
     };
 
+    const adoptSubmit = async (shotId: string) => {
+        const taskId = recoveryTaskId.trim();
+        if (!/^[\w-]{8,64}$/.test(taskId)) return void message.warning("请输入在 AutoDL 核对到的任务 ID");
+        setRecoveringShot(shotId);
+        try {
+            await resolveProductionSubmit(jobId, shotId, { task_id: taskId });
+            message.success(`${shotId} 已接管远端任务，正在恢复轮询`);
+            setRecoveryTaskId("");
+            await refresh();
+        } catch (error) { message.error(error instanceof Error ? error.message : "接管提交失败"); }
+        finally { setRecoveringShot(null); }
+    };
+
+    const discardSubmit = (shotId: string) => {
+        modal.confirm({
+            title: "确认 AutoDL 没有创建这次任务？",
+            content: "请先在 AutoDL 核对。确认未创建后，才解除本镜头的重复提交保护。",
+            okText: "确认未创建",
+            okType: "danger",
+            cancelText: "取消",
+            onOk: async () => {
+                setRecoveringShot(shotId);
+                try {
+                    await resolveProductionSubmit(jobId, shotId, { discard: true });
+                    message.success(`${shotId} 已解除待核对状态`);
+                    await refresh();
+                } catch (error) {
+                    message.error(error instanceof Error ? error.message : "处理待核对提交失败");
+                    throw error;
+                } finally { setRecoveringShot(null); }
+            },
+        });
+    };
+
+    const resumePolling = async () => {
+        setResumingPolling(true);
+        try {
+            const result = await resumeProductionPolling(jobId);
+            if (!result.tokenConfigured) message.warning("本机执行器缺少 AutoDL Token，无法恢复轮询");
+            else if (result.resumed) message.info(`已恢复 ${result.resumed} 个镜头的轮询`);
+            else if (result.alreadyRunning) message.info(`已有 ${result.alreadyRunning} 个镜头正在轮询`);
+            else message.info("没有排队或生成中的镜头");
+            await refresh();
+        } catch (error) { message.error(error instanceof Error ? error.message : "恢复轮询失败"); }
+        finally { setResumingPolling(false); }
+    };
+
     if (loading) return <div className="flex h-full items-center justify-center bg-background"><Spin /></div>;
     if (!detail) return <Empty className="py-20" description="任务不存在" />;
 
@@ -318,7 +369,8 @@ export default function ProductionJobPage() {
                     <Button icon={<Upload className="size-4" />} loading={uploading} onClick={() => uploadRef.current?.click()}>上传配音</Button>
                     {audioPending && <Button icon={<CloudUpload className="size-4" />} loading={publishingAudio} onClick={() => void publishAudio()}>发布配音</Button>}
                     {detail.request_plan?.media_type !== "image" && <Button type="primary" icon={<WandSparkles className="size-4" />} loading={submittingBatch} disabled={!pendingBatchCount || audioPending} onClick={() => void submitBatch()}>{audioPending ? "等待发布配音" : `批量提交 ${pendingBatchCount} 镜头`}</Button>}
-                    <Button icon={<Film className="size-4" />} disabled={!shotsWithRender.length} onClick={openCompose}>合成成片</Button>
+                    {hasPendingPolling && <Button loading={resumingPolling} onClick={() => void resumePolling()}>继续轮询</Button>}
+                    <Button icon={<Film className="size-4" />} disabled={!shotsWithRender.length} onClick={openCompose}>合成审片预览</Button>
                     <Button type="primary" icon={<ExternalLink className="size-4" />} loading={openingCanvas} onClick={() => void openInMyCanvas()}>在我的画布中打开</Button>
                     <Button icon={<RefreshCw className="size-4" />} onClick={() => void refresh()}>刷新</Button>
                 </div>
@@ -362,6 +414,15 @@ export default function ProductionJobPage() {
                         {audioPending ? <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">配音文件已入库，但尚未发布为 AutoDL 可访问 URL；发布后会自动映射到 H3 的音频输入。</p> : null}
                         {detail.request_plan?.media_type === "image" ? <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">九宫格已作为图像分镜画布接入；项目暂未登记 AutoDL 图像工作流，因此不会误用视频工作流提交。</p> : null}
                         {run ? <div className="mt-5 rounded-lg border border-border p-3 text-xs"><p>当前生成状态：{normalizeStatus(run.status)}</p><p className="mt-1 break-all text-muted-foreground">任务 ID：{String(run.task_id || "—")}</p>{run.error ? <p className="mt-2 text-red-500">{String(run.error)}</p> : null}</div> : null}
+                        {needsSubmitRecovery && activeNode.shotId ? <div className="mt-5 rounded-lg border border-amber-500 p-3 text-xs">
+                            <p className="font-medium">提交未得到 AutoDL 确认</p>
+                            <p className="mt-1 text-muted-foreground">请先在 AutoDL 核对该镜头是否已创建任务。若已创建，填入远端任务 ID 接管；若确认未创建，再解除保护。</p>
+                            <Input className="mt-3" value={recoveryTaskId} onChange={(event) => setRecoveryTaskId(event.target.value)} placeholder="AutoDL 任务 ID" />
+                            <div className="mt-3 flex gap-2">
+                                <Button size="small" type="primary" loading={recoveringShot === activeNode.shotId} onClick={() => void adoptSubmit(activeNode.shotId!)}>接管并轮询</Button>
+                                <Button size="small" danger loading={recoveringShot === activeNode.shotId} onClick={() => discardSubmit(activeNode.shotId!)}>确认未创建</Button>
+                            </div>
+                        </div> : null}
                         {activeNode.shotId && detail.review_status?.shots?.[activeNode.shotId] ? <div className="mt-5 rounded-lg border border-border p-3 text-xs">
                             <p className="font-medium">人工审片：{{ pending: "待审片", accepted: "已接受", rejected: "已驳回" }[detail.review_status.shots[activeNode.shotId].state]}{detail.review_status.shots[activeNode.shotId].category ? `（${detail.review_status.shots[activeNode.shotId].category}）` : ""}</p>
                             <p className="mt-1 text-muted-foreground">结论针对当前这一版视频；重新生成后需要重新审片。</p>
@@ -383,15 +444,16 @@ export default function ProductionJobPage() {
                 </aside>
             </div>
             <input ref={uploadRef} type="file" accept=".wav,.mp3,.m4a,.aac" className="hidden" onChange={(event) => void uploadAudio(event.target.files?.[0])} />
-            <Modal title="合成成片（本机 ffmpeg，不花钱）" open={composeOpen} onCancel={() => setComposeOpen(false)} onOk={() => void runCompose()} okText="开始合成" cancelText="取消" confirmLoading={composing} okButtonProps={{ disabled: composeShots.length < 1 }}>
+            <Modal title="合成审片预览（本机 ffmpeg）" open={composeOpen} onCancel={() => setComposeOpen(false)} onOk={() => void runCompose()} okText="开始合成" cancelText="取消" confirmLoading={composing} okButtonProps={{ disabled: composeShots.length < 1 }}>
                 <div className="flex flex-col gap-3 py-2 text-sm">
                     <div>
-                        <div className="mb-1 text-muted-foreground">按顺序合成这些镜头的当前视频</div>
+                        <div className="mb-1 text-muted-foreground">仅合成当前视频已通过人工审片的镜头</div>
                         <Checkbox.Group value={composeShots} onChange={(values) => setComposeShots(values as string[])} options={shotsWithRender.map((id) => ({ label: id, value: id }))} />
                     </div>
+                    {shots.length > composeShots.length ? <p className="text-xs text-amber-600 dark:text-amber-400">本次预览未包含 {shots.length - composeShots.length} 个计划镜头；请核对待审、驳回或未生成的镜头后再制作正式成片。</p> : null}
                     <div className="flex items-center gap-2">镜头之间：<Select value={composeTransition} onChange={setComposeTransition} className="w-40" options={[{ value: "cut", label: "硬切" }, { value: "fade", label: "短交叉淡化" }]} />{composeTransition === "fade" ? <><InputNumber min={0.05} max={1} step={0.05} value={composeTrim.fade} onChange={(value) => setComposeTrim((current) => ({ ...current, fade: value ?? 0.15 }))} />秒</> : null}</div>
                     <div className="flex items-center gap-2">每个镜头裁掉：开头<InputNumber min={0} max={2} step={0.1} value={composeTrim.head} onChange={(value) => setComposeTrim((current) => ({ ...current, head: value ?? 0 }))} />秒，结尾<InputNumber min={0} max={2} step={0.1} value={composeTrim.tail} onChange={(value) => setComposeTrim((current) => ({ ...current, tail: value ?? 0 }))} />秒</div>
-                    <div className="text-xs text-muted-foreground">沿用各镜头自带的音轨；成片保存在任务的 renders/preview 下，旧版本保留，不会改动镜头视频。</div>
+                    <div className="text-xs text-muted-foreground">沿用各镜头自带的音轨；预览保存在任务的 renders/preview 下，旧版本保留，不会改动镜头视频。</div>
                 </div>
             </Modal>
         </main>

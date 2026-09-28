@@ -8,7 +8,7 @@ import { createReadStream } from 'node:fs';
 import { extname, join, resolve, relative, sep } from 'node:path';
 import { listJobs, getJobDetail, getJobRunLog } from './job-store.mjs';
 import {
-  createJob, patchShotField, saveCanvasLayout, submitShot, preflightBatchSubmission, uploadJobAsset,
+  createJob, patchShotField, submitShot, preflightBatchSubmission, uploadJobAsset,
   publishShotAudio, pollShot, canvasGenerate, canvasGenerationStatus, reconcileUnconfirmedSubmissions,
   resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob, readBinding, syncRequestPlan
 } from './job-actions.mjs';
@@ -60,7 +60,7 @@ async function tokenFromLocalConfig() {
 // cannot spin forever or flood run-log.jsonl.
 const activePolls = new Set();
 function schedulePollShot(jobId, shotId, taskId, token, delayMs = 5000) {
-  if (activePolls.has(taskId)) return;
+  if (activePolls.has(taskId)) return false;
   activePolls.add(taskId);
   let errors = 0;
   const tick = async () => {
@@ -75,6 +75,7 @@ function schedulePollShot(jobId, shotId, taskId, token, delayMs = 5000) {
     setTimeout(tick, Math.min(60000, 5000 * 2 ** Math.min(errors, 4)));
   };
   setTimeout(tick, delayMs);
+  return true;
 }
 
 async function serveFile(filePath, contentType, res, { download = false, allowRange = false } = {}, rangeHeader = '') {
@@ -99,8 +100,9 @@ async function serveFile(filePath, contentType, res, { download = false, allowRa
 
 async function resumePendingShots(onlyJobId) {
   const token = await tokenFromLocalConfig();
-  if (!token) return 0;
+  if (!token) return { resumed: 0, alreadyRunning: 0, tokenConfigured: false };
   let resumed = 0;
+  let alreadyRunning = 0;
   for (const entry of await readdir(allJobsRoot, { withFileTypes: true }).catch(() => [])) {
     if (!entry.isDirectory() || entry.name.startsWith('_') || (onlyJobId && entry.name !== onlyJobId)) continue;
     const jobId = entry.name;
@@ -116,10 +118,13 @@ async function resumePendingShots(onlyJobId) {
     const shots = Array.isArray(plan.shots) ? plan.shots : [{ shot_id: 'MAIN' }];
     for (const shot of shots) {
       const run = Array.isArray(plan.shots) ? state.shots?.[shot.shot_id] : state;
-      if (run?.task_id && ['QUEUED', 'RUNNING'].includes(run.status)) { schedulePollShot(jobId, shot.shot_id, run.task_id, token, 1000); resumed += 1; }
+      if (run?.task_id && ['QUEUED', 'RUNNING'].includes(run.status)) {
+        if (schedulePollShot(jobId, shot.shot_id, run.task_id, token, 1000)) resumed += 1;
+        else alreadyRunning += 1;
+      }
     }
   }
-  return resumed;
+  return { resumed, alreadyRunning, tokenConfigured: true };
 }
 
 const decode = value => decodeURIComponent(value);
@@ -207,12 +212,6 @@ const server = createServer(async (req, res) => {
       if (!body.field || body.value === undefined) return sendJson(res, 400, { error: 'Body must include { field, value }' });
       return sendJson(res, 200, await patchShotField(allJobsRoot, jobId, decode(shotField[2]), body.field, body.value));
     }
-    const canvasLayout = route(req, 'PATCH', /^\/api\/jobs\/([^/]+)\/canvas$/, url);
-    if (canvasLayout) {
-      const jobId = decode(canvasLayout[1]);
-      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
-      return sendJson(res, 200, await saveCanvasLayout(allJobsRoot, jobId, await readJsonBody(req)));
-    }
     const assetUpload = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/assets$/, url);
     if (assetUpload) {
       const jobId = decode(assetUpload[1]);
@@ -270,7 +269,7 @@ const server = createServer(async (req, res) => {
     if (resumePoll) {
       const jobId = decode(resumePoll[1]);
       if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
-      return sendJson(res, 200, { resumed: await resumePendingShots(jobId) });
+      return sendJson(res, 200, await resumePendingShots(jobId));
     }
 
     // mode "probe": submit only the first pending shot so material/identity problems show up

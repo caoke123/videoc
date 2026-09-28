@@ -126,7 +126,7 @@ async function latestMtime(jobDir, files, dirs) {
 
 
 // Human review is append-only in run-log.jsonl; a shot needs review until a decision matches its current task id.
-async function readReviewSummary(jobDir, runState) {
+export async function readReviewSummary(jobDir, runState) {
   const text = await readFile(join(jobDir, 'run-log.jsonl'), 'utf8').catch(() => '');
   const latest = new Map();
   for (const line of text.split('\n')) {
@@ -206,7 +206,6 @@ export async function getJobDetail(jobsRoot, jobId) {
   const review = files.includes('review.json') ? await readJsonIfExists(join(jobDir, 'review.json')) : null;
   const runState = await findRunStateFile(jobDir, files);
   const runLogTail = files.includes('run-log.jsonl') ? await readJsonlTail(join(jobDir, 'run-log.jsonl'), 200) : [];
-  const canvasLayout = files.includes('canvas-layout.json') ? await readJsonIfExists(join(jobDir, 'canvas-layout.json')) : null;
   const status = statusFromRunState(runState, shotPlan?.shots?.length || requestPlan?.shots?.length || (requestPlan?.request ? 1 : undefined)) || (runLogTail.length ? normalizeStatus(runLogTail[runLogTail.length - 1]?.status) : null);
 
   const projectFiles = await listFilesRecursive(jobDir);
@@ -228,7 +227,6 @@ export async function getJobDetail(jobsRoot, jobId) {
     review_status: await readReviewSummary(jobDir, runState),
     run_state: runState,
     run_log: runLogTail,
-    canvas_layout: canvasLayout,
     status,
     assets: dirs.includes('assets') ? await listAssetTree(jobDir) : {},
     renders: dirs.includes('renders') ? await listRenderTree(jobDir) : {},

@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process';
 import { readFile, readdir, stat, mkdir, rename, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { appendJobEvent } from './job-actions.mjs';
+import { readReviewSummary } from './job-store.mjs';
 
 const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';
 const FFPROBE = process.env.FFPROBE_PATH || 'ffprobe';
@@ -73,11 +74,19 @@ export async function composeCut(jobsRoot, jobId, input = {}) {
   if (audioPath && (audioPath.startsWith('/') || audioPath.split('/').some(part => !part || part === '..'))) throw new Error('配音路径不合法');
   if (composing.has(jobId)) throw new Error('这个任务正在合成，请稍后再试');
 
+  const runState = await readFile(join(jobDir, `${jobId}-run-state.json`), 'utf8').then(JSON.parse).catch(() => null);
+  const review = await readReviewSummary(jobDir, runState);
   const clips = [];
   for (const [index, shot] of shots.entries()) {
     const shotId = String(shot.shot_id || '');
     if (!SHOT_ID.test(shotId)) throw new Error(`第 ${index + 1} 个镜头的 shot_id 不合法`);
+    const current = runState?.shots?.[shotId] || (shotId === 'MAIN' ? runState : null);
+    if (String(current?.status || '').toUpperCase() !== 'SUCCESS' || !current?.task_id || review.shots[shotId]?.state !== 'accepted') {
+      throw new Error(`镜头 ${shotId} 当前视频尚未通过人工审片，不能合成`);
+    }
+    if (shot.run_id && shot.run_id !== current.task_id) throw new Error(`镜头 ${shotId} 只能合成当前已接受的版本`);
     const render = await currentRender(jobDir, jobId, { ...shot, shot_id: shotId });
+    if (render.run_id !== current.task_id) throw new Error(`镜头 ${shotId} 的当前视频版本与审片版本不一致`);
     const info = await probe(render.file);
     const head = num(shot.trim_head, 0, 0, 5);
     const tail = num(shot.trim_tail, 0, 0, 5);

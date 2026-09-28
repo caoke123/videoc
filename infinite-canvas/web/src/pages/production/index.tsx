@@ -104,7 +104,8 @@ export default function ProductionJobsPage() {
                 <div className="space-y-4 py-3">
                     <label className="block text-sm">任务名称<Input className="mt-2" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="例如：秋季通勤创意" maxLength={80} /></label>
                     <label className="block text-sm">产品类目<Select className="mt-2 w-full" value={categoryId} onChange={setCategoryId} options={categories.map((item) => ({ value: item.category_id, label: `${item.name}${item.status === "draft" ? "（草稿类目）" : ""}` }))} /></label>
-                    <label className="block text-sm">创意形式<Select className="mt-2 w-full" value={formatId} onChange={setFormatId} options={formats.map((item) => ({ value: item.format_id, label: `${item.name}${item.status === "draft" ? "（试验形式）" : ""}` }))} /></label>
+                    <label className="block text-sm">创意形式<Select className="mt-2 w-full" value={formatId} onChange={setFormatId} options={formats.map((item) => ({ value: item.format_id, label: `${item.name}${item.media_type === "image" && !item.workflow_id ? "（仅分镜设计，暂不能提交生成）" : item.status === "draft" ? "（试验形式）" : ""}` }))} /></label>
+                    {formats.find((item) => item.format_id === formatId)?.media_type === "image" && !formats.find((item) => item.format_id === formatId)?.workflow_id ? <p className="text-xs text-amber-600 dark:text-amber-400">此形式尚未配置图像工作流，可保存分镜和素材，暂不能在任务页提交生成。</p> : null}
                     <p className="text-xs text-muted-foreground">这里建立任务记录：每个镜头预留一个位置，不会预先生成占位文件。按镜头实际需要准备最小素材包（产品原图、必要的人物或场景参考），在“我的画布”里搭节点、填提示词，或交给 Codex 准备；明确提交后才会调用生成服务，生成后在任务页人工审片。</p>
                 </div>
             </Modal>

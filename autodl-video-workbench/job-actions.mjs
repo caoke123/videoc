@@ -98,24 +98,10 @@ export async function createJob(jobsRoot, { title, categoryId, formatId }, { for
     writeJsonAtomic(join(jobDir, 'brief.json'), { schema_version: 2, job_id: jobId, creative_concept: String(title || '').trim() || '新创意任务', category_id: categoryId, format_id: formatId, pipeline_id: format.pipeline_id || 'standard-video-v1', created_at: new Date().toISOString(), review_policy: 'human_first' }),
     writeJsonAtomic(join(jobDir, 'shot-plan.json'), { job_id: jobId, format_id: formatId, shots: shots.map((shot, index) => ({ shot_id: shot.shot_id, ...(isStoryboard ? {} : { start_seconds: index * shotDuration, end_seconds: (index + 1) * shotDuration }), references: [], status: 'planned' })) }),
     writeJsonAtomic(join(jobDir, 'request-plan.json'), { job_id: jobId, derived_from: 'shot-plan', media_type: format.media_type || 'video', workflow_id: format.workflow_id || null, ...(!isStoryboard ? { resolution: '768p竖(768*1376)', audio_reference: 'https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav', ...(format.output || format.total_duration_seconds ? { output: { ...(format.output || {}), ...(format.total_duration_seconds ? { duration_seconds: Number(format.total_duration_seconds) } : {}) } } : {}) } : {}), shots }),
-    writeJsonAtomic(join(jobDir, `${jobId}-run-state.json`), { status: 'PREPARING', shots: {}, updated_at: new Date().toISOString() }),
-    writeJsonAtomic(join(jobDir, 'canvas-layout.json'), { nodes: [], connections: [] })
+    writeJsonAtomic(join(jobDir, `${jobId}-run-state.json`), { status: 'PREPARING', shots: {}, updated_at: new Date().toISOString() })
   ]);
   await appendRunLog(jobDir, { job_id: jobId, actor: 'user', type: 'job_created', category_id: categoryId, format_id: formatId, shot_count: count });
   return { job_id: jobId };
-}
-
-export async function saveCanvasLayout(jobsRoot, jobId, layout) {
-  if (!Array.isArray(layout?.nodes) || !Array.isArray(layout?.connections)) throw new Error('画布结构无效');
-  const jobDir = join(jobsRoot, jobId);
-  if (!(await stat(jobDir).catch(() => null))?.isDirectory()) throw new Error('任务不存在');
-  const path = join(jobDir, 'canvas-layout.json');
-  const before = await readJson(path).catch(() => ({ nodes: [], connections: [] }));
-  if (JSON.stringify(before) === JSON.stringify(layout)) return { changed: false };
-  // Layout is presentation state, not an audit event: it lives only in canvas-layout.json.
-  // (It used to be appended to run-log.jsonl on every drag and made up ~96% of some logs.)
-  await writeJsonAtomic(path, layout);
-  return { changed: true };
 }
 
 export async function uploadJobAsset(jobsRoot, jobId, fileName, mimeType, bytes, shotId) {
@@ -334,6 +320,7 @@ export async function patchShotField(jobsRoot, jobId, shotId, field, value) {
   const planPath = join(jobDir, 'request-plan.json');
   return withPlanLock(jobDir, async () => {
     const plan = await readJson(planPath).catch(() => { throw new Error('该任务没有 request-plan.json，不支持人工编辑提示词'); });
+    if (plan.derived_from === 'shot-plan') throw new Error('新任务请在“我的画布”编辑提示词；此接口仅保留给旧任务');
     const normalized = normalizePlan(plan);
     const shot = normalized.getShot(shotId);
     if (!shot) throw new Error(`Shot "${shotId}" not found in request-plan.json`);
@@ -393,7 +380,7 @@ export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
   const state = stateFileName ? await readJson(join(jobDir, stateFileName)).catch(() => ({})) : {};
   const isFreshShot = shot => {
     const run = state.shots?.[shot.shot_id];
-    return !run || (!run.task_id && !run.submitted_at && !run.output_file && ['PLANNED', 'PREPARING'].includes(run.status || 'PLANNED'));
+    return !run || (!run.task_id && !run.output_file && (['PLANNED', 'PREPARING'].includes(run.status || 'PLANNED') || (run.status === 'SUBMIT_FAILED' && run.retry_approved === true)));
   };
   const pending = plan.shots.filter(isFreshShot);
   if (!pending.length) throw new Error('所有镜头已有任务编号；批量提交不会重复生成');
@@ -464,7 +451,7 @@ export async function submitShot(jobsRoot, jobId, shotId, { token, reason }) {
   // Persist the intent BEFORE the paid call. If the process dies or the connection drops
   // after AutoDL created the task but before we saved its id, the shot stays SUBMITTING
   // and is never resent automatically (see the guard above and reconcileUnconfirmedSubmissions).
-  await writeShotRunState(jobDir, files, shotId, normalized.shape, { status: 'SUBMITTING', submit_intent_at: new Date().toISOString(), submit_error: null });
+  await writeShotRunState(jobDir, files, shotId, normalized.shape, { status: 'SUBMITTING', submit_intent_at: new Date().toISOString(), submit_error: null, retry_approved: false });
   let response;
   try {
     response = await fetch(`${autodlApiRoot()}/api/v1/comfyui/comfyui_workflow/${normalized.workflowId}`, {
@@ -738,7 +725,7 @@ export async function resolveUnconfirmedSubmit(jobsRoot, jobId, shotId, { taskId
   const run = await currentShotRunState(jobDir, files, shotId, 'multi');
   if (!['SUBMITTING', 'NEEDS_ATTENTION'].includes(run?.status)) throw new Error('该镜头没有待核对的提交');
   if (discard === true) {
-    await writeShotRunState(jobDir, files, shotId, 'multi', { status: 'SUBMIT_FAILED', submit_intent_at: null, submit_error: '人工确认 AutoDL 未创建任务' });
+    await writeShotRunState(jobDir, files, shotId, 'multi', { status: 'SUBMIT_FAILED', submit_intent_at: null, submit_error: '人工确认 AutoDL 未创建任务', retry_approved: true });
     await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, actor: 'user', type: 'submit_discarded' });
     return { resolved: 'discarded' };
   }
@@ -814,7 +801,7 @@ export async function recordShotReview(jobsRoot, jobId, shotId, { decision, cate
   if (decision === 'rejected' && !REVIEW_CATEGORIES.has(category)) throw new Error(`驳回原因必须是：${[...REVIEW_CATEGORIES].join('、')}`);
   const jobDir = join(jobsRoot, jobId);
   const run = await currentShotRunState(jobDir, await listFileNames(jobDir), shotId, 'multi');
-  if (!run?.task_id) throw new Error('该镜头还没有生成结果，无法审核');
+  if (!run?.task_id || String(run.status || '').toUpperCase() !== 'SUCCESS') throw new Error('该镜头当前视频尚未生成成功，无法审核');
   await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, run_id: run.task_id, actor: 'user', type: `review_${decision}`, ...(decision === 'rejected' ? { category } : {}), note: String(note || '').slice(0, 500) || null });
   return { recorded: `review_${decision}`, runId: run.task_id };
 }

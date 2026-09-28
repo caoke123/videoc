@@ -15,7 +15,6 @@ export type ProductionJobDetail = {
     request_plan: { media_type?: "image" | "video"; workflow_id?: string | null; resolution?: string; preparation_status?: string; shots?: Array<Record<string, unknown>>; request?: Record<string, unknown> } | null;
     run_state: { status?: string; shots?: Record<string, Record<string, unknown>>; [key: string]: unknown } | null;
     run_log: Array<Record<string, unknown>>;
-    canvas_layout: ProductionLayout | null;
     status: string | null;
     review_status?: ProductionReview;
     asset_files: string[];
@@ -34,9 +33,8 @@ export const listProductionCategories = () => request<ProductionCategory[]>("/ap
 export const getProductionJob = (jobId: string) => request<ProductionJobDetail>(`/api/jobs/${encodeURIComponent(jobId)}`);
 export const getProductionRunLog = (jobId: string) => request<Array<Record<string, unknown>>>(`/api/jobs/${encodeURIComponent(jobId)}/run-log`);
 export const createProductionJob = (body: { title: string; categoryId: string; formatId: string }) => request<{ job_id: string }>("/api/jobs", { method: "POST", body: JSON.stringify(body) });
-export const saveProductionLayout = (jobId: string, layout: ProductionLayout) => request<{ changed: boolean }>(`/api/jobs/${encodeURIComponent(jobId)}/canvas`, { method: "PATCH", body: JSON.stringify(layout) });
-export const saveProductionPrompt = (jobId: string, shotId: string, prompt: string) => request(`/api/jobs/${encodeURIComponent(jobId)}/shots/${encodeURIComponent(shotId)}`, { method: "PATCH", body: JSON.stringify({ field: "prompt", value: prompt }) });
-export const submitProductionShot = (jobId: string, shotId: string) => request<{ taskId: string; status: string }>(`/api/jobs/${encodeURIComponent(jobId)}/shots/${encodeURIComponent(shotId)}/submit`, { method: "POST", body: JSON.stringify({ reason: "Infinite Canvas 手动重新生成" }) });
+export const resolveProductionSubmit = (jobId: string, shotId: string, body: { task_id?: string; discard?: boolean }) => request<{ resolved: "adopted" | "discarded"; taskId?: string }>(`/api/jobs/${encodeURIComponent(jobId)}/shots/${encodeURIComponent(shotId)}/resolve-submit`, { method: "POST", body: JSON.stringify(body) });
+export const resumeProductionPolling = (jobId: string) => request<{ resumed: number; alreadyRunning: number; tokenConfigured: boolean }>(`/api/jobs/${encodeURIComponent(jobId)}/resume-poll`, { method: "POST", body: JSON.stringify({}) });
 export const publishProductionAudio = (jobId: string, shotId: string) => request<{ urls: string[] }>(`/api/jobs/${encodeURIComponent(jobId)}/shots/${encodeURIComponent(shotId)}/publish-audio`, { method: "POST", body: JSON.stringify({}) });
 export const preflightProductionBatch = (jobId: string) => request<ProductionBatchPlan>(`/api/jobs/${encodeURIComponent(jobId)}/submit-batch`, { method: "POST", body: JSON.stringify({ dry_run: true }) });
 export const submitProductionBatch = (jobId: string) => request<ProductionBatchResult>(`/api/jobs/${encodeURIComponent(jobId)}/submit-batch`, { method: "POST", body: JSON.stringify({}) });

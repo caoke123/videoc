@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -16,6 +17,20 @@ def main() -> int:
     if len(sys.argv) != 2:
         raise SystemExit("usage: validate_batch.py <job-dir>")
     root = Path(sys.argv[1]).resolve()
+    request_path = root / "request-plan.json"
+    if request_path.exists():
+        try:
+            request_plan = load(request_path)
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"ERROR: invalid request-plan.json: {exc}")
+            return 1
+        if request_plan.get("derived_from") == "shot-plan":
+            script = Path(__file__).resolve().parents[4] / "autodl-video-workbench" / "scripts" / "validate-delivery.mjs"
+            try:
+                return subprocess.run(["node", str(script), str(root)], check=False).returncode
+            except OSError as exc:
+                print(f"ERROR: cannot run AutoDL validation: {exc}")
+                return 1
     errors = []
     for name in ["brief.json", "shot-plan.json", "review.json", "run-log.jsonl"]:
         if not (root / name).exists():
