@@ -5,6 +5,17 @@ description: Implemented changes that still need manual verification
 
 # Pending Tests
 
+本次新增的生产任务工作台需要人工验收：
+
+- 从 Infinite Canvas「任务历史」创建 UGC/TVC/9 宫格任务，确认只创建任务记录和计划文件，不预建空资产或成片目录；刷新后列表、镜头、日志和成片版本仍可读取。
+- 任务页应保持只读：只能查看、批量提交、上传并发布选中镜头的配音、合成和人工审片；改提示词、换素材、重抽和画布连线必须进入「我的画布」。打开或切回画布时，任务后来新增的镜头应只补入画布，已删的镜头节点也应重新出现。
+- 在「我的画布」修改提示词、素材或重抽后，确认 `run-log.jsonl` 记录操作，任务页显示当前版本；重新提交生成的新视频不能覆盖旧 task ID 的视频文件。
+- 批量提交和单镜头提交前都应完整校验。启用派生的新任务应从 `shot-plan.json` 同步镜头时长、起点和参考图到 `request-plan.json` 并写入历史；简报目标时长与镜头总时长差距过大时应警告。
+- 每个完成镜头都应显示「待人工审片」，可接受或按原因驳回；重新生成后，先前的审片结论不能沿用到新视频版本。
+- 9 宫格应显示 3×3 图像分镜节点并支持资产/提示词/日志/布局留档；因尚未登记已验证的 AutoDL 图像工作流，确认它不会调用 H3 视频工作流。
+- 本次 AutoDL 接入实测生成的 3 秒预览仅用于链路验证，仍需人工检查产品身份、安全带空间关系、动作和原生语音；通过前不得用于正式成片。
+- 带本地配音的任务应先点选对应镜头再上传；未发布为 URL 前应显示“等待发布配音”并禁止提交。发布时应逐镜头写入 `ref_audio_urls[]` 和操作日志，随后可直接提交，不再出现重复确认。
+
 The current release needs manual verification in these areas:
 
 - Canvas image previews: canvas image nodes, the left element list, the node reference bar, my-assets cards, the asset picker, image workbench result cards and history thumbnails, and the image/video workbench reference strips all render from a preview capped at a 768px long edge, so image-heavy views no longer decode the originals. Previews live locally only: canvas data, asset data, generation history, exported zips, and WebDAV sync must never contain preview content, and previews should be cleaned up when an image is deleted or no longer used. Opening the full-size image, editing, downloading, exporting, and generation references must keep using the original; an image that is already at or under 768px, exists only as a remote URL, or uses a custom cover should fall back to the original.

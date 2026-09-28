@@ -10,6 +10,8 @@ import HomePage from "@/pages/home";
 import ImagePage from "@/pages/image";
 import NotFound from "@/pages/not-found";
 import PromptsPage from "@/pages/prompts";
+import ProductionJobsPage from "@/pages/production";
+import ProductionJobPage from "@/pages/production/job";
 import VideoPage from "@/pages/video";
 
 export const router = createBrowserRouter([
@@ -28,6 +30,8 @@ export const router = createBrowserRouter([
             { path: "/prompts", element: <PromptsPage /> },
             { path: "/canvas", element: <CanvasPage /> },
             { path: "/canvas/:id", element: <CanvasProjectPage /> },
+            { path: "/production", element: <ProductionJobsPage /> },
+            { path: "/production/:jobId", element: <ProductionJobPage /> },
             { path: "/config", element: <ConfigPage /> },
         ],
     },
