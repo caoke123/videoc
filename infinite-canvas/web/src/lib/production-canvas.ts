@@ -165,7 +165,7 @@ export function taskAdditions(existing: CanvasNodeData[], existingConnections: C
             if (!haveEdge.has(`${assetId}>${id}`)) { connections.push({ id: `edge:${assetId}:${id}`, fromNodeId: assetId, toNodeId: id }); haveEdge.add(`${assetId}>${id}`); }
         }
     }
-    detail.asset_files.filter((path) => /^renders\/preview\/final-[^/]+\.mp4$/i.test(path)).sort().forEach((path, index) => {
+    detail.asset_files.filter((path) => /^renders\/preview\/final-[^/]+\.mp4$/i.test(path) && !path.includes(".partial")).sort().forEach((path, index) => {
         const id = `final:${path}`;
         if (!known.has(id)) {
             const stamp = /final-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/.exec(path);

@@ -758,6 +758,7 @@ export async function validateJobFiles(jobsRoot, jobId, { shotIds = null } = {})
   const shotPlan = await readJson(join(jobDir, 'shot-plan.json')).catch(() => null);
   const brief = await readJson(join(jobDir, 'brief.json')).catch(() => null);
   const shots = Array.isArray(plan.shots) ? plan.shots : [];
+  let checkShots = shots;
   if (!plan.workflow_id) errors.push('request-plan 未配置 workflow_id');
   const ids = shots.map(shot => shot.shot_id);
   if (ids.some(id => typeof id !== 'string' || !/^(S\d+|G\d+)$/.test(id))) errors.push(`镜头 id 必须是 S01…或 G1…，当前：${JSON.stringify(ids)}`);
@@ -766,14 +767,17 @@ export async function validateJobFiles(jobsRoot, jobId, { shotIds = null } = {})
     const planned = shotPlan.shots.map(shot => shot.shot_id);
     if (JSON.stringify([...planned].sort()) !== JSON.stringify([...ids].sort())) errors.push(`shot-plan 与 request-plan 的镜头 id 不一致：${JSON.stringify(planned)} ≠ ${JSON.stringify(ids)}`);
     // Fields that request-plan derives from shot-plan must agree with it.
-    const drift = deriveRequestFromShotPlan(JSON.parse(JSON.stringify(plan)), shotPlan, shotIds);
+    const effective = JSON.parse(JSON.stringify(plan));
+    const drift = deriveRequestFromShotPlan(effective, shotPlan, shotIds);
+    // A derived task is synced before every submit, so judge its shots as they will be after that sync.
+    if (plan.derived_from === 'shot-plan') checkShots = effective.shots;
     for (const change of drift) warnings.push(`${change.shot_id}：${change.field} 与 shot-plan 不一致${plan.derived_from === 'shot-plan' ? '（提交前会自动同步）' : '（该任务未启用派生，请手动对齐）'}`);
   }
   if (Number(brief?.target_duration_seconds) > 0 && plan.media_type !== 'image' && shots.length) {
-    const total = shots.reduce((sum, shot) => sum + (Number(shot.duration) || 0), 0);
+    const total = checkShots.reduce((sum, shot) => sum + (Number(shot.duration) || 0), 0);
     if (Math.abs(total - Number(brief.target_duration_seconds)) > 1.5) warnings.push(`镜头总时长 ${total} 秒，与简报目标 ${brief.target_duration_seconds} 秒相差较大`);
   }
-  for (const shot of shots) {
+  for (const shot of checkShots) {
     if (shotIds && !shotIds.includes(shot.shot_id)) continue;
     const tag = String(shot.shot_id);
     if (plan.media_type !== 'image') {

@@ -102,7 +102,7 @@ function buildLayout(detail: ProductionJobDetail): ProductionLayout {
         const col = index % 3;
         return [{ id: `render:${path}`, kind: "render", title: `${shotId}｜生成结果`, shotId, status: normalizeStatus(run?.status || "SUCCESS"), path, x: grid ? col * 460 : index * 460, y: (grid ? row * 340 : 0) + 250 }];
     });
-    const finalPath = detail.asset_files.filter((path) => /^renders\/preview\/(?:final|.*review).*\.mp4$/i.test(path)).sort().pop();
+    const finalPath = detail.asset_files.filter((path) => /^renders\/preview\/(?:final|.*review).*\.mp4$/i.test(path) && !path.includes(".partial")).sort().pop();
     const finalPreviewNode: ProductionNode | null = finalPath
         ? { id: "render:final-preview", kind: "render", title: "剪辑预览", status: "SUCCESS", path: finalPath, x: shots.length * 460, y: 250 }
         : null;
@@ -206,6 +206,7 @@ export default function ProductionJobPage() {
     const activeNode = layout.nodes.find((node) => node.id === activeId) || null;
     const shots = detail?.request_plan?.shots || (detail?.request_plan?.request ? [{ shot_id: "MAIN", ...detail.request_plan.request }] : detail?.shot_plan?.shots || []);
     const [reviewing, setReviewing] = useState<string | null>(null);
+    const [bulkAccepting, setBulkAccepting] = useState(false);
     const [recoveryTaskId, setRecoveryTaskId] = useState("");
     const [recoveringShot, setRecoveringShot] = useState<string | null>(null);
     const [resumingPolling, setResumingPolling] = useState(false);
@@ -357,6 +358,29 @@ export default function ProductionJobPage() {
         finally { setResumingPolling(false); }
     };
 
+    const pendingReviewShots = Object.entries(detail?.review_status?.shots || {}).filter(([, item]) => item.state === "pending").map(([shotId]) => shotId);
+    const acceptAllPending = () => {
+        const targets = pendingReviewShots;
+        if (!targets.length) return;
+        modal.confirm({
+            title: `确认这 ${targets.length} 个镜头的当前视频都没问题？`,
+            content: `${targets.join("、")} 会被记为“已接受”（备注：批量接受）。之后重新生成的版本需要重新审片。`,
+            okText: "全部接受",
+            cancelText: "取消",
+            onOk: async () => {
+                setBulkAccepting(true);
+                const failed: string[] = [];
+                for (const shotId of targets) {
+                    try { await reviewProductionShot(jobId, shotId, { decision: "accepted", note: "批量接受" }); } catch { failed.push(shotId); }
+                }
+                setBulkAccepting(false);
+                if (failed.length) message.warning(`已接受 ${targets.length - failed.length} 个；${failed.join("、")} 记录失败`);
+                else message.success(`已接受 ${targets.length} 个镜头`);
+                await refresh();
+            },
+        });
+    };
+
     if (loading) return <div className="flex h-full items-center justify-center bg-background"><Spin /></div>;
     if (!detail) return <Empty className="py-20" description="任务不存在" />;
 
@@ -377,6 +401,7 @@ export default function ProductionJobPage() {
                     {detail.request_plan?.media_type !== "image" && <Button type="primary" icon={<WandSparkles className="size-4" />} loading={submittingBatch} disabled={!pendingBatchCount || audioPending} onClick={() => void submitBatch()}>{audioPending ? "等待发布配音" : !pendingBatchCount && unconfirmedShotIds.length ? "核对后可继续提交" : `批量提交 ${pendingBatchCount} 镜头`}</Button>}
                     {unconfirmedShotIds.length > 0 && <Button onClick={() => { const id = `shot:${unconfirmedShotIds[0]}`; setActiveId(id); setSelected([id]); }}>核对提交 {unconfirmedShotIds.length}</Button>}
                     {hasPendingPolling && <Button loading={resumingPolling} onClick={() => void resumePolling()}>继续轮询</Button>}
+                    {pendingReviewShots.length > 0 && <Button icon={<Check className="size-4" />} loading={bulkAccepting} onClick={acceptAllPending}>全部接受 {pendingReviewShots.length}</Button>}
                     <Button icon={<Film className="size-4" />} disabled={!shotsWithRender.length} onClick={openCompose}>合成审片预览</Button>
                     <Button type="primary" icon={<ExternalLink className="size-4" />} loading={openingCanvas} onClick={() => void openInMyCanvas()}>在我的画布中打开</Button>
                     <Button icon={<RefreshCw className="size-4" />} onClick={() => void refresh()}>刷新</Button>
