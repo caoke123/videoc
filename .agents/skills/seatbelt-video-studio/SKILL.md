@@ -36,22 +36,21 @@ Use this as the `seatbelt-shoulder-pad` category supplement to `ecommerce-video-
 
 ## Job Flow
 
-1. **Brief**: record audience, platform, duration, copy, verified claims, prohibited claims, references, and delivery format.
-2. **Assets**: place originals in `assets/source/`; never overwrite them. Put approved derived assets in `assets/approved/`.
-   - For reference jobs, inspect the source video before writing the shot plan and preserve the analysis beside the job.
-3. **Creative**: compile hook, problem/context, reveal, visual proof, installed effect, and CTA.
-4. **Shot plan**: write `shot-plan.json`; assign generation mode, references, audio mode, end state, and DFCine workflow for every shot.
-5. **Image preparation**: generate characters/scenes and compose approved product references. Run the image benchmark when model choice is unresolved.
-6. **DFCine preparation**: inspect workflow guides and actual input labels before writing prompts. Build visible upload/reference/generation nodes and groups.
-   - For H3, compile each shot contract into a Ref2VA prompt with explicit reference roles, native audio direction, and a locked installed-product endpoint.
-7. **Asset self-check**: before promoting any generated visual, inspect it against the approved product, wearing-reference images, and `references/vehicle-spatial-rules.md`. First identify vehicle left/right, driver/passenger seat, camera direction, belt outboard origin, and inboard buckle; then inspect product geometry and occlusion. Reject severe continuity, geometry, seat-role, belt-routing, perspective, or installation artifacts; record the decision and reason. This check never auto-regenerates and does not replace human approval.
-8. **Run**: write prompts and params with dry run, ask for confirmation, run, wait, download, and record result paths.
-9. **Human review**: mark `accepted`, `needs_ai_review`, `regenerate`, or `post_fix`.
-10. **AI review on request**: inspect only the reported clip/time range; diagnose and propose fixes. Never auto-run the fix.
-11. **Post**: import the user's Seed Audio file, align captions to its actual timing, and assemble accepted clips and editable overlays in a Jianying Pro draft. Keep H3 native audio in source files but mute it in the final mix when replaced.
-12. **Validate**: run `../ecommerce-video-studio/scripts/validate_batch.py <job-dir>` before final delivery.
+Follow the shared ordered phases in `production/workflows/standard-video-production.md`; this category profile adds the following gates without changing their order:
 
-## DFCine Discipline
+1. **Evidence and brief**: confirm SKU identity, source product photo, installed-state reference for every installed depiction, audience, platform, duration, copy, verified/prohibited claims, and delivery format. Inspect a reference video before writing a shot plan when the job is `reference` or `hybrid`.
+2. **Script and shot breakdown**: write the concepts, selected hook, exact dialogue, character/scene/action contracts, timing, and `shot-plan.json` before visual generation.
+3. **Minimum asset package**: preserve originals in `assets/source/`; attach only references actually needed by a shot or provider. The scene alone does not decide the gate: a car interior, 4S showroom, store, or desk may show a standalone, handheld, or installed product. Require an approved installed-state reference for the exact SKU only when the shot depicts it installed or worn on a belt. Generate a keyframe only for uncertain composition, physical interaction, continuity, or provider input needs. Create reusable composites only when needed; candidates stay in `assets/generated/` until promotion.
+4. **Prompt and batch preflight**: read the actual workflow inputs and compile each shot with explicit reference roles and native audio direction. Check source identity, depicted product state, claims, reference order, paths, duration, and workflow once for the batch. For an installed depiction, apply `references/vehicle-spatial-rules.md` and verify seat, belt route, pad placement, scale, and occlusion against the approved installed reference. For a car scene with no installed product, check only the vehicle details visible and relevant to that shot. Do not impose vehicle geometry checks on unrelated scenes.
+5. **Approval boundary**: self-check and obtain human approval before promoting a generated image to authoritative SKU, installed-state, or other reusable reference status. Ephemeral storyboard/composition guides remain labeled candidates and can be viewed in one batch review; they do not each require separate approval or a duplicate approved copy. Paid/GPU generation starts only after explicit authorization for the named batch. Infinite Canvas automatically shows actual assets and results; it adds no layout or placeholder gate.
+6. **Run**: Agent or a human may submit the prepared batch; both routes use the same logged provider path. Wait, download, and record result paths without overwriting prior runs.
+7. **Human review**: mark `accepted`, `needs_ai_review`, `regenerate`, or `post_fix`.
+8. **AI review on request**: inspect only the reported clip/time range; diagnose and propose fixes. Never auto-run the fix.
+9. **Post and validate**: import the user's Seed Audio file, align captions to its actual timing, and assemble accepted clips and editable overlays in a Jianying Pro draft. Keep H3 native audio in source files but mute it in the final mix when replaced. Run `../ecommerce-video-studio/scripts/validate_batch.py <job-dir>` before final delivery.
+
+## DFCine Discipline (legacy jobs only)
+
+New jobs do not use DFCine: they submit through the local runner to AutoDL (`production/workflows/standard-video-production.md`). This section applies only when reproducing or continuing an old DFCine job.
 
 - Resolve visible titles through `dfcine_list_nodes`; pass UUIDs to node tools.
 - Read `dfcine_get_node_agent_guide`, `dfcine_get_node_inputs`, and `dfcine_get_node_params` before prompt writing.
@@ -63,13 +62,13 @@ Use this as the `seatbelt-shoulder-pad` category supplement to `ecommerce-video-
 
 ## Product Guardrails
 
-- Require at least one approved standalone product image and one approved installed-state image before product video generation.
+- Require an approved standalone product image for every depicted SKU. Require an approved installed-state image for that SKU only when a shot depicts the product installed or worn on a belt. A desk, car, showroom, or store scene showing the SKU separately or handheld does not need an installed-state reference.
 - Keep belt webbing continuous, flat, untwisted, and visually plausible.
 - Do not show opening, wrapping, fastening, repositioning, pulling, or installation.
 - Do not claim crash protection, injury reduction, certification, or replacement of the vehicle restraint system unless the user supplies verified evidence and approves the wording.
 - If an installed state is uncertain, stop and request human approval rather than inventing it.
 - Treat user-supplied wearing-reference images as authoritative for belt routing, shoulder-to-upper-chest placement, pad/belt scale, foreground/background depth, and plausible human posture. They do not override the target SKU's approved product-identity image.
-- Every generated asset must pass the asset self-check before promotion: the belt must visibly enter and exit the pad along one continuous centerline; the pad must sit on the shoulder-to-upper-chest belt segment; the pad/plush assembly must not float, penetrate the body, cross unrelated car parts, duplicate, detach, or receive impossible occlusion; faces, hands, and vehicle geometry must have no severe artifacts.
+- Before a generated installed-state image is promoted to an authoritative reference, check that the belt visibly enters and exits the pad along one continuous centerline; the pad sits on the shoulder-to-upper-chest belt segment; and the assembly does not float, penetrate the body, duplicate, detach, or receive impossible occlusion. Check faces, hands, and vehicle geometry when visible. For other generated authoritative assets, check only the facts and relationships they will establish.
 
 ## Image Strategy
 

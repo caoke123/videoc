@@ -1,5 +1,6 @@
 # AutoDL developer token; this repository is public.
 /production/config/autodl.env
+/production/config/media-store.env
 /production/config/autodl-runtime.json
 /production/config/autodl-watchdog.log
 /production/config/elevenlabs.env
@@ -43,3 +44,7 @@ autodl-video-workbench/web-dist/
 # infinite-canvas 评估分支：vendored 快照的构建产物/依赖，不进版本控制
 infinite-canvas/web/node_modules/
 infinite-canvas/web/dist/
+
+# 无限画布导出/合并出来的配置文件含各渠道 API Key，绝不入库
+infinite-canvas-config*.json
+autodl-video-workbench/runner.*.log
