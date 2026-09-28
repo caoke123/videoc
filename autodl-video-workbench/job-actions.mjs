@@ -92,17 +92,12 @@ export async function createJob(jobsRoot, { title, categoryId, formatId }, { for
     ref_images: [],
     prompt: ''
   }));
-  await mkdir(join(jobDir, 'assets', 'source'), { recursive: true });
-  await Promise.all([
-    mkdir(join(jobDir, 'assets', 'approved'), { recursive: true }),
-    mkdir(join(jobDir, 'assets', 'generated'), { recursive: true }),
-    mkdir(join(jobDir, 'renders', 'preview'), { recursive: true }),
-    mkdir(join(jobDir, 'renders', 'runs'), { recursive: true })
-  ]);
+  // Only the job directory itself: assets/, renders/ and audio/ are created by whatever first writes into them.
+  await mkdir(jobDir, { recursive: true });
   await Promise.all([
     writeJsonAtomic(join(jobDir, 'brief.json'), { schema_version: 2, job_id: jobId, creative_concept: String(title || '').trim() || '新创意任务', category_id: categoryId, format_id: formatId, pipeline_id: format.pipeline_id || 'standard-video-v1', created_at: new Date().toISOString(), review_policy: 'human_first' }),
-    writeJsonAtomic(join(jobDir, 'shot-plan.json'), { job_id: jobId, format_id: formatId, shots: shots.map((shot, index) => ({ ...shot, ...(isStoryboard ? {} : { start_seconds: index * shotDuration, end_seconds: (index + 1) * shotDuration }), references: [], status: 'planned' })) }),
-    writeJsonAtomic(join(jobDir, 'request-plan.json'), { job_id: jobId, media_type: format.media_type || 'video', workflow_id: format.workflow_id || null, ...(!isStoryboard ? { resolution: '768p竖(768*1376)', audio_reference: 'https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav', ...(format.output || format.total_duration_seconds ? { output: { ...(format.output || {}), ...(format.total_duration_seconds ? { duration_seconds: Number(format.total_duration_seconds) } : {}) } } : {}) } : {}), shots }),
+    writeJsonAtomic(join(jobDir, 'shot-plan.json'), { job_id: jobId, format_id: formatId, shots: shots.map((shot, index) => ({ shot_id: shot.shot_id, ...(isStoryboard ? {} : { start_seconds: index * shotDuration, end_seconds: (index + 1) * shotDuration }), references: [], status: 'planned' })) }),
+    writeJsonAtomic(join(jobDir, 'request-plan.json'), { job_id: jobId, derived_from: 'shot-plan', media_type: format.media_type || 'video', workflow_id: format.workflow_id || null, ...(!isStoryboard ? { resolution: '768p竖(768*1376)', audio_reference: 'https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav', ...(format.output || format.total_duration_seconds ? { output: { ...(format.output || {}), ...(format.total_duration_seconds ? { duration_seconds: Number(format.total_duration_seconds) } : {}) } } : {}) } : {}), shots }),
     writeJsonAtomic(join(jobDir, `${jobId}-run-state.json`), { status: 'PREPARING', shots: {}, updated_at: new Date().toISOString() }),
     writeJsonAtomic(join(jobDir, 'canvas-layout.json'), { nodes: [], connections: [] })
   ]);
@@ -134,6 +129,8 @@ export async function uploadJobAsset(jobsRoot, jobId, fileName, mimeType, bytes,
   const jobDir = join(jobsRoot, jobId);
   if (!(await stat(jobDir).catch(() => null))?.isDirectory()) throw new Error('任务不存在');
   const requestPath = join(jobDir, 'request-plan.json');
+  const shotPlanPath = join(jobDir, 'shot-plan.json');
+  const isAudio = ['.wav', '.mp3', '.m4a', '.aac'].includes(ext);
   return withPlanLock(jobDir, async () => {
     let plan = null;
     let shot = null;
@@ -145,22 +142,30 @@ export async function uploadJobAsset(jobsRoot, jobId, fileName, mimeType, bytes,
     // Identity is the content hash: an asset already in the library is referenced, and the same
     // bytes uploaded twice to one job land on the same file (no timestamp-named duplicates).
     const sha256 = createHash('sha256').update(bytes).digest('hex');
-    const libraryRef = (await buildLibraryIndex(jobsRoot)).get(sha256);
-    const assetPath = libraryRef || `assets/source/${sha256.slice(0, 12)}-${safeName || `asset${ext}`}`;
+    const libraryRef = isAudio ? null : (await buildLibraryIndex(jobsRoot)).get(sha256);
+    const folder = isAudio && shot ? 'audio' : 'assets/source';
+    const assetPath = libraryRef || `${folder}/${sha256.slice(0, 12)}-${safeName || `asset${ext}`}`;
     if (!libraryRef) {
-      await mkdir(join(jobDir, 'assets', 'source'), { recursive: true });
+      await mkdir(join(jobDir, folder), { recursive: true });
       await writeFile(join(jobDir, assetPath), bytes, { flag: 'wx' }).catch(error => { if (error.code !== 'EEXIST') throw error; });
     }
-    if (shot) {
-      if (!(shot.ref_images || []).includes(assetPath)) shot.ref_images = [...(shot.ref_images || []), assetPath];
-      await writeJsonAtomic(requestPath, plan);
-      const shotPlanPath = join(jobDir, 'shot-plan.json');
-      const shotPlan = await readJson(shotPlanPath).catch(() => null);
-      const plannedShot = shotPlan?.shots?.find(item => item.shot_id === shotId);
-      if (plannedShot) {
-        if (!(plannedShot.references || []).includes(assetPath)) plannedShot.references = [...(plannedShot.references || []), assetPath];
+    if (shot && Array.isArray(plan.shots)) {
+      if (isAudio) {
+        // Audio belongs to the submission, not to the editorial plan: it goes on the request shot and must be re-published.
+        shot.ref_audio = [assetPath];
+        delete shot.ref_audio_urls;
+        plan.preparation_status = 'audio_url_pending';
+      } else {
+        // References live in shot-plan.json; the request shot's ref_images are derived from it.
+        const shotPlan = await readJson(shotPlanPath).catch(() => ({ job_id: jobId, shots: [] }));
+        shotPlan.shots = shotPlan.shots || [];
+        let planned = shotPlan.shots.find(item => item.shot_id === shotId);
+        if (!planned) { planned = { shot_id: shotId, purpose: '人工补充', references: [], status: 'planned' }; shotPlan.shots.push(planned); }
+        if (!(planned.references || []).some(ref => refPath(ref) === assetPath)) planned.references = [...(planned.references || []), { path: assetPath, role: '人工上传' }];
+        deriveRequestFromShotPlan(plan, shotPlan, [shotId]);
         await writeJsonAtomic(shotPlanPath, shotPlan);
       }
+      await writeJsonAtomic(requestPath, plan);
     }
     await appendRunLog(jobDir, { job_id: jobId, actor: 'user', type: 'asset_import', asset_path: assetPath, shot_id: shotId || null, mime_type: actualMime, bytes: bytes.length });
     return { asset_path: assetPath, shot_id: shotId || null };
@@ -191,6 +196,70 @@ function normalizePlan(plan) {
     setShotPrompt: (shotId, prompt) => { if (shotId === SINGLE_SHOT_ID && plan.request) plan.request.prompt = prompt; }
   };
 }
+
+// ---- shot-plan is the single source for which shots exist, their timing and their references ----
+// request-plan.json keeps only what is specific to a submission (prompt, seed, audio URLs, workflow);
+// its duration / start_seconds / ref_images / reference_roles are derived from shot-plan.json.
+
+const IMAGE_EXT = /\.(png|jpe?g|webp)$/i;
+const refPath = ref => (typeof ref === 'string' ? ref : ref && typeof ref.path === 'string' ? ref.path : null);
+const refRole = ref => (ref && typeof ref === 'object' && typeof ref.role === 'string' ? ref.role : '');
+
+function plannedDuration(shot) {
+  const duration = Number(shot.duration);
+  if (Number.isFinite(duration) && duration > 0) return duration;
+  const start = Number(shot.start_seconds);
+  const end = Number(shot.end_seconds);
+  return Number.isFinite(start) && Number.isFinite(end) && end > start ? end - start : null;
+}
+
+// Applies shot-plan values onto the matching request-plan shots; returns what changed.
+function deriveRequestFromShotPlan(plan, shotPlan, onlyShotIds = null) {
+  const changes = [];
+  if (!Array.isArray(plan?.shots)) return changes;
+  for (const planned of shotPlan?.shots || []) {
+    if (onlyShotIds && !onlyShotIds.includes(planned.shot_id)) continue;
+    const shot = plan.shots.find(item => item.shot_id === planned.shot_id);
+    if (!shot) continue;
+    const set = (field, value) => {
+      if (JSON.stringify(shot[field]) === JSON.stringify(value)) return;
+      changes.push({ shot_id: shot.shot_id, field, before: shot[field] ?? null, after: value });
+      shot[field] = value;
+    };
+    const duration = plannedDuration(planned);
+    if (duration && plan.media_type !== 'image') set('duration', duration);
+    if (Number.isFinite(Number(planned.start_seconds))) set('start_seconds', Number(planned.start_seconds));
+    const images = (planned.references || []).filter(ref => IMAGE_EXT.test(refPath(ref) || ''));
+    if (images.length) {
+      set('ref_images', images.map(refPath));
+      if (images.some(refRole)) set('reference_roles', images.map(refRole));
+    }
+  }
+  return changes;
+}
+
+const withRoles = (paths, previous = [], fallbackRole) => paths.map(path => {
+  const known = previous.find(ref => refPath(ref) === path);
+  return { path, role: refRole(known) || fallbackRole };
+});
+
+async function syncRequestPlanLocked(jobDir, jobId, reason, onlyShotIds = null) {
+  const planPath = join(jobDir, 'request-plan.json');
+  const plan = await readJson(planPath).catch(() => null);
+  if (!plan || plan.derived_from !== 'shot-plan' || !Array.isArray(plan.shots)) return { derived: false, changes: [] };
+  const shotPlan = await readJson(join(jobDir, 'shot-plan.json')).catch(() => null);
+  const changes = deriveRequestFromShotPlan(plan, shotPlan, onlyShotIds);
+  if (changes.length) {
+    await writeJsonAtomic(planPath, plan);
+    await appendRunLog(jobDir, { job_id: jobId, type: 'request_plan_synced', reason: reason || null, changes });
+  }
+  return { derived: true, changes };
+}
+
+export const syncRequestPlan = (jobsRoot, jobId, options = {}) => {
+  const jobDir = join(jobsRoot, jobId);
+  return withPlanLock(jobDir, () => syncRequestPlanLocked(jobDir, jobId, options.reason || 'manual'));
+};
 
 async function asDataUri(path) {
   const ext = extname(path).toLowerCase();
@@ -313,6 +382,7 @@ async function writeShotRunState(jobDir, files, shotId, shape, patch) {
 export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
   if (!token) throw new Error('缺少 AUTODL_COMFYUI_TOKEN');
   const jobDir = join(jobsRoot, jobId);
+  await syncRequestPlan(jobsRoot, jobId, { reason: 'batch preflight' });
   const plan = await readJson(join(jobDir, 'request-plan.json'));
   if (plan.media_type && plan.media_type !== 'video') throw new Error('当前任务不是视频生成任务');
   if (!Array.isArray(plan.shots) || !plan.shots.length) throw new Error('批量提交需要多镜头 request-plan.json');
@@ -327,24 +397,16 @@ export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
   };
   const pending = plan.shots.filter(isFreshShot);
   if (!pending.length) throw new Error('所有镜头已有任务编号；批量提交不会重复生成');
-  const errors = [];
+  const check = await validateJobFiles(jobsRoot, jobId, { shotIds: pending.map(shot => shot.shot_id) });
+  const errors = [...check.errors];
   for (const shot of pending) {
-    if (!shot.shot_id || !String(shot.prompt || '').trim()) errors.push(`${shot.shot_id || '未知镜头'}：缺少提示词`);
-    if (!Number.isFinite(Number(shot.duration)) || Number(shot.duration) <= 0) errors.push(`${shot.shot_id || '未知镜头'}：时长无效`);
-    if (!Array.isArray(shot.ref_images) || !shot.ref_images.length) errors.push(`${shot.shot_id || '未知镜头'}：缺少参考图`);
-    for (const relative of shot.ref_images || []) {
-      const target = resolveAssetRef(jobsRoot, jobDir, relative);
-      if (!target || !(await access(target).then(() => true).catch(() => false))) {
-        errors.push(`${shot.shot_id || '未知镜头'}：参考图不可用 ${String(relative)}`);
-      }
-    }
     const localAudio = Array.isArray(shot.ref_audio) && shot.ref_audio.length > 0;
     const audioUrls = normalized.audioReferences(shot);
     if (localAudio && !audioUrls.length) errors.push(`${shot.shot_id || '未知镜头'}：配音未发布为 AutoDL 可访问 URL`);
     if (audioUrls.some(url => typeof url !== 'string' || !/^https:\/\//.test(url))) errors.push(`${shot.shot_id || '未知镜头'}：配音 URL 无效`);
   }
   if (errors.length) throw new Error(errors.join('；'));
-  return { shotIds: pending.map(shot => shot.shot_id), skipped: plan.shots.filter(shot => !isFreshShot(shot)).map(shot => shot.shot_id) };
+  return { shotIds: pending.map(shot => shot.shot_id), skipped: plan.shots.filter(shot => !isFreshShot(shot)).map(shot => shot.shot_id), warnings: check.warnings };
 }
 
 export async function submitShot(jobsRoot, jobId, shotId, { token, reason }) {
@@ -354,6 +416,9 @@ export async function submitShot(jobsRoot, jobId, shotId, { token, reason }) {
   try {
   const jobDir = join(jobsRoot, jobId);
   const planPath = join(jobDir, 'request-plan.json');
+  await syncRequestPlan(jobsRoot, jobId, { reason: `submit ${shotId}` });
+  const check = await validateJobFiles(jobsRoot, jobId, { shotIds: [shotId] });
+  if (!check.ok) throw new Error(`提交前校验未通过：${check.errors.join('；')}`);
   const plan = await readJson(planPath).catch(() => { throw new Error('该任务没有 request-plan.json，不支持人工触发生成'); });
   if (plan.media_type && plan.media_type !== 'video') throw new Error('当前创意形式尚未配置 AutoDL 视频工作流');
   const normalized = normalizePlan(plan);
@@ -534,15 +599,11 @@ async function ensureCanvasJob(jobsRoot, jobId, canvasId) {
   if (await access(join(jobDir, 'brief.json')).then(() => true).catch(() => false)) return;
   const formats = await readJson(join(dirname(jobsRoot), 'config', 'formats.json')).then(data => data.formats).catch(() => []);
   const format = formats.find(item => item.format_id === CANVAS_FORMAT_ID);
-  await Promise.all([
-    mkdir(join(jobDir, 'assets', 'source'), { recursive: true }),
-    mkdir(join(jobDir, 'renders', 'runs'), { recursive: true }),
-    mkdir(join(jobDir, 'renders', 'preview'), { recursive: true })
-  ]);
+  await mkdir(jobDir, { recursive: true });
   await Promise.all([
     writeJsonAtomic(join(jobDir, 'brief.json'), { schema_version: 2, job_id: jobId, creative_concept: `无限画布手动任务（画布 ${canvasId}）`, category_id: null, format_id: CANVAS_FORMAT_ID, pipeline_id: format?.pipeline_id || 'standard-video-v2', created_at: new Date().toISOString(), review_policy: 'human_first', source: 'infinite-canvas', canvas_id: canvasId }),
     writeJsonAtomic(join(jobDir, 'shot-plan.json'), { job_id: jobId, format_id: CANVAS_FORMAT_ID, shots: [] }),
-    writeJsonAtomic(join(jobDir, 'request-plan.json'), { job_id: jobId, media_type: 'video', workflow_id: format?.workflow_id || 'minimax_h3_z0903', resolution: '768p竖(768*1376)', audio_reference: BLANK_AUDIO_URL, shots: [] }),
+    writeJsonAtomic(join(jobDir, 'request-plan.json'), { job_id: jobId, derived_from: 'shot-plan', media_type: 'video', workflow_id: format?.workflow_id || 'minimax_h3_z0903', resolution: '768p竖(768*1376)', audio_reference: BLANK_AUDIO_URL, shots: [] }),
     writeJsonAtomic(join(jobDir, `${jobId}-run-state.json`), { status: 'PREPARING', shots: {}, updated_at: new Date().toISOString() }),
     writeJsonAtomic(join(jobDir, 'canvas-layout.json'), { nodes: [], connections: [] })
   ]);
@@ -585,21 +646,28 @@ async function upsertCanvasShot(jobsRoot, jobDir, jobId, request) {
   const seed = randomInt(1, 2 ** 31 - 1);
   const shotPlan = await readJson(shotPlanPath).catch(() => ({ job_id: jobId, shots: [] }));
   const refSha256 = request.images.map(image => image.sha256);
+  shotPlan.shots = shotPlan.shots || [];
   let shotId;
   if (target) {
-    // Re-roll: the canvas now holds the latest prompt/references for this shot, so the task records them
-    // (before/after in the log) and a fresh seed; earlier renders stay versioned under renders/runs/.
+    // Re-roll: the canvas now holds the latest prompt/references for this shot. Timing and references go into
+    // shot-plan (the single source) and are derived into the request; only prompt and seed are request-only.
+    // Earlier renders stay versioned under renders/runs/.
     shotId = target.shot_id;
     const before = { prompt: target.prompt, ref_images: target.ref_images, duration: target.duration, seed: target.seed };
-    Object.assign(target, { prompt: request.prompt, ref_images: refs, duration: request.duration, seed, client_request_id: request.clientRequestId });
-    const planned = (shotPlan.shots || []).find(shot => shot.shot_id === shotId);
-    if (planned) Object.assign(planned, { references: refs, duration: request.duration });
+    Object.assign(target, { prompt: request.prompt, seed, client_request_id: request.clientRequestId });
+    let planned = shotPlan.shots.find(shot => shot.shot_id === shotId);
+    if (!planned) { planned = { shot_id: shotId, purpose: '画布手动生成', status: 'planned' }; shotPlan.shots.push(planned); }
+    planned.references = withRoles(refs, planned.references, '画布选择');
+    planned.duration = request.duration;
+    if (Number.isFinite(Number(planned.start_seconds))) planned.end_seconds = Number(planned.start_seconds) + request.duration;
+    deriveRequestFromShotPlan(plan, shotPlan, [shotId]);
     await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, actor: 'user', type: 'canvas_shot_updated', source: 'infinite-canvas', node_id: request.nodeId, before, after: { prompt: request.prompt, ref_images: refs, duration: request.duration, seed }, ref_sha256: refSha256, client_request_id: request.clientRequestId });
   } else {
     const numbers = plan.shots.map(shot => /^S(\d+)$/.exec(String(shot.shot_id))?.[1]).filter(Boolean).map(Number);
     shotId = `S${String((numbers.length ? Math.max(...numbers) : 0) + 1).padStart(2, '0')}`;
-    plan.shots.push({ shot_id: shotId, duration: request.duration, seed, ref_images: refs, prompt: request.prompt, client_request_id: request.clientRequestId, source: 'infinite-canvas' });
-    shotPlan.shots = [...(shotPlan.shots || []), { shot_id: shotId, purpose: '画布手动生成', duration: request.duration, references: refs, status: 'planned' }];
+    plan.shots.push({ shot_id: shotId, seed, prompt: request.prompt, client_request_id: request.clientRequestId, source: 'infinite-canvas' });
+    shotPlan.shots.push({ shot_id: shotId, purpose: '画布手动生成', duration: request.duration, references: withRoles(refs, [], '画布选择'), status: 'planned', source: 'infinite-canvas' });
+    deriveRequestFromShotPlan(plan, shotPlan, [shotId]);
     await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, actor: 'user', type: 'canvas_shot_created', source: 'infinite-canvas', node_id: request.nodeId, ref_images: refs, ref_sha256: refSha256, duration: request.duration, seed, client_request_id: request.clientRequestId });
   }
   await writeJsonAtomic(planPath, plan);
@@ -681,13 +749,14 @@ export async function resolveUnconfirmedSubmit(jobsRoot, jobId, shotId, { taskId
 }
 
 // Mechanical pre-flight over a job's files. `errors` block submission, `warnings` do not.
-export async function validateJobFiles(jobsRoot, jobId) {
+export async function validateJobFiles(jobsRoot, jobId, { shotIds = null } = {}) {
   const jobDir = join(jobsRoot, jobId);
   const errors = [];
   const warnings = [];
   const plan = await readJson(join(jobDir, 'request-plan.json')).catch(() => null);
   if (!plan) return { ok: false, errors: ['缺少或无法解析 request-plan.json'], warnings };
   const shotPlan = await readJson(join(jobDir, 'shot-plan.json')).catch(() => null);
+  const brief = await readJson(join(jobDir, 'brief.json')).catch(() => null);
   const shots = Array.isArray(plan.shots) ? plan.shots : [];
   if (!plan.workflow_id) errors.push('request-plan 未配置 workflow_id');
   const ids = shots.map(shot => shot.shot_id);
@@ -696,8 +765,16 @@ export async function validateJobFiles(jobsRoot, jobId) {
   if (shotPlan?.shots) {
     const planned = shotPlan.shots.map(shot => shot.shot_id);
     if (JSON.stringify([...planned].sort()) !== JSON.stringify([...ids].sort())) errors.push(`shot-plan 与 request-plan 的镜头 id 不一致：${JSON.stringify(planned)} ≠ ${JSON.stringify(ids)}`);
+    // Fields that request-plan derives from shot-plan must agree with it.
+    const drift = deriveRequestFromShotPlan(JSON.parse(JSON.stringify(plan)), shotPlan, shotIds);
+    for (const change of drift) warnings.push(`${change.shot_id}：${change.field} 与 shot-plan 不一致${plan.derived_from === 'shot-plan' ? '（提交前会自动同步）' : '（该任务未启用派生，请手动对齐）'}`);
+  }
+  if (Number(brief?.target_duration_seconds) > 0 && plan.media_type !== 'image' && shots.length) {
+    const total = shots.reduce((sum, shot) => sum + (Number(shot.duration) || 0), 0);
+    if (Math.abs(total - Number(brief.target_duration_seconds)) > 1.5) warnings.push(`镜头总时长 ${total} 秒，与简报目标 ${brief.target_duration_seconds} 秒相差较大`);
   }
   for (const shot of shots) {
+    if (shotIds && !shotIds.includes(shot.shot_id)) continue;
     const tag = String(shot.shot_id);
     if (plan.media_type !== 'image') {
       const seconds = Number(shot.duration);
@@ -705,6 +782,7 @@ export async function validateJobFiles(jobsRoot, jobId) {
     }
     if (!String(shot.prompt || '').trim()) errors.push(`${tag}：提示词为空`);
     const refs = Array.isArray(shot.ref_images) ? shot.ref_images : [];
+    if (plan.media_type !== 'image' && !refs.length) errors.push(`${tag}：缺少参考图`);
     if (new Set(refs).size !== refs.length) warnings.push(`${tag}：参考图重复引用`);
     for (const relative of refs) {
       const target = resolveAssetRef(jobsRoot, jobDir, relative);

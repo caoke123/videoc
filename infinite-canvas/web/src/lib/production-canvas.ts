@@ -44,6 +44,13 @@ function waitForHydration() {
     });
 }
 
+function latestRender(detail: ProductionJobDetail, shotId: string) {
+    const run = detail.run_state?.shots?.[shotId] || (shotId === "MAIN" ? detail.run_state : null);
+    return typeof run?.output_file === "string" && detail.asset_files.includes(run.output_file)
+        ? run.output_file
+        : detail.asset_files.filter((file) => file.startsWith(`renders/runs/${shotId}/`) && isVideo(file)).sort().pop();
+}
+
 async function buildProject(canvasId: string, detail: ProductionJobDetail): Promise<CanvasProject> {
     const jobId = detail.job_id;
     const shots = detail.request_plan?.shots || (detail.request_plan?.request ? [{ shot_id: "MAIN", ...detail.request_plan.request }] : []);
@@ -79,10 +86,7 @@ async function buildProject(canvasId: string, detail: ProductionJobDetail): Prom
     const connections: CanvasConnection[] = [];
     shots.forEach((shot, index) => {
         const shotId = String(shot.shot_id || "MAIN");
-        const runs = detail.run_state?.shots?.[shotId] || (shotId === "MAIN" ? detail.run_state : null);
-        const rendered = typeof runs?.output_file === "string" && detail.asset_files.includes(runs.output_file)
-            ? runs.output_file
-            : detail.asset_files.filter((file) => file.startsWith(`renders/runs/${shotId}/`) && isVideo(file)).sort().pop();
+        const rendered = latestRender(detail, shotId);
         const planned = detail.shot_plan?.shots?.find((item) => String(item.shot_id || "MAIN") === shotId);
         const purpose = typeof planned?.purpose === "string" ? planned.purpose : "";
         const id = `shot-${shotId}`;
@@ -128,8 +132,8 @@ type CutClip = { shot_id?: string };
 
 type BoundTask = ProductionJobDetail & { node_shots?: Record<string, string> };
 
-/** Nodes/connections for composed final-*.mp4 files the canvas does not have yet (each linked from the shots it used). */
-export function taskFinalAdditions(existing: CanvasNodeData[], existingConnections: CanvasConnection[], detail: ProductionJobDetail): { nodes: CanvasNodeData[]; connections: CanvasConnection[] } {
+/** What a task has that its canvas lacks: shots added later (with the references they need) and composed finals. Additive only. */
+export function taskAdditions(existing: CanvasNodeData[], existingConnections: CanvasConnection[], detail: ProductionJobDetail): { nodes: CanvasNodeData[]; connections: CanvasConnection[] } {
     const known = new Set(existing.map((node) => node.id));
     const nodeShots = (detail as BoundTask).node_shots || {};
     const nodeOfShot = new Map(Object.entries(nodeShots).map(([nodeId, shotId]) => [shotId, nodeId]));
@@ -137,6 +141,30 @@ export function taskFinalAdditions(existing: CanvasNodeData[], existingConnectio
     const nodes: CanvasNodeData[] = [];
     const connections: CanvasConnection[] = [];
     const maxX = Math.max(0, ...existing.filter((node) => node.id.startsWith("shot-") || node.id in nodeShots).map((node) => node.position.x + node.width));
+    const shotNodes = existing.filter((node) => node.id.startsWith("shot-") || node.id in nodeShots);
+    let nextShotY = Math.max(-300, ...shotNodes.map((node) => node.position.y)) + 300;
+    let nextAssetY = Math.max(-340, ...existing.filter((node) => node.id.startsWith("asset:")).map((node) => node.position.y + node.height)) + 40;
+    for (const shot of detail.request_plan?.shots || []) {
+        const shotId = String(shot.shot_id || "");
+        const mapped = nodeOfShot.get(shotId);
+        if (!shotId || (mapped && known.has(mapped)) || known.has(`shot-${shotId}`)) continue;
+        const id = `shot-${shotId}`;
+        const rendered = latestRender(detail, shotId);
+        nodes.push({ id, type: CanvasNodeType.Video, title: shotId, position: { x: 420, y: nextShotY }, width: 420, height: 236, metadata: { prompt: typeof shot.prompt === "string" ? shot.prompt : "", seconds: String(Number(shot.duration) || 6), videoMode: "reference", ...(rendered ? { content: productionFileUrl(detail.job_id, rendered), status: "success" as const, mimeType: "video/mp4" } : {}) } });
+        known.add(id);
+        nextShotY += 300;
+        for (const ref of Array.isArray(shot.ref_images) ? shot.ref_images : []) {
+            const path = typeof ref === "string" ? ref : "";
+            if (!path || !isImage(path)) continue;
+            const assetId = `asset:${path}`;
+            if (!known.has(assetId)) {
+                nodes.push({ id: assetId, type: CanvasNodeType.Image, title: assetTitle(path), position: { x: 0, y: nextAssetY }, width: 300, height: 300, metadata: { content: productionFileUrl(detail.job_id, path), status: "success", naturalWidth: 1024, naturalHeight: 1024, bytes: 0, mimeType: IMAGE_MIME[path.split(".").pop()!.toLowerCase()] || "image/png" } });
+                known.add(assetId);
+                nextAssetY += 340;
+            }
+            if (!haveEdge.has(`${assetId}>${id}`)) { connections.push({ id: `edge:${assetId}:${id}`, fromNodeId: assetId, toNodeId: id }); haveEdge.add(`${assetId}>${id}`); }
+        }
+    }
     detail.asset_files.filter((path) => /^renders\/preview\/final-[^/]+\.mp4$/i.test(path)).sort().forEach((path, index) => {
         const id = `final:${path}`;
         if (!known.has(id)) {
@@ -158,7 +186,7 @@ export function syncTaskCanvasFinals(canvasId: string, detail: ProductionJobDeta
     useCanvasStore.setState((state) => {
         const project = state.projects.find((item) => item.id === canvasId);
         if (!project) return state;
-        const added = taskFinalAdditions(project.nodes, project.connections, detail);
+        const added = taskAdditions(project.nodes, project.connections, detail);
         if (!added.nodes.length && !added.connections.length) return state;
         return { projects: state.projects.map((item) => (item.id === canvasId ? { ...item, nodes: [...item.nodes, ...added.nodes], connections: [...item.connections, ...added.connections], updatedAt: new Date().toISOString() } : item)) };
     });

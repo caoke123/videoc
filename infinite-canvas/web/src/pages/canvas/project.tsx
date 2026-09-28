@@ -13,7 +13,7 @@ import { ensureImagePreview, uploadImage } from "@/services/image-storage";
 import { uploadMediaFile, type UploadedFile } from "@/services/file-storage";
 import { nanoid } from "nanoid";
 import { getDataUrlByteSize, readImageMeta } from "@/lib/image-utils";
-import { fetchBoundTask, taskFinalAdditions } from "@/lib/production-canvas";
+import { fetchBoundTask, taskAdditions } from "@/lib/production-canvas";
 import { imageReferenceLabel } from "@/lib/image-reference-prompt";
 import { canvasThemes, type CanvasBackgroundMode } from "@/lib/canvas-theme";
 import { useAssetStore } from "@/stores/use-asset-store";
@@ -266,7 +266,7 @@ function InfiniteCanvasPage() {
     useEffect(() => {
         const sync = () => void fetchBoundTask(projectId).then((detail) => {
             if (!detail) return;
-            const added = taskFinalAdditions(nodesRef.current, connectionsRef.current, detail);
+            const added = taskAdditions(nodesRef.current, connectionsRef.current, detail);
             if (!added.nodes.length && !added.connections.length) return;
             setNodes((prev) => [...prev, ...added.nodes.filter((node) => !prev.some((item) => item.id === node.id))]);
             setConnections((prev) => [...prev, ...added.connections.filter((edge) => !prev.some((item) => item.id === edge.id))]);

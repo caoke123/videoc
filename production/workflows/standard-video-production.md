@@ -64,6 +64,10 @@ production/jobs/<job-id>/
 ```
 
 - 本机执行器是唯一提交者，保管 AutoDL ComfyUI Token；任何浏览器节点均不得保存 Token 或直接请求 AutoDL。
+- **镜头信息只有一个来源**：有哪些镜头、顺序、时长（`duration` 或 `start_seconds`/`end_seconds`）、参考图（`references[]`，可写 `{path, role}`）只写在 `shot-plan.json`。`request-plan.json` 只保存提交专属内容（提示词、seed、音频 URL、工作流、分辨率）；它的 `duration`、`start_seconds`、`ref_images`、`reference_roles` 由 shot-plan 派生。新任务的 request-plan 带 `"derived_from": "shot-plan"`，执行器在批量预检和单镜头提交前自动同步（日志 `request_plan_synced`）；手改 shot-plan 后也可 `POST /api/jobs/<任务>/sync-plan` 立即同步。未标记的旧任务不自动改写，校验只给出不一致警告。简报里的 `target_duration_seconds` 与镜头总时长差超过 1.5 秒时也会警告。
+- 批量提交和单镜头提交前，执行器会做完整校验（镜头 id、时长 1–15 秒、提示词、参考图存在、配音 URL），有错误直接拒绝。
+- 生成成功不等于完成：每个镜头的当前这一版都要人工审片（接受/驳回并写原因），任务页显示“待人工审片”；重新生成后需要重新审片。
+- 任务目录不预建空目录：`assets/`、`renders/`、`audio/` 在第一次写入文件时才创建。
 - 每个镜头在 `request-plan.json` 中记录 `workflow_id`、`ref_images[]`、`ref_audio[]`、时长、分辨率、seed 与最终提示词。音频先转为 AutoDL 可读取的 URL，再填入 `ref_audio_0...ref_audio_2`。
 - 默认使用 H3 多图多音频工作流；旧工作流仅为已有任务兼容保留。预检限制由工作流契约确定，当前目标为最多 9 张图片、3 段音频、单条成片 1–15 秒。
 - 任务状态只来源于 AutoDL 返回的 task ID 和轮询结果。没有 task ID 的镜头一律视为“未提交”。

@@ -124,6 +124,31 @@ async function latestMtime(jobDir, files, dirs) {
   return latest ? new Date(latest).toISOString() : null;
 }
 
+
+// Human review is append-only in run-log.jsonl; a shot needs review until a decision matches its current task id.
+async function readReviewSummary(jobDir, runState) {
+  const text = await readFile(join(jobDir, 'run-log.jsonl'), 'utf8').catch(() => '');
+  const latest = new Map();
+  for (const line of text.split('\n')) {
+    if (!line.includes('"review_')) continue;
+    try {
+      const event = JSON.parse(line);
+      if (/^review_(accepted|rejected)$/.test(event.type) && event.shot_id) latest.set(event.shot_id, event);
+    } catch { /* ignore a malformed line */ }
+  }
+  const runs = runState?.shots ? Object.entries(runState.shots) : (runState?.task_id ? [['MAIN', runState]] : []);
+  const shots = {};
+  for (const [shotId, run] of runs) {
+    if (normalizeStatus(run?.status) !== 'success' || !run.task_id) continue;
+    const event = latest.get(shotId);
+    shots[shotId] = event && event.run_id === run.task_id
+      ? { state: event.type === 'review_accepted' ? 'accepted' : 'rejected', category: event.category || null, note: event.note || null }
+      : { state: 'pending' };
+  }
+  const states = Object.values(shots).map(item => item.state);
+  return { shots, pending: states.filter(state => state === 'pending').length, accepted: states.filter(state => state === 'accepted').length, rejected: states.filter(state => state === 'rejected').length };
+}
+
 export async function listJobs(jobsRoot) {
   // Directories starting with "_" (e.g. _test) hold smoke/test jobs and stay out of the task history.
   const jobIds = (await listDirNames(jobsRoot)).filter(name => !name.startsWith('_'));
@@ -143,6 +168,7 @@ export async function listJobs(jobsRoot) {
       shot_count: shotPlan?.shots?.length ?? null,
       has_brief: Boolean(brief),
       has_shot_plan: Boolean(shotPlan),
+      review: await readReviewSummary(jobDir, runState),
       updated_at: await latestMtime(jobDir, files, dirs)
     };
   }));
@@ -189,7 +215,7 @@ export async function getJobDetail(jobsRoot, jobId) {
   // still this job's inputs, so list the ones it references alongside its own files.
   const referenced = [
     ...(requestPlan?.shots || (requestPlan?.request ? [requestPlan.request] : [])).flatMap(shot => [...(shot.ref_images || []), ...(shot.ref_audio || [])]),
-    ...(shotPlan?.shots || []).flatMap(shot => shot.references || [])
+    ...(shotPlan?.shots || []).flatMap(shot => (shot.references || []).map(ref => (typeof ref === 'string' ? ref : ref?.path)))
   ].filter(ref => typeof ref === 'string' && ref.startsWith('library:'));
   const assetFiles = [...projectFiles.filter(path => !systemFiles.has(path) && !path.endsWith('run-state.json')), ...new Set(referenced)];
   return {
@@ -199,6 +225,7 @@ export async function getJobDetail(jobsRoot, jobId) {
     shot_plan: shotPlan,
     request_plan: requestPlan,
     review,
+    review_status: await readReviewSummary(jobDir, runState),
     run_state: runState,
     run_log: runLogTail,
     canvas_layout: canvasLayout,

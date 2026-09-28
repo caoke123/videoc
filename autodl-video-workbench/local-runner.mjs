@@ -10,7 +10,7 @@ import { listJobs, getJobDetail, getJobRunLog } from './job-store.mjs';
 import {
   createJob, patchShotField, saveCanvasLayout, submitShot, preflightBatchSubmission, uploadJobAsset,
   publishShotAudio, pollShot, canvasGenerate, canvasGenerationStatus, reconcileUnconfirmedSubmissions,
-  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob, readBinding
+  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob, readBinding, syncRequestPlan
 } from './job-actions.mjs';
 import { resolveAssetRef } from './asset-library.mjs';
 import { composeCut } from './compose.mjs';
@@ -246,6 +246,12 @@ const server = createServer(async (req, res) => {
       const result = await resolveUnconfirmedSubmit(allJobsRoot, jobId, shotId, { taskId: body.task_id, discard: body.discard === true });
       if (result.taskId) schedulePollShot(jobId, shotId, result.taskId, await tokenFromLocalConfig(), 1500);
       return sendJson(res, 200, result);
+    }
+    const syncPlanRoute = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/sync-plan$/, url);
+    if (syncPlanRoute) {
+      const jobId = decode(syncPlanRoute[1]);
+      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
+      return sendJson(res, 200, await syncRequestPlan(allJobsRoot, jobId, { reason: 'api' }));
     }
     const composeRoute = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/compose$/, url);
     if (composeRoute) {

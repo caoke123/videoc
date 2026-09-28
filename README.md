@@ -24,10 +24,10 @@ Codex 从商品资料出发，原创策划脚本、人物、场景、动作和�
 - `production/jobs/lulu-commute-10s-20260925/`：历史 10 秒双镜头小样；原有 ElevenLabs/HyperFrames 文件只用于复现，不代表新项目默认工作流。当前重制按用户要求暂停。
 - `production/tools/autodl_pro.py`：直接调用 H3 做 AutoDL Pro 生命周期测试的小工具，读取 `production/config/autodl.env`。
 
-## 辅助目录（不进正式生产流程）
+## 辅助目录与本机服务
 
 - `scratch/`：纯本地实验/测试输出（图片生成试验、音频测试、临时冒烟批次等），整目录已加入 `.gitignore`，不受版本控制，可随时清空。
-- `autodl-video-workbench/`：一个独立的可视化 AutoDL 视频生成工作台静态站点（H3 节点编排、画布交互），已于 2026-09-27 测试通过节点拖拽与画布连线功能，尚未接入本项目的批次生产流程，作为后续调用 H3 的候选前端工具保留。
+- `autodl-video-workbench/`：本机执行器（`local-runner.mjs`，端口 4173）：唯一持有 AutoDL Token、唯一提交者。Codex 通过任务文件和批量提交使用它，人工通过无限画布使用它；任务页和画布共用同一份任务数据。旧的手写工作台已归档在 `legacy/`。
 
 新批次示例：
 
@@ -37,7 +37,7 @@ python .agents/skills/ecommerce-video-studio/scripts/init_batch.py --id commute-
 
 `original` 是默认模式，从商品资料独立完成创意。`reference` 分析参考视频的通用镜头结构；`hybrid` 将参考节奏与原创人物、文案和商品结合。
 
-AutoDL 开发者 Token 填入本地 `production/config/autodl.env` 的 `AUTODL_TOKEN=` 后面。该文件已排除在 Git 之外；`production/config/autodl.env.example` 是不含密钥的示例。当前仅建立配置入口，尚未接入实例管理或启动云主机。
+AutoDL 开发者 Token 填入本地 `production/config/autodl.env` 的 `AUTODL_COMFYUI_TOKEN=` 后面。该文件已排除在 Git 之外；`production/config/autodl.env.example` 是不含密钥的示例。当前仅建立配置入口，尚未接入实例管理或启动云主机。
 
 ## 从创意到成片
 
