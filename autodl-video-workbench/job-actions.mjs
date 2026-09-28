@@ -517,7 +517,7 @@ function parseCanvasRequest(input) {
 // agree on it without a lookup table, and it stays inside the 64-char canvas id limit.
 export const canvasIdForJob = jobId => `task-${createHash('sha256').update(jobId).digest('hex').slice(0, 20)}`;
 
-async function findBoundJob(jobsRoot, canvasId) {
+export async function findBoundJob(jobsRoot, canvasId) {
   if (!canvasId.startsWith('task-')) return null;
   for (const entry of await readdir(jobsRoot, { withFileTypes: true }).catch(() => [])) {
     if (entry.isDirectory() && !entry.name.startsWith('_') && canvasIdForJob(entry.name) === canvasId) return entry.name;

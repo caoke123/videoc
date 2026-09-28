@@ -1,6 +1,6 @@
 import { CanvasNodeType, type CanvasConnection, type CanvasNodeData } from "@/types/canvas";
 import { useCanvasStore, type CanvasProject } from "@/stores/canvas/use-canvas-store";
-import { productionFileUrl, type ProductionJobDetail } from "@/services/api/production";
+import { getProductionJob, productionFileUrl, type ProductionJobDetail } from "@/services/api/production";
 
 const IMAGE_MIME: Record<string, string> = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif" };
 const isImage = (path: string) => /\.(png|jpe?g|webp|gif)$/i.test(path);
@@ -126,31 +126,35 @@ async function buildProject(canvasId: string, detail: ProductionJobDetail): Prom
 
 type CutClip = { shot_id?: string };
 
-/** Adds a "final cut" video node (linked from the shots it used) for each composed final-*.mp4 the canvas lacks. */
+/** Nodes/connections for composed final-*.mp4 files the canvas does not have yet (each linked from the shots it used). */
+export function taskFinalAdditions(existing: CanvasNodeData[], detail: ProductionJobDetail): { nodes: CanvasNodeData[]; connections: CanvasConnection[] } {
+    const known = new Set(existing.map((node) => node.id));
+    const nodes: CanvasNodeData[] = [];
+    const connections: CanvasConnection[] = [];
+    const maxX = Math.max(0, ...existing.filter((node) => node.id.startsWith("shot-")).map((node) => node.position.x + node.width));
+    detail.asset_files.filter((path) => /^renders\/preview\/final-[^/]+\.mp4$/i.test(path)).sort().forEach((path, index) => {
+        const id = `final:${path}`;
+        if (known.has(id)) return;
+        const stamp = /final-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/.exec(path);
+        const when = stamp ? new Date(Date.UTC(+stamp[1], +stamp[2] - 1, +stamp[3], +stamp[4], +stamp[5], +stamp[6])).toLocaleString("zh-CN", { hour12: false }) : path;
+        nodes.push({ id, type: CanvasNodeType.Video, title: `成片｜${when}`, position: { x: maxX + 80, y: (index) * 300 }, width: 420, height: 236, metadata: { content: productionFileUrl(detail.job_id, path), status: "success", mimeType: "video/mp4", seconds: "6" } });
+        const event = [...detail.run_log].reverse().find((entry) => entry.type === "cut_composed" && entry.output_file === path);
+        for (const clip of Array.isArray(event?.clips) ? (event.clips as Array<{ shot_id?: string }>) : []) {
+            const from = `shot-${clip.shot_id}`;
+            if (known.has(from)) connections.push({ id: `edge:${id}:${from}`, fromNodeId: from, toNodeId: id });
+        }
+    });
+    return { nodes, connections };
+}
+
+/** Same, applied straight to a stored canvas that is not currently open. */
 export function syncTaskCanvasFinals(canvasId: string, detail: ProductionJobDetail) {
-    const finals = detail.asset_files.filter((path) => /^renders\/preview\/final-[^/]+\.mp4$/i.test(path)).sort();
-    if (!finals.length) return;
     useCanvasStore.setState((state) => {
         const project = state.projects.find((item) => item.id === canvasId);
         if (!project) return state;
-        const known = new Set(project.nodes.map((node) => node.id));
-        const nodes = [...project.nodes];
-        const connections = [...project.connections];
-        finals.forEach((path, index) => {
-            const id = `final:${path}`;
-            if (known.has(id)) return;
-            const stamp = /final-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/.exec(path);
-            const when = stamp ? new Date(Date.UTC(+stamp[1], +stamp[2] - 1, +stamp[3], +stamp[4], +stamp[5], +stamp[6])).toLocaleString("zh-CN", { hour12: false }) : path;
-            const maxX = Math.max(0, ...project.nodes.filter((node) => node.id.startsWith("shot-")).map((node) => node.position.x + node.width));
-            nodes.push({ id, type: CanvasNodeType.Video, title: `成片｜${when}`, position: { x: maxX + 80, y: index * 300 }, width: 420, height: 236, metadata: { content: productionFileUrl(detail.job_id, path), status: "success", mimeType: "video/mp4", seconds: "6" } });
-            const event = [...(detail.run_log as Array<Record<string, unknown>>)].reverse().find((entry) => entry.type === "cut_composed" && entry.output_file === path);
-            for (const clip of Array.isArray(event?.clips) ? (event.clips as CutClip[]) : []) {
-                const from = `shot-${clip.shot_id}`;
-                if (known.has(from)) connections.push({ id: `edge:${id}:${from}`, fromNodeId: from, toNodeId: id });
-            }
-        });
-        if (nodes.length === project.nodes.length) return state;
-        return { projects: state.projects.map((item) => (item.id === canvasId ? { ...item, nodes, connections, updatedAt: new Date().toISOString() } : item)) };
+        const added = taskFinalAdditions(project.nodes, detail);
+        if (!added.nodes.length) return state;
+        return { projects: state.projects.map((item) => (item.id === canvasId ? { ...item, nodes: [...item.nodes, ...added.nodes], connections: [...item.connections, ...added.connections], updatedAt: new Date().toISOString() } : item)) };
     });
 }
 
@@ -179,4 +183,13 @@ export async function openTaskCanvas(detail: ProductionJobDetail): Promise<{ can
     }));
     syncTaskCanvasFinals(canvasId, detail);
     return { canvasId, created: true };
+}
+
+/** The task bound to a task canvas (id task-...), or null for free canvases. */
+export async function fetchBoundTask(canvasId: string): Promise<ProductionJobDetail | null> {
+    if (!canvasId.startsWith("task-")) return null;
+    const response = await fetch(`/api/canvas/${encodeURIComponent(canvasId)}/job`);
+    if (!response.ok) return null;
+    const { job_id: jobId } = (await response.json()) as { job_id: string };
+    return getProductionJob(jobId);
 }

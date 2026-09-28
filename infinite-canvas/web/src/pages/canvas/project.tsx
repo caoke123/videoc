@@ -13,6 +13,7 @@ import { ensureImagePreview, uploadImage } from "@/services/image-storage";
 import { uploadMediaFile, type UploadedFile } from "@/services/file-storage";
 import { nanoid } from "nanoid";
 import { getDataUrlByteSize, readImageMeta } from "@/lib/image-utils";
+import { fetchBoundTask, taskFinalAdditions } from "@/lib/production-canvas";
 import { imageReferenceLabel } from "@/lib/image-reference-prompt";
 import { canvasThemes, type CanvasBackgroundMode } from "@/lib/canvas-theme";
 import { useAssetStore } from "@/stores/use-asset-store";
@@ -262,6 +263,19 @@ function InfiniteCanvasPage() {
     const [referencePickerNodeId, setReferencePickerNodeId] = useState<string | null>(null);
 
     const nodesRef = useRef(nodes);
+    useEffect(() => {
+        const sync = () => void fetchBoundTask(projectId).then((detail) => {
+            if (!detail) return;
+            const added = taskFinalAdditions(nodesRef.current, detail);
+            if (!added.nodes.length) return;
+            setNodes((prev) => [...prev, ...added.nodes.filter((node) => !prev.some((item) => item.id === node.id))]);
+            setConnections((prev) => [...prev, ...added.connections.filter((edge) => !prev.some((item) => item.id === edge.id))]);
+        }).catch(() => undefined);
+        if (!projectLoaded) return;
+        sync();
+        window.addEventListener("focus", sync);
+        return () => window.removeEventListener("focus", sync);
+    }, [projectId, projectLoaded]);
     const connectionsRef = useRef(connections);
     const selectedNodeIdsRef = useRef(selectedNodeIds);
     const viewportRef = useRef(viewport);
