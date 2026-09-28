@@ -124,15 +124,59 @@ async function buildProject(canvasId: string, detail: ProductionJobDetail): Prom
     };
 }
 
+type CutClip = { shot_id?: string };
+
+/** Adds a "final cut" video node (linked from the shots it used) for each composed final-*.mp4 the canvas lacks. */
+export function syncTaskCanvasFinals(canvasId: string, detail: ProductionJobDetail) {
+    const finals = detail.asset_files.filter((path) => /^renders\/preview\/final-[^/]+\.mp4$/i.test(path)).sort();
+    if (!finals.length) return;
+    useCanvasStore.setState((state) => {
+        const project = state.projects.find((item) => item.id === canvasId);
+        if (!project) return state;
+        const known = new Set(project.nodes.map((node) => node.id));
+        const nodes = [...project.nodes];
+        const connections = [...project.connections];
+        finals.forEach((path, index) => {
+            const id = `final:${path}`;
+            if (known.has(id)) return;
+            const stamp = /final-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/.exec(path);
+            const when = stamp ? new Date(Date.UTC(+stamp[1], +stamp[2] - 1, +stamp[3], +stamp[4], +stamp[5], +stamp[6])).toLocaleString("zh-CN", { hour12: false }) : path;
+            const maxX = Math.max(0, ...project.nodes.filter((node) => node.id.startsWith("shot-")).map((node) => node.position.x + node.width));
+            nodes.push({ id, type: CanvasNodeType.Video, title: `成片｜${when}`, position: { x: maxX + 80, y: index * 300 }, width: 420, height: 236, metadata: { content: productionFileUrl(detail.job_id, path), status: "success", mimeType: "video/mp4", seconds: "6" } });
+            const event = [...(detail.run_log as Array<Record<string, unknown>>)].reverse().find((entry) => entry.type === "cut_composed" && entry.output_file === path);
+            for (const clip of Array.isArray(event?.clips) ? (event.clips as CutClip[]) : []) {
+                const from = `shot-${clip.shot_id}`;
+                if (known.has(from)) connections.push({ id: `edge:${id}:${from}`, fromNodeId: from, toNodeId: id });
+            }
+        });
+        if (nodes.length === project.nodes.length) return state;
+        return { projects: state.projects.map((item) => (item.id === canvasId ? { ...item, nodes, connections, updatedAt: new Date().toISOString() } : item)) };
+    });
+}
+
+export type ComposeOptions = { shots: Array<{ shot_id: string; trim_head: number; trim_tail: number }>; transition: "cut" | "fade"; fade_seconds: number };
+
+/** Rough-cut the task's current shot renders with ffmpeg on the runner; the result is a new final-*.mp4 in the task. */
+export async function composeTaskCut(detail: ProductionJobDetail, options: ComposeOptions) {
+    const response = await fetch(`/api/jobs/${encodeURIComponent(detail.job_id)}/compose`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...options, source: "task-page" }) });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || `本机执行器返回 HTTP ${response.status}`);
+    return data as { output_file: string; duration: number };
+}
+
 /** One task <-> exactly one canvas: opens the bound canvas, creating it the first time only. */
 export async function openTaskCanvas(detail: ProductionJobDetail): Promise<{ canvasId: string; created: boolean }> {
     const canvasId = await fetchCanvasId(detail.job_id);
     await waitForHydration();
-    if (useCanvasStore.getState().projects.some((project) => project.id === canvasId)) return { canvasId, created: false };
+    if (useCanvasStore.getState().projects.some((project) => project.id === canvasId)) {
+        syncTaskCanvasFinals(canvasId, detail);
+        return { canvasId, created: false };
+    }
     const project = await buildProject(canvasId, detail);
     useCanvasStore.setState((state) => ({
         projects: [project, ...state.projects.filter((item) => item.id !== canvasId)],
         deletedProjects: state.deletedProjects.filter((item) => item.id !== canvasId),
     }));
+    syncTaskCanvasFinals(canvasId, detail);
     return { canvasId, created: true };
 }

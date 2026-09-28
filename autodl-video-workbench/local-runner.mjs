@@ -13,6 +13,7 @@ import {
   resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob
 } from './job-actions.mjs';
 import { resolveAssetRef } from './asset-library.mjs';
+import { composeCut } from './compose.mjs';
 
 const here = resolve(new URL('.', import.meta.url).pathname.replace(/^\/(.:)/, '$1'));
 const repoRoot = resolve(here, '..');
@@ -241,6 +242,13 @@ const server = createServer(async (req, res) => {
       if (result.taskId) schedulePollShot(jobId, shotId, result.taskId, await tokenFromLocalConfig(), 1500);
       return sendJson(res, 200, result);
     }
+    const composeRoute = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/compose$/, url);
+    if (composeRoute) {
+      const jobId = decode(composeRoute[1]);
+      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
+      if (!(await stat(join(allJobsRoot, jobId)).then(info => info.isDirectory()).catch(() => false))) return sendJson(res, 404, { error: 'Job not found' });
+      return sendJson(res, 200, await composeCut(allJobsRoot, jobId, await readJsonBody(req)));
+    }
     const shotReview = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/shots\/([^/]+)\/review$/, url);
     if (shotReview) {
       const jobId = decode(shotReview[1]);
@@ -281,7 +289,7 @@ const server = createServer(async (req, res) => {
     return sendJson(res, 404, { error: 'Not found' });
   } catch (error) {
     const message = safeError(error);
-    return sendJson(res, /不存在|not found|Not found/i.test(message) ? 404 : /已有任务|禁止重复|没有得到 AutoDL 确认|已提交过|正在提交|还在生成或待核对/.test(message) ? 409 : 400, { error: message });
+    return sendJson(res, /不存在|not found|Not found/i.test(message) ? 404 : /已有任务|禁止重复|没有得到 AutoDL 确认|已提交过|正在提交|还在生成或待核对|正在合成/.test(message) ? 409 : 400, { error: message });
   }
 });
 
