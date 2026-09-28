@@ -4,8 +4,8 @@
   "category_id": "seatbelt-shoulder-pad",
   "product_sku_id": "",
   "product_skus": [
-    {"sku_id": "yellow-orange-black-pad-source-20260927", "source_product_asset": "assets/source/yellow-orange-plush-seatbelt-pad.png", "identity_status": "user_supplied_standalone_source"},
-    {"sku_id": "pink-black-pad-source-20260927", "source_product_asset": "assets/source/pink-plush-seatbelt-pad.png", "identity_status": "user_supplied_standalone_source"}
+    {"sku_id": "yellow-orange-black-pad-source-20260927", "source_product_asset": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png", "identity_status": "user_supplied_standalone_source"},
+    {"sku_id": "pink-black-pad-source-20260927", "source_product_asset": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png", "identity_status": "user_supplied_standalone_source"}
   ],
   "mode": "original",
   "platform": "short-video",

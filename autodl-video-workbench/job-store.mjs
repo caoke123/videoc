@@ -185,7 +185,13 @@ export async function getJobDetail(jobsRoot, jobId) {
 
   const projectFiles = await listFilesRecursive(jobDir);
   const systemFiles = new Set(['brief.json', 'shot-plan.json', 'request-plan.json', 'review.json', 'run-log.jsonl', 'canvas-layout.json']);
-  const assetFiles = projectFiles.filter(path => !systemFiles.has(path) && !path.endsWith('run-state.json'));
+  // Library assets ("library:<path under production/assets>") live outside the job directory but are
+  // still this job's inputs, so list the ones it references alongside its own files.
+  const referenced = [
+    ...(requestPlan?.shots || (requestPlan?.request ? [requestPlan.request] : [])).flatMap(shot => [...(shot.ref_images || []), ...(shot.ref_audio || [])]),
+    ...(shotPlan?.shots || []).flatMap(shot => shot.references || [])
+  ].filter(ref => typeof ref === 'string' && ref.startsWith('library:'));
+  const assetFiles = [...projectFiles.filter(path => !systemFiles.has(path) && !path.endsWith('run-state.json')), ...new Set(referenced)];
   return {
     job_id: jobId,
     format_id: inferFormatId(brief, shotPlan),

@@ -26,7 +26,7 @@ async function walk(directory) {
 const library = await buildLibraryIndex(jobsRoot);
 const byHash = new Map();
 for (const job of await readdir(jobsRoot, { withFileTypes: true })) {
-  if (!job.isDirectory()) continue;
+  if (!job.isDirectory() || job.name.startsWith('_')) continue;
   for (const file of await walk(join(jobsRoot, job.name, 'assets'))) {
     const hash = await sha256OfFile(file);
     if (!byHash.has(hash)) byHash.set(hash, []);
