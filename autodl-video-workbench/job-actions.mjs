@@ -591,8 +591,7 @@ async function ensureCanvasJob(jobsRoot, jobId, canvasId) {
     writeJsonAtomic(join(jobDir, 'brief.json'), { schema_version: 2, job_id: jobId, creative_concept: `无限画布手动任务（画布 ${canvasId}）`, category_id: null, format_id: CANVAS_FORMAT_ID, pipeline_id: format?.pipeline_id || 'standard-video-v2', created_at: new Date().toISOString(), review_policy: 'human_first', source: 'infinite-canvas', canvas_id: canvasId }),
     writeJsonAtomic(join(jobDir, 'shot-plan.json'), { job_id: jobId, format_id: CANVAS_FORMAT_ID, shots: [] }),
     writeJsonAtomic(join(jobDir, 'request-plan.json'), { job_id: jobId, derived_from: 'shot-plan', media_type: 'video', workflow_id: format?.workflow_id || 'minimax_h3_z0903', resolution: '768p竖(768*1376)', audio_reference: BLANK_AUDIO_URL, shots: [] }),
-    writeJsonAtomic(join(jobDir, `${jobId}-run-state.json`), { status: 'PREPARING', shots: {}, updated_at: new Date().toISOString() }),
-    writeJsonAtomic(join(jobDir, 'canvas-layout.json'), { nodes: [], connections: [] })
+    writeJsonAtomic(join(jobDir, `${jobId}-run-state.json`), { status: 'PREPARING', shots: {}, updated_at: new Date().toISOString() })
   ]);
   await appendRunLog(jobDir, { job_id: jobId, actor: 'user', type: 'job_created', source: 'infinite-canvas', canvas_id: canvasId, format_id: CANVAS_FORMAT_ID });
 }

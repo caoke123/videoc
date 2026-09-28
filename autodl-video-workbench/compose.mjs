@@ -27,6 +27,12 @@ function run(command, args, { timeoutMs = 600000 } = {}) {
   });
 }
 
+// Jobs name the run-state file differently (<job>-run-state.json, autodl-run-state.json…); job-store finds it by suffix.
+async function readRunState(jobDir) {
+  const name = (await readdir(jobDir).catch(() => [])).find(file => file.endsWith('run-state.json'));
+  return name ? readFile(join(jobDir, name), 'utf8').then(JSON.parse).catch(() => null) : null;
+}
+
 async function probe(file) {
   const data = JSON.parse(await run(FFPROBE, ['-v', 'error', '-show_entries', 'stream=codec_type,width,height,r_frame_rate,duration', '-show_entries', 'format=duration', '-of', 'json', file], { timeoutMs: 60000 }));
   const video = data.streams?.find(stream => stream.codec_type === 'video');
@@ -43,7 +49,7 @@ async function currentRender(jobDir, jobId, shot) {
     await stat(file).catch(() => { throw new Error(`镜头 ${shot.shot_id} 没有 ${shot.run_id} 这版视频`); });
     return { file, run_id: shot.run_id };
   }
-  const state = await readFile(join(jobDir, `${jobId}-run-state.json`), 'utf8').then(JSON.parse).catch(() => null);
+  const state = await readRunState(jobDir);
   const recorded = state?.shots?.[shot.shot_id]?.output_file;
   if (typeof recorded === 'string' && !recorded.includes('..')) {
     const file = join(jobDir, recorded);
@@ -74,7 +80,7 @@ export async function composeCut(jobsRoot, jobId, input = {}) {
   if (audioPath && (audioPath.startsWith('/') || audioPath.split('/').some(part => !part || part === '..'))) throw new Error('配音路径不合法');
   if (composing.has(jobId)) throw new Error('这个任务正在合成，请稍后再试');
 
-  const runState = await readFile(join(jobDir, `${jobId}-run-state.json`), 'utf8').then(JSON.parse).catch(() => null);
+  const runState = await readRunState(jobDir);
   const review = await readReviewSummary(jobDir, runState);
   const clips = [];
   for (const [index, shot] of shots.entries()) {
