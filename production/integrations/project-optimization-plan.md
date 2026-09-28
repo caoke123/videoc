@@ -214,6 +214,8 @@ production/jobs/<job_id>/
 | 9 测试批次 | 已完成 | `autodl-z0903-canvas-smoke`、`canvas-integration-smoke`、`demo-canvas-preview` 移到 `production/jobs/_test/`，任务历史默认不显示 `_` 开头目录。 |
 | 10 画布双入口 | 已完成 | `POST /api/canvas/generate` → 任务 `canvas-<画布id>`；`client_request_id` 幂等；配置合并工具 `infinite-canvas/autodl-channel/merge-channel.mjs`（不覆盖你现有渠道，输出无 Token）。详见 `infinite-canvas-autodl-integration.md`。**真实生成需要你自己点。** |
 
+后续（2026-09-28）：`pink-lulu-real-driver-ugc-12s-20260928` 已按你的要求整体删除（任务目录 + 画布 `public/production-assets/` 下的对应资产目录），上文涉及它的记录仅作历史。
+
 新增的边界值（需要你确认是否合适）：画布请求体上限 160MB、普通请求体 32MB、参考图最多 9 张且单张 ≤15MB、提示词 ≤4000 字、轮询连续错误上限 12 次。
 
 所有改动目前**都在工作区、未提交**；工作区里还有其他会话留下的未提交改动，我没有替你提交。
