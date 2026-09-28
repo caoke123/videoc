@@ -7,6 +7,8 @@
  * @param {string[]} images - reference images as data URLs (at least one is required)
  * @param {object} params
  * @param {string|number} params.seconds - duration, clamped to 1-15 by the runner
+ * @param {string} params.nodeId - the canvas node that is generating; the runner keeps node -> shot so
+ *   generating the same node again re-rolls the same shot of the task
  * @param {function} poll
  * @param {AbortSignal} signal
  * @returns {Promise<{url: string}>}
@@ -26,6 +28,7 @@ const created = await callRunner("/api/canvas/generate", {
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     canvas_id: canvasId,
+    node_id: params.nodeId,
     client_request_id: crypto.randomUUID(),
     prompt,
     images,

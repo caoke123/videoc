@@ -10,7 +10,7 @@ import { listJobs, getJobDetail, getJobRunLog } from './job-store.mjs';
 import {
   createJob, patchShotField, saveCanvasLayout, submitShot, preflightBatchSubmission, uploadJobAsset,
   publishShotAudio, pollShot, canvasGenerate, canvasGenerationStatus, reconcileUnconfirmedSubmissions,
-  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent
+  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob
 } from './job-actions.mjs';
 import { resolveAssetRef } from './asset-library.mjs';
 
@@ -172,6 +172,13 @@ const server = createServer(async (req, res) => {
       const entries = await getJobRunLog(allJobsRoot, jobId);
       return entries === null ? sendJson(res, 404, { error: 'Job not found' }) : sendJson(res, 200, entries);
     }
+    // The one canvas bound to a task; the canvas id is derived from the job id (see canvasIdForJob).
+    const jobCanvasId = route(req, 'GET', /^\/api\/jobs\/([^/]+)\/canvas-id$/, url);
+    if (jobCanvasId) {
+      const jobId = decode(jobCanvasId[1]);
+      if (!validJobId(jobId) || !(await stat(join(allJobsRoot, jobId)).then(info => info.isDirectory()).catch(() => false))) return sendJson(res, 404, { error: 'Job not found' });
+      return sendJson(res, 200, { canvas_id: canvasIdForJob(jobId) });
+    }
     const jobValidate = route(req, 'GET', /^\/api\/jobs\/([^/]+)\/validate$/, url);
     if (jobValidate) {
       const jobId = decode(jobValidate[1]);
@@ -274,7 +281,7 @@ const server = createServer(async (req, res) => {
     return sendJson(res, 404, { error: 'Not found' });
   } catch (error) {
     const message = safeError(error);
-    return sendJson(res, /不存在|not found|Not found/i.test(message) ? 404 : /已有任务|禁止重复|没有得到 AutoDL 确认|已提交过|正在提交/.test(message) ? 409 : 400, { error: message });
+    return sendJson(res, /不存在|not found|Not found/i.test(message) ? 404 : /已有任务|禁止重复|没有得到 AutoDL 确认|已提交过|正在提交|还在生成或待核对/.test(message) ? 409 : 400, { error: message });
   }
 });
 

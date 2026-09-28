@@ -509,8 +509,25 @@ function parseCanvasRequest(input) {
   if (rawImages.length > CANVAS_MAX_IMAGES) throw new Error(`参考图最多 ${CANVAS_MAX_IMAGES} 张`);
   const duration = Math.min(15, Math.max(1, Math.round(Number(input?.seconds) || 6)));
   const clientRequestId = /^[\w-]{8,64}$/.test(String(input?.client_request_id || '')) ? String(input.client_request_id) : randomUUID();
-  return { canvasId, prompt, duration, clientRequestId, images: rawImages.map(decodeCanvasImage) };
+  const nodeId = /^[\w:.-]{1,80}$/.test(String(input?.node_id || '')) ? String(input.node_id) : null;
+  return { canvasId, nodeId, prompt, duration, clientRequestId, images: rawImages.map(decodeCanvasImage) };
 }
+
+// One task <-> one canvas: the canvas id is derived from the job id, so the frontend and the runner
+// agree on it without a lookup table, and it stays inside the 64-char canvas id limit.
+export const canvasIdForJob = jobId => `task-${createHash('sha256').update(jobId).digest('hex').slice(0, 20)}`;
+
+async function findBoundJob(jobsRoot, canvasId) {
+  if (!canvasId.startsWith('task-')) return null;
+  for (const entry of await readdir(jobsRoot, { withFileTypes: true }).catch(() => [])) {
+    if (entry.isDirectory() && !entry.name.startsWith('_') && canvasIdForJob(entry.name) === canvasId) return entry.name;
+  }
+  return null;
+}
+
+// canvas-binding.json remembers which shot each canvas node generates, so generating the same
+// node again re-rolls the same shot instead of creating a new one.
+const readBinding = async jobDir => (await readJson(join(jobDir, 'canvas-binding.json')).catch(() => null)) || { node_shots: {} };
 
 async function ensureCanvasJob(jobsRoot, jobId, canvasId) {
   const jobDir = join(jobsRoot, jobId);
@@ -532,13 +549,27 @@ async function ensureCanvasJob(jobsRoot, jobId, canvasId) {
   await appendRunLog(jobDir, { job_id: jobId, actor: 'user', type: 'job_created', source: 'infinite-canvas', canvas_id: canvasId, format_id: CANVAS_FORMAT_ID });
 }
 
-async function addCanvasShot(jobsRoot, jobDir, jobId, request) {
+const IN_FLIGHT = new Set(['SUBMITTING', 'NEEDS_ATTENTION', 'QUEUED', 'RUNNING']);
+
+async function upsertCanvasShot(jobsRoot, jobDir, jobId, request) {
   const planPath = join(jobDir, 'request-plan.json');
   const shotPlanPath = join(jobDir, 'shot-plan.json');
   const plan = await readJson(planPath);
   if (!Array.isArray(plan.shots)) throw new Error('该任务不是多镜头 request-plan.json，画布无法追加镜头');
   const existing = plan.shots.find(shot => shot.client_request_id === request.clientRequestId);
   if (existing) return { shotId: existing.shot_id, reused: true };
+
+  // Which shot does this node generate? Remembered mapping first, then the "shot-<id>" node ids the
+  // task-to-canvas import creates; anything else is a new node and becomes a new shot.
+  const binding = await readBinding(jobDir);
+  const conventional = /^shot-((?:S|G)\d+)$/.exec(request.nodeId || '')?.[1];
+  const targetId = request.nodeId ? (binding.node_shots[request.nodeId] || conventional) : null;
+  const target = targetId ? plan.shots.find(shot => shot.shot_id === targetId) : null;
+  if (target) {
+    // Re-rolling a shot that is still running would rewrite the plan under a live task.
+    const run = await currentShotRunState(jobDir, await listFileNames(jobDir), target.shot_id, 'multi');
+    if (IN_FLIGHT.has(run?.status)) throw new Error(`镜头 ${target.shot_id} 还在生成或待核对，请等它结束后再重新生成`);
+  }
 
   await mkdir(join(jobDir, 'assets', 'source'), { recursive: true });
   const library = await buildLibraryIndex(jobsRoot);
@@ -551,28 +582,48 @@ async function addCanvasShot(jobsRoot, jobDir, jobId, request) {
     await writeFile(join(jobDir, relative), image.bytes, { flag: 'wx' }).catch(error => { if (error.code !== 'EEXIST') throw error; });
     refs.push(relative);
   }
-  const numbers = plan.shots.map(shot => /^S(\d+)$/.exec(String(shot.shot_id))?.[1]).filter(Boolean).map(Number);
-  const shotId = `S${String((numbers.length ? Math.max(...numbers) : 0) + 1).padStart(2, '0')}`;
   const seed = randomInt(1, 2 ** 31 - 1);
-  plan.shots.push({ shot_id: shotId, duration: request.duration, seed, ref_images: refs, prompt: request.prompt, client_request_id: request.clientRequestId, source: 'infinite-canvas' });
   const shotPlan = await readJson(shotPlanPath).catch(() => ({ job_id: jobId, shots: [] }));
-  shotPlan.shots = [...(shotPlan.shots || []), { shot_id: shotId, purpose: '画布手动生成', duration: request.duration, references: refs, status: 'planned' }];
+  const refSha256 = request.images.map(image => image.sha256);
+  let shotId;
+  if (target) {
+    // Re-roll: the canvas now holds the latest prompt/references for this shot, so the task records them
+    // (before/after in the log) and a fresh seed; earlier renders stay versioned under renders/runs/.
+    shotId = target.shot_id;
+    const before = { prompt: target.prompt, ref_images: target.ref_images, duration: target.duration, seed: target.seed };
+    Object.assign(target, { prompt: request.prompt, ref_images: refs, duration: request.duration, seed, client_request_id: request.clientRequestId });
+    const planned = (shotPlan.shots || []).find(shot => shot.shot_id === shotId);
+    if (planned) Object.assign(planned, { references: refs, duration: request.duration });
+    await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, actor: 'user', type: 'canvas_shot_updated', source: 'infinite-canvas', node_id: request.nodeId, before, after: { prompt: request.prompt, ref_images: refs, duration: request.duration, seed }, ref_sha256: refSha256, client_request_id: request.clientRequestId });
+  } else {
+    const numbers = plan.shots.map(shot => /^S(\d+)$/.exec(String(shot.shot_id))?.[1]).filter(Boolean).map(Number);
+    shotId = `S${String((numbers.length ? Math.max(...numbers) : 0) + 1).padStart(2, '0')}`;
+    plan.shots.push({ shot_id: shotId, duration: request.duration, seed, ref_images: refs, prompt: request.prompt, client_request_id: request.clientRequestId, source: 'infinite-canvas' });
+    shotPlan.shots = [...(shotPlan.shots || []), { shot_id: shotId, purpose: '画布手动生成', duration: request.duration, references: refs, status: 'planned' }];
+    await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, actor: 'user', type: 'canvas_shot_created', source: 'infinite-canvas', node_id: request.nodeId, ref_images: refs, ref_sha256: refSha256, duration: request.duration, seed, client_request_id: request.clientRequestId });
+  }
   await writeJsonAtomic(planPath, plan);
   await writeJsonAtomic(shotPlanPath, shotPlan);
-  await appendRunLog(jobDir, { job_id: jobId, shot_id: shotId, actor: 'user', type: 'canvas_shot_created', source: 'infinite-canvas', ref_images: refs, ref_sha256: request.images.map(image => image.sha256), duration: request.duration, seed, client_request_id: request.clientRequestId });
+  if (request.nodeId && binding.node_shots[request.nodeId] !== shotId) {
+    binding.node_shots[request.nodeId] = shotId;
+    await writeJsonAtomic(join(jobDir, 'canvas-binding.json'), binding);
+  }
   return { shotId, reused: false };
 }
 
 export async function canvasGenerate(jobsRoot, input, { token }) {
   const request = parseCanvasRequest(input);
-  const jobId = `canvas-${request.canvasId}`;
+  // A canvas opened from a task ("task-…") writes into that task; any other canvas gets its own task.
+  const bound = await findBoundJob(jobsRoot, request.canvasId);
+  if (request.canvasId.startsWith('task-') && !bound) throw new Error('这个画布绑定的任务已不存在（可能已被删除），请删除该画布');
+  const jobId = bound || `canvas-${request.canvasId}`;
   const jobDir = join(jobsRoot, jobId);
-  if (input.dry_run === true) return { dry_run: true, job_id: jobId, images: request.images.length, duration: request.duration, submitted: false };
+  if (input.dry_run === true) return { dry_run: true, job_id: jobId, bound: Boolean(bound), images: request.images.length, duration: request.duration, submitted: false };
   if (!token) throw new Error('缺少 AUTODL_COMFYUI_TOKEN（必须是 AutoDL 的 ComfyUI 分组 Token）');
 
   const { shotId, reused } = await withPlanLock(jobDir, async () => {
-    await ensureCanvasJob(jobsRoot, jobId, request.canvasId);
-    return addCanvasShot(jobsRoot, jobDir, jobId, request);
+    if (!bound) await ensureCanvasJob(jobsRoot, jobId, request.canvasId);
+    return upsertCanvasShot(jobsRoot, jobDir, jobId, request);
   });
   if (reused) {
     const run = await currentShotRunState(jobDir, await listFileNames(jobDir), shotId, 'multi');
@@ -583,7 +634,7 @@ export async function canvasGenerate(jobsRoot, input, { token }) {
 }
 
 export async function canvasGenerationStatus(jobsRoot, jobId, shotId) {
-  if (!/^canvas-[\p{L}\p{N}_-]{1,64}$/u.test(jobId) || !/^S\d+$/.test(shotId)) throw new Error('无效的画布任务');
+  if (!/^[\p{L}\p{N}._-]+$/u.test(jobId) || jobId.includes('..') || !/^(S|G)\d+$/.test(shotId)) throw new Error('无效的画布任务');
   const jobDir = join(jobsRoot, jobId);
   const run = await currentShotRunState(jobDir, await listFileNames(jobDir), shotId, 'multi');
   if (!run) return { status: 'PLANNED', task_id: null, video_path: null, error: null };
