@@ -1,0 +1,122 @@
+{
+  "job_id": "capibara-couple-13s-20260929",
+  "derived_from": "shot-plan",
+  "media_type": "video",
+  "workflow_id": "minimax_h3_z0903",
+  "resolution": "768p竖(768*1376)",
+  "preparation_status": "ready_for_submission",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "seed": 190371484,
+      "prompt": "Vertical 9:16 realistic Chinese UGC video, 3 seconds. Use all references faithfully. A parked left-hand-drive premium sedan with pearl white leather seats, dark center console and subtle blue ambient trim, seen from the front passenger-side dashboard looking toward the rear, never mirrored. The same young Chinese woman from the identity reference sits naturally in the front passenger seat on the left side of the frame. She wears the exact white capybara plush black seatbelt shoulder pad from the product reference, already correctly installed: a continuous flat untwisted belt runs from upper left through the center of the pad to lower right. She does not touch or adjust it. Gentle natural smile, small head turn toward camera, one restrained handheld-style camera push-in. She speaks exactly in Mandarin: “上车发现，今天有两只小搭子。” Preserve the exact product shape, black pad texture, car geometry, lighting, and composition reference. No text overlay, no logo, no installation action, no safety claims.",
+      "ref_audio": [
+        "audio/source/seed-audio/S01配音.wav"
+      ],
+      "duration": 3,
+      "start_seconds": 0,
+      "ref_images": [
+        "library:characters/candidates/capibara-couple-female-20260929/01-user-selected-front.png",
+        "library:products/shuiba-tutu-black-pad-v1/source/product-front.png",
+        "library:products/shuiba-tutu-black-pad-v1/approved/installed-driver-v1.png",
+        "library:material-references/black-pad-material-4k.png",
+        "library:vehicle-references/china-lhd-mercedes-sedan/source/front-row-driver-to-passenger-v1.png",
+        "assets/approved/storyboard-v2/S01-passenger-white.png"
+      ],
+      "reference_roles": [
+        "用户指定女主身份与造型",
+        "白色款 SKU 完整身份真值",
+        "白色款安全带穿过垫体、位置与比例参考",
+        "黑色垫体材质真值",
+        "全片统一的左舵白色座椅、深色中控与蓝色氛围灯车厢参考",
+        "本任务已批准的构图、人物与车厢连续性参考"
+      ],
+      "ref_audio_urls": [
+        "https://media.nv315.top/audio/capibara-couple-13s-20260929/1790671988840-S01%E9%85%8D%E9%9F%B3.wav"
+      ]
+    },
+    {
+      "shot_id": "S02",
+      "seed": 190371485,
+      "prompt": "Vertical 9:16 realistic Chinese UGC video, 3 seconds. Continue in the exact same parked left-hand-drive pearl-white leather sedan with dark console and subtle blue ambient trim, never mirrored. Dashboard-front camera faces the driver; the male driver, left door, left B-pillar and steering wheel are on the right side of the frame, center console on the left. He wears the exact gamer capybara plush black seatbelt shoulder pad from the product reference, already correctly installed: a continuous flat untwisted belt runs from upper right through the center of the pad to lower left. He sits naturally and only makes a minimal relaxed glance toward the passenger, while the camera slowly pushes in. Off-screen female Mandarin narration says exactly: “他这只是电玩风。” Preserve the exact plush colors, goggles, headphones, denim star outfit, black pad texture and belt placement from references. No text overlay, no logo, no touching or adjusting the product, no installation action, no safety claims.",
+      "ref_audio": [
+        "audio/source/seed-audio/S02配音.wav"
+      ],
+      "duration": 3,
+      "start_seconds": 3,
+      "ref_images": [
+        "library:products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+        "library:products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+        "library:material-references/black-pad-material-4k.png",
+        "library:vehicle-references/china-lhd-mercedes-sedan/source/front-row-driver-to-passenger-v1.png",
+        "assets/approved/storyboard-v2/S02-driver-gamer.png"
+      ],
+      "reference_roles": [
+        "电玩款 SKU 完整身份真值",
+        "电玩款安全带穿过垫体、位置与比例参考",
+        "黑色垫体材质真值",
+        "全片统一的左舵白色座椅、深色中控与蓝色氛围灯车厢参考",
+        "本任务已批准的构图、人物与车厢连续性参考"
+      ],
+      "ref_audio_urls": [
+        "https://media.nv315.top/audio/capibara-couple-13s-20260929/1790671991168-S02%E9%85%8D%E9%9F%B3.wav"
+      ]
+    },
+    {
+      "shot_id": "S03",
+      "seed": 190371486,
+      "prompt": "Vertical 9:16 realistic Chinese product-detail video, 4 seconds. In the same parked pearl-white leather sedan with dark trim and subtle blue ambient light, show the exact two standalone capybara plush black seatbelt shoulder pads side by side on the rear white leather seat: white capybara style on the left, gamer capybara style on the right. Both are complete independent products, black pad backing fully visible, faithful scale and dense irregular matte black pad texture. Fixed three-quarter overhead close-up with one very slow smooth push-in; no hands, no people, no belt installation. Off-screen female Mandarin narration says exactly: “一只酷酷的，一只软萌的。” Match the approved composition reference. No rendered text, no logo, no price, no safety claims.",
+      "ref_audio": [
+        "audio/source/seed-audio/S03配音.wav"
+      ],
+      "duration": 4,
+      "start_seconds": 6,
+      "ref_images": [
+        "library:products/shuiba-tutu-black-pad-v1/source/product-front.png",
+        "library:products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "library:vehicle-references/china-lhd-mercedes-sedan/source/front-row-driver-to-passenger-v1.png",
+        "assets/approved/storyboard-v2/S03-car-pair-display.png"
+      ],
+      "reference_roles": [
+        "白色款 SKU 完整身份真值",
+        "电玩款 SKU 完整身份真值",
+        "黑色垫体材质真值",
+        "全片统一车厢材质与色彩参考",
+        "本任务已批准的构图、人物与车厢连续性参考"
+      ],
+      "ref_audio_urls": [
+        "https://media.nv315.top/audio/capibara-couple-13s-20260929/1790671992165-S03%E9%85%8D%E9%9F%B3.wav"
+      ]
+    },
+    {
+      "shot_id": "S04",
+      "seed": 190371487,
+      "prompt": "Vertical 9:16 realistic Chinese UGC video, 3 seconds. Final shot in the exact same parked left-hand-drive pearl-white leather sedan with dark center console and subtle blue ambient trim, never mirrored. Camera is centered at the front dashboard looking to the rear. The young Chinese woman is the front passenger on the left side of frame; the male driver and steering wheel are on the right. She wears the exact white capybara plush black seatbelt shoulder pad with a continuous flat belt from upper left through pad to lower right. He wears the exact gamer capybara plush black seatbelt shoulder pad with a continuous flat belt from upper right through pad to lower left. Both products are already correctly installed and are not touched. They lightly smile; the woman looks to camera and says exactly in Mandarin: “情侣款两种风格，你更喜欢哪只？” Hold a stable close two-shot with a barely perceptible push-in. Preserve all product identity, black pad texture, belt routing, vehicle geometry, heroine identity and approved composition. No text overlay, no logo, no installation action, no safety claims.",
+      "ref_audio": [
+        "audio/source/seed-audio/S04配音.wav"
+      ],
+      "duration": 3,
+      "start_seconds": 10,
+      "ref_images": [
+        "library:characters/candidates/capibara-couple-female-20260929/01-user-selected-front.png",
+        "library:products/shuiba-tutu-black-pad-v1/source/product-front.png",
+        "library:products/shuiba-tutu-black-pad-v1/approved/installed-driver-v1.png",
+        "library:products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+        "library:products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+        "assets/approved/storyboard-v2/S04-couple-close.png"
+      ],
+      "reference_roles": [
+        "女主身份与造型",
+        "白色款 SKU 完整身份真值",
+        "白色款安装关系参考",
+        "电玩款 SKU 完整身份真值",
+        "电玩款安装关系参考",
+        "本任务已批准的构图、人物与车厢连续性参考"
+      ],
+      "ref_audio_urls": [
+        "https://media.nv315.top/audio/capibara-couple-13s-20260929/1790671993068-S04%E9%85%8D%E9%9F%B3.wav"
+      ]
+    }
+  ]
+}

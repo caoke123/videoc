@@ -162,6 +162,7 @@ export async function listJobs(jobsRoot) {
     return {
       job_id: jobId,
       title: brief?.creative_concept || brief?.goal || jobId,
+      local_path: jobDir,
       category_id: brief?.category_id ?? null,
       format_id: inferFormatId(brief, shotPlan),
       status,
@@ -220,6 +221,7 @@ export async function getJobDetail(jobsRoot, jobId) {
   return {
     job_id: jobId,
     format_id: inferFormatId(brief, shotPlan),
+    local_path: jobDir,
     brief,
     shot_plan: shotPlan,
     request_plan: requestPlan,

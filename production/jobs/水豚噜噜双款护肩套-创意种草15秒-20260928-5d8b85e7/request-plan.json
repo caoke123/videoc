@@ -1,0 +1,93 @@
+{
+  "job_id": "水豚噜噜双款护肩套-创意种草15秒-20260928-5d8b85e7",
+  "derived_from": "shot-plan",
+  "media_type": "video",
+  "workflow_id": "minimax_h3_z0903",
+  "resolution": "768p竖(768*1376)",
+  "audio_reference": "https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "ready_to_submit": true,
+      "prompt": "Photorealistic 6-second vertical 9:16 Chinese UGC smartphone video inside a stationary parked left-hand-drive car in daylight. Camera fixed near the front passenger side, facing the clearly adult Chinese woman seated in the driver seat, matching the woman, casual clothing, car light and composition of reference 3. Reference 1 is the exact pink SKU identity; reference 2 is the exact yellow-orange SKU identity. Reference 3 guides only the woman, car setting, handheld pose and layout; never let it override either original product. Preserve each plush-and-pad assembly, black raised-loop fabric, oval sunglasses, fruit-and-leaf decorations, scarves, buttons, limbs, colors and proportions. The car is parked; she is not driving or touching the wheel. Neither product is attached to a seat belt, installed, or worn. Natural believable hands and subtle casual phone-camera feel. She looks pleasantly surprised and delighted at the phone camera, raising both complete handheld products toward the lens, pink on image-left and yellow-orange on image-right, keeping both full black elongated pads and attached plush figures visible from top to bottom. The visible woman says exactly once in native Mandarin, with an amused, spontaneous tone: “这是哪个大聪明想到的呀，在安全带的护肩套上，装饰上玩偶！” Clean audible voice, believable lip movement, no other words or music. No generated text, subtitles, logo, price, package, added product or safety claim.",
+      "seed": 2026092811,
+      "duration": 6,
+      "start_seconds": 0,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:characters/approved/car-handheld-duo-composition-v1.png"
+      ],
+      "reference_roles": [
+        "粉色 SKU 身份真值",
+        "黄色 SKU 身份真值",
+        "仅作成年女性、停稳车内和双款手持构图；不覆盖商品身份"
+      ]
+    },
+    {
+      "shot_id": "S02",
+      "ready_to_submit": true,
+      "prompt": "Photorealistic 6-second vertical 9:16 casual Chinese UGC close-medium shot inside a stationary parked left-hand-drive car in daylight. Camera fixed near the front passenger side, facing the clearly adult Chinese woman seated in the driver seat, matching the woman, casual clothing, car light and composition of reference 3. Reference 1 is the exact pink SKU identity; reference 2 is the exact yellow-orange SKU identity. Reference 3 guides only the woman, car setting, handheld pose and layout; never let it override either original product. Preserve each plush-and-pad assembly, black raised-loop fabric, oval sunglasses, fruit-and-leaf decorations, scarves, buttons, limbs, colors and proportions. The car is parked; she is not driving or touching the wheel. Neither product is attached to a seat belt, installed, or worn. Natural believable hands and subtle casual phone-camera feel. She first brings the pink product slightly closer to the lens, then the yellow-orange one, so the sunglasses and small scarves are clearly visible; the parked car interior stays softly visible behind her. Products stay complete and unobscured. The visible woman says exactly once in native Mandarin, with a warm enthusiastic tone: “整个车里装饰，一下子好有氛围，萌萌的造型，酷酷的装饰。” Clean audible voice, believable lip movement, no other words or music. No generated text, subtitles, logo, price, package, added product or safety claim.",
+      "seed": 2026092812,
+      "duration": 6,
+      "start_seconds": 6,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:characters/approved/car-handheld-duo-composition-v1.png"
+      ],
+      "reference_roles": [
+        "粉色 SKU 身份真值",
+        "黄色 SKU 身份真值",
+        "仅作人物及车内连续性；不覆盖商品身份"
+      ]
+    },
+    {
+      "shot_id": "S03",
+      "ready_to_submit": true,
+      "prompt": "Photorealistic 5-second vertical 9:16 Chinese UGC inside a stationary parked left-hand-drive car in daylight. Camera fixed near the front passenger side, facing the clearly adult Chinese woman seated in the driver seat, matching the woman, casual clothing, car light and composition of reference 3. Reference 1 is the exact pink SKU identity; reference 2 is the exact yellow-orange SKU identity. Reference 3 guides only the woman, car setting, handheld pose and layout; never let it override either original product. Preserve each plush-and-pad assembly, black raised-loop fabric, oval sunglasses, fruit-and-leaf decorations, scarves, buttons, limbs, colors and proportions. The car is parked; she is not driving or touching the wheel. Neither product is attached to a seat belt, installed, or worn. Natural believable hands and subtle casual phone-camera feel. She holds the two complete products upright side by side in front of her torso, pink on image-left and yellow-orange on image-right, looks at the phone camera and nods approvingly with a delighted smile, keeping both full products steady and unobscured. The visible woman says exactly once in clear native Mandarin with an impressed tone: “这个水豚噜噜安全带护肩套，真是太有创意了！” Clean audible voice, believable lip movement, no other words or music. No generated text, subtitles, logo, price, package, added product or safety claim.",
+      "seed": 2026092813,
+      "duration": 5,
+      "start_seconds": 12,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:characters/approved/car-handheld-duo-composition-v1.png"
+      ],
+      "reference_roles": [
+        "粉色 SKU 身份真值",
+        "黄色 SKU 身份真值",
+        "仅作手持同框构图；不覆盖商品身份"
+      ]
+    },
+    {
+      "shot_id": "S04",
+      "ready_to_submit": true,
+      "prompt": "Photorealistic 4-second vertical 9:16 Chinese UGC ending inside a stationary parked left-hand-drive car in daylight. Camera fixed near the front passenger side, facing the clearly adult Chinese woman seated in the driver seat, matching the woman, casual clothing, car light and composition of reference 3. Reference 1 is the exact pink SKU identity; reference 2 is the exact yellow-orange SKU identity. Reference 3 guides only the woman, car setting, handheld pose and layout; never let it override either original product. Preserve each plush-and-pad assembly, black raised-loop fabric, oval sunglasses, fruit-and-leaf decorations, scarves, buttons, limbs, colors and proportions. The car is parked; she is not driving or touching the wheel. Neither product is attached to a seat belt, installed, or worn. Natural believable hands and subtle casual phone-camera feel. She smiles at the phone camera, makes one small inviting gesture toward the lens, then holds both complete products steady side by side, pink on image-left and yellow-orange on image-right, for the final second, leaving a little lower safe space for a later CTA overlay. The visible woman says exactly once in native Mandarin with a friendly inviting rise: “姐妹们，抓紧给你的爱车安排上吧！” Clean audible voice, believable lip movement, no other words or music. No generated text, subtitles, logo, price, package, added product or safety claim.",
+      "seed": 2026092814,
+      "duration": 4,
+      "start_seconds": 17,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:characters/approved/car-handheld-duo-composition-v1.png"
+      ],
+      "reference_roles": [
+        "粉色 SKU 身份真值",
+        "黄色 SKU 身份真值",
+        "仅作手持同框构图；不覆盖商品身份"
+      ]
+    }
+  ],
+  "preparation_status": "ready_for_submission",
+  "authorization": {
+    "video_generation": true,
+    "scope": [
+      "S01",
+      "S02",
+      "S03",
+      "S04"
+    ],
+    "reason": "用户在 2026-09-28 同意用粉色、黄色噜噜做真实运行测验并承担费用。"
+  }
+}

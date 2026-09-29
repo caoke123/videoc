@@ -1,0 +1,95 @@
+{
+  "job_id": "lulu-duo-car-handheld-ugc-14s-20260928",
+  "derived_from": "shot-plan",
+  "format_id": "ugc-multi-shot",
+  "media_type": "video",
+  "workflow_id": "minimax_h3_z0903",
+  "resolution": "768p竖(768*1376)",
+  "preparation_status": "ready_for_submission",
+  "authorization": {
+    "video_generation": true,
+    "scope": [
+      "S01",
+      "S02",
+      "S03"
+    ],
+    "reason": "用户确认车内手持资产通过，并明确要求填写提示词后提交生成。"
+  },
+  "output": {
+    "width": 720,
+    "height": 1280,
+    "fps": 24,
+    "duration_seconds": 14,
+    "cut_style": "hard_cuts"
+  },
+  "audio_reference": "https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "duration": 4,
+      "ready_to_submit": true,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "assets/generated/references/car-handheld-duo-composition-v1.png"
+      ],
+      "reference_roles": [
+        "粉色 SKU 身份真值",
+        "黄色 SKU 身份真值",
+        "仅作成年女性、停稳车内氛围和双手手持构图候选；不覆盖商品身份"
+      ],
+      "prompt": "Photorealistic 4-second vertical 9:16 Chinese UGC smartphone video inside a stationary parked left-hand-drive car in daylight. Camera fixed near the front passenger side, facing the clearly adult Chinese woman seated in the driver seat, matching the woman, casual clothing, car light and composition of reference 3. She smiles at the phone camera and makes one small natural presenting motion, bringing the two complete handheld products slightly toward the lens, pink on image-left and yellow-orange on image-right. Keep both full black elongated pads and attached plush figures visible from top to bottom. Reference 1 is the exact pink SKU identity; reference 2 is the exact yellow-orange SKU identity. Reference 3 guides only the woman, car setting, handheld pose and layout; never let it override either original product. Preserve each plush-and-pad assembly, black raised-loop fabric, oval sunglasses, fruit-and-leaf decorations, scarves, buttons, limbs, colors and proportions. The car is parked; she is not driving or touching the wheel. Neither product is attached to a seat belt, installed, or worn. Natural believable hands and subtle casual phone-camera feel. The visible woman says exactly once in native Mandarin, with a friendly spontaneous tone: “停车等人，给你们看两只新搭子！” Clean audible voice, believable lip movement, no other words or music. No text, subtitles, logo, price, package, added product or safety claim.",
+      "seed": 2026092801
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 4,
+      "duration": 5,
+      "ready_to_submit": true,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "assets/generated/references/car-handheld-duo-composition-v1.png"
+      ],
+      "reference_roles": [
+        "粉色 SKU 身份真值",
+        "黄色 SKU 身份真值",
+        "仅作人物及车内连续性候选"
+      ],
+      "prompt": "Photorealistic 5-second vertical 9:16 casual Chinese UGC continuation in the same stationary parked left-hand-drive car. Match the adult woman, daylight, clothing, driver-seat position and handheld product arrangement of reference 3. In a close view she performs one gentle comparison gesture: the pink complete product is held a little nearer the phone first, then the yellow-orange complete product, while both remain fully in frame and separated. Keep her hands natural and clear of the steering wheel. The pink product stays on image-left, yellow-orange on image-right. Show the sunglasses, small fruit-and-leaf head decorations and contrasting scarves clearly without covering them. Reference 1 and reference 2 are the exact separate product identity truths; reference 3 is only a scene and continuity guide. Preserve each whole plush-plus-black-pad assembly, texture, proportions, colors, buttons, limbs and accessory placement; do not exchange details between them. No belt attachment, installed or worn state, driving, or product-use demonstration. The same woman's clean audible native Mandarin voice says exactly once: “粉裤噜妹甜酷，阳光噜噜元气。” Casual friendly delivery; natural lip motion if her mouth is visible. No extra words, music, text, subtitles, logo, price, package, added product or safety claim.",
+      "seed": 2026092802
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 9,
+      "duration": 5,
+      "ready_to_submit": true,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "assets/generated/references/car-handheld-duo-composition-v1.png"
+      ],
+      "reference_roles": [
+        "粉色 SKU 身份真值",
+        "黄色 SKU 身份真值",
+        "仅作手持同框构图候选"
+      ],
+      "prompt": "Photorealistic 5-second vertical 9:16 Chinese UGC ending in the same stationary parked left-hand-drive car, matching reference 3's adult woman, driver-seat viewpoint, casual clothing and natural daylight. She holds the two complete products upright side by side in front of her torso, pink on image-left and yellow-orange on image-right, looks at the phone camera and smiles. Make only a small natural settling motion, then hold both full products steady and unobscured for the final second, leaving a little lower safe space for a later CTA overlay. Reference 1 is the exact pink product identity, reference 2 the exact yellow-orange product identity; reference 3 guides only woman, car and composition. Preserve full black textured pads and attached plush figures as separate intact assemblies, with original oval sunglasses, fruit-and-leaf ornaments, scarves, buttons, limbs, colors and scale. Both hands remain clear of the wheel; no driving, seat-belt attachment, installation, wearing or use demonstration. The visible woman says exactly once in clear native Mandarin with a friendly inviting rise: “墨镜和小领巾都好可爱，你会选哪只？” No other words or music. No generated text, subtitles, logo, price, package, added product or safety claim.",
+      "seed": 2026092803
+    },
+    {
+      "shot_id": "S04",
+      "duration": 6,
+      "seed": 703251202,
+      "ref_images": [
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "assets/source/0289741a3739.png",
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png"
+      ],
+      "prompt": "Photorealistic 5-second vertical 9:16 Chinese UGC ending in the same stationary parked left-hand-drive car, matching reference 3's adult woman, driver-seat viewpoint, casual clothing and natural daylight. She holds the two complete products upright side by side in front of her torso, pink on image-left and yellow-orange on image-right, looks at the phone camera and smiles. Make only a small natural settling motion, then hold both full products steady and unobscured for the final second, leaving a little lower safe space for a later CTA overlay. Reference 1 is the exact pink product identity, reference 2 the exact yellow-orange product identity; reference 3 guides only woman, car and composition. Preserve full black textured pads and attached plush figures as separate intact assemblies, with original oval sunglasses, fruit-and-leaf ornaments, scarves, buttons, limbs, colors and scale. Both hands remain clear of the wheel; no driving, seat-belt attachment, installation, wearing or use demonstration. The visible woman says exactly once in clear native Mandarin with a friendly inviting rise: “墨镜和小领巾都好可爱，你会选哪只？” No other words or music. No generated text, subtitles, logo, price, package, added product or safety claim.",
+      "client_request_id": "d396718e-ea48-4957-86a7-74249427f781",
+      "source": "infinite-canvas"
+    }
+  ]
+}

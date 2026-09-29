@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "job_id": "lulu-duo-shoulderpad-ugc-14s-20260927",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": null,
+  "product_display_name": "粉裤噜妹与阳光噜噜安全带护肩套",
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 14,
+  "audience": "喜欢可爱车载小物和个性化通勤配件的年轻短视频观众；由商品外观推定，未确认",
+  "use_occasion": "停放环境之外的室内桌面静物分享，不展示车辆或安装状态。",
+  "creative_concept": "桌面双搭子随手分享：两款完整并排出镜，突出可见外观细节和角色差异，最后邀请观众选色；不展示安装或佩戴状态。",
+  "character_profile": "成年年轻女性创作者，居家自然穿搭，手机随手分享感；不指定真实身份，主要以画外音出镜，结尾仅手部在两款之间做选择手势。",
+  "scene_plan": "白天有柔和窗光的简洁居家桌面，粉色款和黄色款完整并排摆放，背景少量生活物件虚化；手机近距离拍摄，轻微手持感。两件商品的黑色长条部件均完整可见；不添加包装、品牌标识或用途道具。",
+  "action_plan": "S01 镜头轻轻拉开露出两款，创作者在画外开口；S02 镜头平稳地分别扫过两款墨镜、头饰和领巾，商品保持原位；S03 手指在两款之间做选择手势但不触碰商品，停在并排全貌供结尾字幕。",
+  "spoken_script": "这两只也太有个性了！粉裤噜妹和阳光噜噜，一粉一黄，各有各的感觉。墨镜和小领巾太抢眼了，你会选哪只？",
+  "raw_copy": "口播：这两只也太有个性了！粉裤噜妹和阳光噜噜，一粉一黄，各有各的感觉。墨镜和小领巾太抢眼了，你会选哪只？\n屏幕结尾：粉裤噜妹 / 阳光噜噜｜你会选哪只？",
+  "hook": "这两只也太有个性了！",
+  "cta": "粉裤噜妹 / 阳光噜噜，你会选哪只？",
+  "verified_claims": [
+    "用户已提供粉色款与黄色款的原始外观图；项目既有同源素材记录确认两款名称为“粉裤噜妹”和“阳光噜噜”。",
+    "粉色和黄色外观、各自墨镜、头饰、围巾、纽扣及黑色长条护肩垫可从参考图直接确认。",
+    "可爱、软萌、亮眼、有记忆点仅作为创作者主观评价。"
+  ],
+  "prohibited_claims": [
+    "未核实的安装状态、佩戴状态、车辆适配、舒适度、保护效果或安全性能",
+    "未提供证据的材料成分、尺寸、工艺、耐用性、价格、库存、赠品",
+    "改变、移除、互换或添加任一 SKU 的部件"
+  ],
+  "reference_video": null,
+  "notes": "两张用户原图 SHA-256 与 production/jobs/粉裤噜妹与阳光噜噜-主图视频12秒测试-20260927-d5c6c9f6/assets/source 的同名 SKU 文件完全一致。项目类目为安全带护肩套。此 UGC 设计只做桌面外观展示，不表现安装/佩戴。按照 seatbelt-video-studio，后续视频生成前仍须有本 SKU 的人工批准安装状态图；因此本任务目前只完成设计和视觉候选，不提交 H3/AutoDL 生成。人物、室内桌面与抖音为本次默认推定。 2026-09-26 approved pink installed photo reused after confirming the user product-source hash. A yellow installed-state reference candidate was prepared on 2026-09-27 and is pending human approval before generation. User approved the yellow SKU installed-state candidate with the instruction to start generation.",
+  "format_id": "ugc-multi-shot",
+  "product_skus": [
+    {
+      "approved_installed_asset": "production/assets/products/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
+      "display_name": "粉裤噜妹",
+      "identity_status": "user_supplied_standalone_source",
+      "color": "pink",
+      "sku_id": "pink-lulu-shoulder-pad-user-reference-20260927",
+      "source_product_asset": "production/assets/products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "physical_specs_status": "unverified",
+      "installation_status": "approved_reference_available"
+    },
+    {
+      "display_name": "阳光噜噜",
+      "identity_status": "user_supplied_standalone_source",
+      "color": "yellow-orange",
+      "sku_id": "yellow-lulu-shoulder-pad-user-reference-20260927",
+      "source_product_asset": "production/assets/products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "physical_specs_status": "unverified",
+      "candidate_installed_asset": "assets/generated/references/yellow-lulu-installed-candidate-v1.png",
+      "approved_installed_asset": "production/assets/products/yellow-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
+      "installation_status": "approved"
+    }
+  ]
+}

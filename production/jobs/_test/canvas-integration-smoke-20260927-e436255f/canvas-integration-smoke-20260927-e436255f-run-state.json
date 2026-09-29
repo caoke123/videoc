@@ -1,0 +1,18 @@
+{
+  "status": "PREPARING",
+  "shots": {
+    "S01": {
+      "task_id": "724836fe-2f5c-4b2f-9f6e-7841680e1c55",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T11:39:54.250Z",
+      "seed": 1790509066,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 287,
+      "last_polled_at": "2026-09-27T11:44:44.559Z",
+      "output_file": "renders/runs/S01/724836fe-2f5c-4b2f-9f6e-7841680e1c55.mp4",
+      "downloaded_at": "2026-09-27T11:44:44.884Z"
+    }
+  },
+  "updated_at": "2026-09-27T11:44:44.885Z"
+}

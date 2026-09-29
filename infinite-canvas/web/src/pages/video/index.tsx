@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, BookOpen, CheckSquare, ClipboardPaste, Download, FolderPlus, History, LoaderCircle, Plus, SlidersHorizontal, Sparkles, Trash2, Upload, VideoIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, CheckSquare, ClipboardPaste, Download, FolderPlus, History, LoaderCircle, Plus, RefreshCw, SlidersHorizontal, Sparkles, Trash2, Upload, VideoIcon } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore, type DragEvent } from "react";
 import { App, Button, Checkbox, Drawer, Empty, Input, Modal, Tag, Typography } from "antd";
 import localforage from "localforage";
@@ -16,6 +16,7 @@ import { formatBytes, formatDuration } from "@/lib/image-utils";
 import { deleteStoredMedia, resolveMediaUrl } from "@/services/file-storage";
 import { resolveImageUrl, ensureImagePreview, getImagePreviewRevision, previewUrlFor, subscribeImagePreviews, uploadImage } from "@/services/image-storage";
 import { createVideoGenerationTask, pollVideoGenerationTask, storeGeneratedVideo, type VideoGenerationTask } from "@/services/api/video";
+import type { Prompt } from "@/services/api/prompts";
 import { useAssetStore } from "@/stores/use-asset-store";
 import { useWorkbenchAgentStore } from "@/stores/use-workbench-agent-store";
 import { boolConfig, modelOptionLabel, useConfigStore, useEffectiveConfig, type AiConfig } from "@/stores/use-config-store";
@@ -127,6 +128,16 @@ export default function VideoPage() {
             }),
         );
         setReferences((value) => [...value, ...nextReferences].slice(0, 7));
+    };
+
+    const replaceIndexRef = useRef<number | null>(null);
+    const replaceInputRef = useRef<HTMLInputElement>(null);
+    const replaceReference = async (file?: File) => {
+        const index = replaceIndexRef.current;
+        if (!file || index === null) return;
+        const image = await uploadImage(file);
+        const next: ReferenceImage = { id: nanoid(), name: file.name, type: image.mimeType, dataUrl: image.url, storageKey: image.storageKey };
+        setReferences((value) => value.map((ref, i) => (i === index ? next : ref)));
     };
 
     const handleReferenceDragEnter = (event: DragEvent<HTMLDivElement>) => {
@@ -253,6 +264,25 @@ export default function VideoPage() {
             metadata: { source: "video-page", prompt },
         });
         message.success(t("common.addedToAssets"));
+    };
+
+    const applyPromptPreset = async (item: Prompt) => {
+        setPrompt((prev) => (prev.trim() ? `${prev}\n\n${item.prompt}` : item.prompt));
+        if (!item.referenceImageUrls.length) return;
+        const hide = message.loading(t("prompts.loadingPresetReferences"), 0);
+        try {
+            const loaded = await Promise.all(
+                item.referenceImageUrls.map(async (url, index) => {
+                    const stored = await uploadImage(url);
+                    return { id: nanoid(), name: `${item.title}-${index + 1}`, type: stored.mimeType, dataUrl: stored.url, storageKey: stored.storageKey };
+                }),
+            );
+            setReferences(loaded.slice(0, 7));
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : t("prompts.loadPresetReferencesFailed"));
+        } finally {
+            hide();
+        }
     };
 
     const insertPickedAsset = async (payload: InsertAssetPayload) => {
@@ -433,9 +463,22 @@ export default function VideoPage() {
                                             <img src={previewUrlFor(item.storageKey) || item.dataUrl} alt={item.name} className="size-full object-cover" />
                                             <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white">{index + 1}</span>
                                             <ReferenceOrderButtons index={index} total={references.length} onMove={(offset) => setReferences((value) => moveListItem(value, index, offset))} />
-                                            <button type="button" className="absolute right-1 top-1 hidden size-6 items-center justify-center rounded bg-black/60 text-white group-hover:flex" onClick={() => setReferences((value) => value.filter((ref) => ref.id !== item.id))} aria-label={t("videoWorkbench.removeImage")}>
-                                                <Trash2 className="size-3.5" />
-                                            </button>
+                                            <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex">
+                                                <button
+                                                    type="button"
+                                                    className="flex size-6 items-center justify-center rounded bg-black/60 text-white"
+                                                    onClick={() => {
+                                                        replaceIndexRef.current = index;
+                                                        replaceInputRef.current?.click();
+                                                    }}
+                                                    aria-label={t("imageWorkbench.replaceReference")}
+                                                >
+                                                    <RefreshCw className="size-3.5" />
+                                                </button>
+                                                <button type="button" className="flex size-6 items-center justify-center rounded bg-black/60 text-white" onClick={() => setReferences((value) => value.filter((ref) => ref.id !== item.id))} aria-label={t("videoWorkbench.removeImage")}>
+                                                    <Trash2 className="size-3.5" />
+                                                </button>
+                                            </div>
                                         </div>
                                     ))}
                                     {!references.length ? <div className="flex min-w-full items-center justify-center text-sm text-stone-500">{referenceDragTarget ? t("videoWorkbench.dropReferences") : t("videoWorkbench.noImages")}</div> : null}
@@ -492,6 +535,16 @@ export default function VideoPage() {
                     event.target.value = "";
                 }}
             />
+            <input
+                ref={replaceInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(event) => {
+                    void replaceReference(event.target.files?.[0]);
+                    event.target.value = "";
+                }}
+            />
             <Drawer title={t("workbench.logs")} placement="bottom" size="large" open={logsOpen} onClose={() => setLogsOpen(false)}>
                 <LogPanel logs={logs} selectedLogIds={selectedLogIds} activeLogId={previewLog?.id} onSelectedLogIdsChange={setSelectedLogIds} onCreateSession={createSession} onDeleteSelected={() => setDeleteConfirmOpen(true)} onPreviewLog={previewGenerationLog} />
             </Drawer>
@@ -500,7 +553,7 @@ export default function VideoPage() {
                     <GenerationSettings config={effectiveConfig} model={model} updateConfig={updateConfig} openConfigDialog={openConfigDialog} />
                 </div>
             </Drawer>
-            <PromptSelectDialog open={promptDialogOpen} onOpenChange={setPromptDialogOpen} onSelect={setPrompt} />
+            <PromptSelectDialog open={promptDialogOpen} onOpenChange={setPromptDialogOpen} onSelect={(item) => void applyPromptPreset(item)} />
             <AssetPickerModal open={assetPickerOpen} defaultTab="my-assets" onInsert={(payload) => void insertPickedAsset(payload)} onClose={() => setAssetPickerOpen(false)} />
             <Modal title={t("workbench.deleteLogs")} open={deleteConfirmOpen} onCancel={() => setDeleteConfirmOpen(false)} onOk={deleteSelectedLogs} okText={t("common.delete")} okButtonProps={{ danger: true }} cancelText={t("common.cancel")}>
                 {t("workbench.deleteLogsConfirm", { count: selectedLogIds.length })}

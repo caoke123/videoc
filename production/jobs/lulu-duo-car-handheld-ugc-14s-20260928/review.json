@@ -1,0 +1,10 @@
+{
+  "default_policy": "human_first",
+  "automatic_ai_review": false,
+  "automatic_retry": false,
+  "shots": {
+    "S01": {"status": "pending_human_review", "notes": "AutoDL 已生成并落盘；尚未进行人工审片。"},
+    "S02": {"status": "pending_human_review", "notes": "AutoDL 已生成并落盘；尚未进行人工审片。"},
+    "S03": {"status": "pending_human_review", "notes": "AutoDL 已生成并落盘；尚未进行人工审片。"}
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "job_id": "lulu-duo-shoulderpad-ugc-14s-20260927",
+  "format_id": "ugc-multi-shot",
+  "workflow_id": "minimax_h3_z0903",
+  "preparation_status": "ready_for_submission",
+  "resolution": "768p竖(768*1376)",
+  "output": {
+    "width": 720,
+    "height": 1280,
+    "fps": 24,
+    "duration_seconds": 14,
+    "cut_style": "hard_cuts"
+  },
+  "authorization": {
+    "video_generation": true,
+    "reason": "User approved the yellow SKU installed-state candidate and explicitly requested all three video shots be generated."
+  },
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "duration": 4,
+      "ready_to_submit": true,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "assets/approved/S01-storyboard-approved-v1.png"
+      ],
+      "reference_roles": [
+        "粉裤噜妹完整 SKU 身份真值",
+        "阳光噜噜完整 SKU 身份真值",
+        "仅定义黑色护肩垫纹理",
+        "仅供人物/桌面/构图参考，候选未审核"
+      ],
+      "prompt": "Photorealistic 4-second vertical 9:16 Chinese UGC smartphone video, casual home desk setting in soft daylight. An attractive clearly adult Chinese woman creator appears naturally behind the desk, smiles into the phone camera and speaks one short line as a friend sharing two cute car accessories. Both complete seat-belt shoulder pad products are already resting upright on the desk side by side, pink-lulu on image-left and yellow-lulu on image-right; no belt or vehicle is shown and neither product is installed or worn. The camera makes one gentle handheld pull-back to reveal both complete products. Preserve the exact pink SKU from reference 1 and exact yellow SKU from reference 2 as two separate indivisible plush-and-black-pad assemblies. Reference 3 defines only the black pad's dense irregular raised-loop textile and stitched binding. Reference 4 is an unapproved composition candidate only and never overrides product identity. Do not change colors, plush proportions, glasses, head decorations, scarves, buttons, limbs or pad geometry; do not swap accessories; do not add packaging, logo, price, text or extra items. Natural skin, believable hands, authentic casual UGC, no polished studio commercial look. Generate audible native Mandarin Chinese dialogue, said exactly once by the visible adult woman: “这两只也太有个性了！” No other words, music or SFX; simple natural lip movement. This is a design candidate only and is not cleared for generation until human review and category gates are complete.",
+      "seed": 2026092701
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 4,
+      "duration": 6,
+      "ready_to_submit": true,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "assets/approved/S02-storyboard-approved-v1.png"
+      ],
+      "reference_roles": [
+        "粉裤噜妹完整 SKU 身份真值",
+        "阳光噜噜完整 SKU 身份真值",
+        "仅定义黑色护肩垫纹理",
+        "仅供产品摆位/构图参考，候选未审核"
+      ],
+      "prompt": "Photorealistic 6-second vertical 9:16 casual Chinese UGC insert shot on the same bright home desk. No face is required; the same creator continues as off-screen narration. Keep both complete seat-belt shoulder pad products upright, side by side, pink-lulu on image-left and yellow-lulu on image-right, stationary and fully inside frame. Make one slow short horizontal phone-camera pan from the pink product to the yellow product, keeping the other product as a continuity anchor. No belt, vehicle, installation or worn state is shown. Preserve the exact separate complete SKU identities from references 1 and 2; treat each plush and its black pad as one indivisible assembly. Reference 3 defines only dense irregular raised loops and stitched binding on the black pads. Reference 4 is only an unapproved composition guide. Never change, hide, crop off, reshape or exchange the character colors, oval glasses, fruit/leaf head decoration, scarves, buttons, limbs, attachment details or black pad proportions. The detail stays recognizable and faithful to the source photos, not a newly interpreted toy. No claim text, subtitles, logos, packaging, price, music or SFX. Generate clean native Mandarin Chinese off-screen dialogue, exactly: “粉裤噜妹和阳光噜噜，一粉一黄，各有各的感觉。” No extra words. This is a design candidate only and is not cleared for generation until human review and category gates are complete.",
+      "seed": 2026092702
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 10,
+      "duration": 4,
+      "ready_to_submit": true,
+      "ref_images": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "assets/approved/S03-storyboard-approved-v1.png"
+      ],
+      "reference_roles": [
+        "粉裤噜妹完整 SKU 身份真值",
+        "阳光噜噜完整 SKU 身份真值",
+        "仅定义黑色护肩垫纹理",
+        "仅供手势/构图参考，候选未审核"
+      ],
+      "prompt": "Photorealistic 4-second vertical 9:16 Chinese UGC home-desk ending, matching the previous shots' soft daylight and natural phone camera look. Show both complete products side by side, pink-lulu left and yellow-lulu right, stationary and fully visible. One anatomically natural adult woman's hand enters from the edge and gently gestures between the two products without touching or obscuring them. Make only a small camera settling movement, then hold on the pair with uncluttered lower safe area for a post-added CTA. No vehicle, seat belt, installation, wearing, or use demonstration. Preserve references 1 and 2 as exact distinct complete SKU identity truth; do not mix accessories or alter plush or black-pad proportions. Reference 3 is only the black pad textile truth; reference 4 is an unapproved composition candidate only. No generated text, brand, logo, packaging, price or extra product. Generate clean native Mandarin Chinese off-screen narration, exactly: “墨镜和小领巾太抢眼了，你会选哪只？” End with a friendly inviting rise; no other words, music or SFX. This is a design candidate only and is not cleared for generation until human review and category gates are complete.",
+      "seed": 2026092703
+    }
+  ],
+  "audio_reference": "https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav",
+  "approved_installed_references": [
+    "production/assets/products/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
+    "production/assets/products/yellow-lulu-shoulder-pad-v1/approved/installed-driver-v1.png"
+  ]
+}

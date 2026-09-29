@@ -1,0 +1,70 @@
+{
+  "status": "PREPARING",
+  "shots": {
+    "S01": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "beb5d140-0301-4320-9f7f-2e347183b29a",
+      "submitted_at": "2026-09-28T12:46:03.940Z",
+      "seed": 2026092811,
+      "duration": 6,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 422,
+      "last_polled_at": "2026-09-28T12:53:39.346Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S01/beb5d140-0301-4320-9f7f-2e347183b29a.mp4",
+      "downloaded_at": "2026-09-28T12:53:39.764Z"
+    },
+    "S02": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "99fcb1e4-4dd8-4d80-aa33-087670312b37",
+      "submitted_at": "2026-09-28T12:46:05.210Z",
+      "seed": 2026092812,
+      "duration": 6,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 455,
+      "last_polled_at": "2026-09-28T12:53:45.540Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S02/99fcb1e4-4dd8-4d80-aa33-087670312b37.mp4",
+      "downloaded_at": "2026-09-28T12:53:45.995Z"
+    },
+    "S03": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "d8a16815-35f8-4bf3-a00b-9da4e4db4490",
+      "submitted_at": "2026-09-28T12:46:06.459Z",
+      "seed": 2026092813,
+      "duration": 5,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 398,
+      "last_polled_at": "2026-09-28T12:52:46.188Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S03/d8a16815-35f8-4bf3-a00b-9da4e4db4490.mp4",
+      "downloaded_at": "2026-09-28T12:52:46.564Z"
+    },
+    "S04": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "f5218bfa-2f6a-4bab-8365-f7e05a5d9002",
+      "submitted_at": "2026-09-28T12:46:07.700Z",
+      "seed": 2026092814,
+      "duration": 4,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 337,
+      "last_polled_at": "2026-09-28T12:51:51.908Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S04/f5218bfa-2f6a-4bab-8365-f7e05a5d9002.mp4",
+      "downloaded_at": "2026-09-28T12:51:53.247Z"
+    }
+  },
+  "updated_at": "2026-09-28T12:53:45.996Z"
+}

@@ -57,10 +57,15 @@ async function buildProject(canvasId: string, detail: ProductionJobDetail): Prom
     if (!shots.length) throw new Error("这个任务还没有镜头，无法生成画布");
 
     const assetPaths: string[] = [];
+    const audioUrls: string[] = [];
     for (const shot of shots) {
         for (const ref of Array.isArray(shot.ref_images) ? shot.ref_images : []) {
             const path = norm(ref);
             if (path && isImage(path) && !assetPaths.includes(path)) assetPaths.push(path);
+        }
+        for (const audio of Array.isArray(shot.ref_audio_urls) ? shot.ref_audio_urls : []) {
+            const url = typeof audio === "string" ? audio : "";
+            if (url && !audioUrls.includes(url)) audioUrls.push(url);
         }
     }
 
@@ -81,6 +86,20 @@ async function buildProject(canvasId: string, detail: ProductionJobDetail): Prom
             metadata: { content: productionFileUrl(jobId, path), status: "success", naturalWidth: nw, naturalHeight: nh, bytes: 0, mimeType: IMAGE_MIME[path.split(".").pop()!.toLowerCase()] || "image/png" },
         });
         y += height + 40;
+    });
+    audioUrls.forEach((url) => {
+        const isRemote = /^https?:\/\//i.test(url);
+        const content = isRemote ? url : productionFileUrl(jobId, url);
+        nodes.push({
+            id: `audio:${url}`,
+            type: CanvasNodeType.Audio,
+            title: "配音",
+            position: { x: 0, y },
+            width: 300,
+            height: 80,
+            metadata: { content, status: "success", mimeType: "audio/mpeg" },
+        });
+        y += 120;
     });
 
     const connections: CanvasConnection[] = [];
@@ -107,6 +126,10 @@ async function buildProject(canvasId: string, detail: ProductionJobDetail): Prom
         for (const ref of Array.isArray(shot.ref_images) ? shot.ref_images : []) {
             const path = norm(ref);
             if (path && assetPaths.includes(path)) connections.push({ id: `edge:${index}:${connections.length}`, fromNodeId: `asset:${path}`, toNodeId: id });
+        }
+        for (const audio of Array.isArray(shot.ref_audio_urls) ? shot.ref_audio_urls : []) {
+            const url = typeof audio === "string" ? audio : "";
+            if (url && audioUrls.includes(url)) connections.push({ id: `edge:audio:${index}:${connections.length}`, fromNodeId: `audio:${url}`, toNodeId: id });
         }
     });
 
@@ -144,6 +167,7 @@ export function taskAdditions(existing: CanvasNodeData[], existingConnections: C
     const shotNodes = existing.filter((node) => node.id.startsWith("shot-") || node.id in nodeShots);
     let nextShotY = Math.max(-300, ...shotNodes.map((node) => node.position.y)) + 300;
     let nextAssetY = Math.max(-340, ...existing.filter((node) => node.id.startsWith("asset:")).map((node) => node.position.y + node.height)) + 40;
+    let nextAudioY = Math.max(-340, nextAssetY, ...existing.filter((node) => node.id.startsWith("audio:")).map((node) => node.position.y + node.height)) + 40;
     for (const shot of detail.request_plan?.shots || []) {
         const shotId = String(shot.shot_id || "");
         const mapped = nodeOfShot.get(shotId);
@@ -163,6 +187,19 @@ export function taskAdditions(existing: CanvasNodeData[], existingConnections: C
                 nextAssetY += 340;
             }
             if (!haveEdge.has(`${assetId}>${id}`)) { connections.push({ id: `edge:${assetId}:${id}`, fromNodeId: assetId, toNodeId: id }); haveEdge.add(`${assetId}>${id}`); }
+        }
+        for (const audio of Array.isArray(shot.ref_audio_urls) ? shot.ref_audio_urls : []) {
+            const url = typeof audio === "string" ? audio : "";
+            if (!url) continue;
+            const audioId = `audio:${url}`;
+            if (!known.has(audioId)) {
+                const isRemote = /^https?:\/\//i.test(url);
+                const content = isRemote ? url : productionFileUrl(detail.job_id, url);
+                nodes.push({ id: audioId, type: CanvasNodeType.Audio, title: "配音", position: { x: 0, y: nextAudioY }, width: 300, height: 80, metadata: { content, status: "success", mimeType: "audio/mpeg" } });
+                known.add(audioId);
+                nextAudioY += 120;
+            }
+            if (!haveEdge.has(`${audioId}>${id}`)) { connections.push({ id: `edge:${audioId}:${id}`, fromNodeId: audioId, toNodeId: id }); haveEdge.add(`${audioId}>${id}`); }
         }
     }
     detail.asset_files.filter((path) => /^renders\/preview\/final-[^/]+\.mp4$/i.test(path) && !path.includes(".partial")).sort().forEach((path, index) => {

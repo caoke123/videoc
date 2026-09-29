@@ -1,0 +1,96 @@
+{
+  "schema_version": 2,
+  "job_id": "粉裤噜妹与阳光噜噜-主图视频12秒测试-20260927-d5c6c9f6",
+  "category_id": "seatbelt-shoulder-pad",
+  "format_id": "main-image-hosted-12s",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "duration": 3,
+      "purpose": "开场建立人物、车内情境，并让两款产品同时完整入镜。",
+      "generation_mode": "multi_reference_hosted_product_video",
+      "audio_mode": "native",
+      "dialogue": "给你看两只水豚噜噜。",
+      "audio_direction": "同一位成年女性本人对镜口播；自然普通话，温暖轻快、带笑但不过度推销，强度2/5；清晰读出产品名称，不加即兴词；每句在本镜头内说完。",
+      "references": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "assets/generated/character-keyframe-candidate-v1.png"
+      ],
+      "primary_action": "开场建立人物、车内情境，并让两款产品同时完整入镜。",
+      "camera": "仪表台副驾前方固定正面中景；仅在 S02/S03 做极轻微推近。",
+      "end_state": "两款产品保持全貌与原始颜色/配饰；硬切进入下镜头。",
+      "dfcine_workflow_id": "minimax_h3_z0903",
+      "status": "planned"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 3,
+      "end_seconds": 6,
+      "duration": 3,
+      "purpose": "明确粉色版本名称，展示粉色款的完整外观。",
+      "generation_mode": "multi_reference_hosted_product_video",
+      "audio_mode": "native",
+      "dialogue": "粉色这只是粉裤噜妹。",
+      "audio_direction": "同一位成年女性本人对镜口播；自然普通话，温暖轻快、带笑但不过度推销，强度2/5；清晰读出产品名称，不加即兴词；每句在本镜头内说完。",
+      "references": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "assets/generated/character-keyframe-candidate-v1.png"
+      ],
+      "primary_action": "明确粉色版本名称，展示粉色款的完整外观。",
+      "camera": "仪表台副驾前方固定正面中景；仅在 S02/S03 做极轻微推近。",
+      "end_state": "两款产品保持全貌与原始颜色/配饰；硬切进入下镜头。",
+      "dfcine_workflow_id": "minimax_h3_z0903",
+      "status": "planned"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 6,
+      "end_seconds": 9,
+      "duration": 3,
+      "purpose": "明确黄色版本名称，展示黄色款的完整外观。",
+      "generation_mode": "multi_reference_hosted_product_video",
+      "audio_mode": "native",
+      "dialogue": "黄色这只是阳光噜噜。",
+      "audio_direction": "同一位成年女性本人对镜口播；自然普通话，温暖轻快、带笑但不过度推销，强度2/5；清晰读出产品名称，不加即兴词；每句在本镜头内说完。",
+      "references": [
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "assets/generated/character-keyframe-candidate-v1.png"
+      ],
+      "primary_action": "明确黄色版本名称，展示黄色款的完整外观。",
+      "camera": "仪表台副驾前方固定正面中景；仅在 S02/S03 做极轻微推近。",
+      "end_state": "两款产品保持全貌与原始颜色/配饰；硬切进入下镜头。",
+      "dfcine_workflow_id": "minimax_h3_z0903",
+      "status": "planned"
+    },
+    {
+      "shot_id": "S04",
+      "start_seconds": 9,
+      "end_seconds": 12,
+      "duration": 3,
+      "purpose": "双款同框收尾，邀请观众选择。",
+      "generation_mode": "multi_reference_hosted_product_video",
+      "audio_mode": "native",
+      "dialogue": "你更喜欢哪一只？",
+      "audio_direction": "同一位成年女性本人对镜口播；自然普通话，温暖轻快、带笑但不过度推销，强度2/5；清晰读出产品名称，不加即兴词；每句在本镜头内说完。",
+      "references": [
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "library:material-references/black-pad-material-4k.png",
+        "assets/generated/character-keyframe-candidate-v1.png"
+      ],
+      "primary_action": "双款同框收尾，邀请观众选择。",
+      "camera": "仪表台副驾前方固定正面中景；仅在 S02/S03 做极轻微推近。",
+      "end_state": "两款产品保持全貌与原始颜色/配饰；硬切进入下镜头。",
+      "dfcine_workflow_id": "minimax_h3_z0903",
+      "status": "planned"
+    }
+  ]
+}

@@ -125,6 +125,50 @@
         "natural_long_hair_occlusion",
         "product_and_pad_transformed_as_one_assembly"
       ]
+    },
+    {
+      "sku_id": "pink-lulu-shoulder-pad-user-reference-20260927",
+      "category_id": "seatbelt-shoulder-pad",
+      "name": "粉裤噜妹安全带护肩套",
+      "status": "approved",
+      "source_product_asset": "production/assets/products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "approved_installed_asset": "production/assets/products/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
+      "approved_on": "2026-09-26",
+      "approval_note": "User approved the installed-state reference on 2026-09-26; current standalone source SHA-256 matches the user image supplied 2026-09-27.",
+      "identity_locked_parts": [
+        "black_pad",
+        "pink plush body",
+        "pale-pink oval glasses",
+        "orange head decoration",
+        "green leaf",
+        "navy scarf",
+        "red-white checked panel",
+        "red striped button",
+        "limbs",
+        "complete silhouette"
+      ]
+    },
+    {
+      "sku_id": "yellow-lulu-shoulder-pad-user-reference-20260927",
+      "category_id": "seatbelt-shoulder-pad",
+      "name": "阳光噜噜安全带护肩套",
+      "status": "approved",
+      "source_product_asset": "production/assets/products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "approved_installed_asset": "production/assets/products/yellow-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
+      "identity_locked_parts": [
+        "black_pad",
+        "yellow-orange plush body",
+        "tortoiseshell oval glasses",
+        "orange head decoration",
+        "green leaf",
+        "navy scarf",
+        "blue-white checked panel",
+        "pink button",
+        "limbs",
+        "complete silhouette"
+      ],
+      "approved_on": "2026-09-27",
+      "approval_note": "User approved the installed-state candidate by authorizing video generation after it was presented on 2026-09-27."
     }
   ]
 }

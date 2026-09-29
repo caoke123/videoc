@@ -1,0 +1,168 @@
+{
+  "schema_version": 2,
+  "job_id": "capibara-couple-13s-20260929",
+  "category_id": "seatbelt-shoulder-pad",
+  "format_id": "ugc-multi-shot",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "duration": 3,
+      "purpose": "女主副驾开场，同时建立白色款与同车空间。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "上车发现，今天有两只小搭子。",
+      "audio_direction": "女主本人对镜自然说普通话，轻松分享语气；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:characters/candidates/capibara-couple-female-20260929/01-user-selected-front.png",
+          "role": "用户指定女主身份与造型"
+        },
+        {
+          "path": "library:products/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "role": "白色款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/shuiba-tutu-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "白色款安全带穿过垫体、位置与比例参考"
+        },
+        {
+          "path": "library:material-references/black-pad-material-4k.png",
+          "role": "黑色垫体材质真值"
+        },
+        {
+          "path": "library:vehicle-references/china-lhd-mercedes-sedan/source/front-row-driver-to-passenger-v1.png",
+          "role": "全片统一的左舵白色座椅、深色中控与蓝色氛围灯车厢参考"
+        },
+        {
+          "path": "assets/approved/storyboard-v2/S01-passenger-white.png",
+          "role": "本任务已批准的构图、人物与车厢连续性参考"
+        }
+      ],
+      "storyboard_candidate": "assets/approved/storyboard-v2/S01-passenger-white.png",
+      "primary_action": "停稳车辆内，副驾女主看向镜头微笑；白色款已稳定佩戴，不触碰商品。",
+      "camera": "副驾仪表台前方朝车尾，未镜像；副驾在画面左，右门和右 B 柱在画面左，中控在画面右，肩带左上至右下。",
+      "end_state": "女主表情自然，白色款完整清楚，安全带连续平整。",
+      "status": "storyboard_asset_approved_for_job"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 3,
+      "end_seconds": 6,
+      "duration": 3,
+      "purpose": "同车切至主驾，展示电玩款和情侣对应关系。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "他这只是电玩风。",
+      "audio_direction": "同一女主画外普通话旁白，轻松、清晰；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "电玩款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "电玩款安全带穿过垫体、位置与比例参考"
+        },
+        {
+          "path": "library:material-references/black-pad-material-4k.png",
+          "role": "黑色垫体材质真值"
+        },
+        {
+          "path": "library:vehicle-references/china-lhd-mercedes-sedan/source/front-row-driver-to-passenger-v1.png",
+          "role": "全片统一的左舵白色座椅、深色中控与蓝色氛围灯车厢参考"
+        },
+        {
+          "path": "assets/approved/storyboard-v2/S02-driver-gamer.png",
+          "role": "本任务已批准的构图、人物与车厢连续性参考"
+        }
+      ],
+      "storyboard_candidate": "assets/approved/storyboard-v2/S02-driver-gamer.png",
+      "primary_action": "停稳车辆内，主驾男主自然坐好；电玩款已稳定佩戴，镜头只做轻微推近。",
+      "camera": "主驾仪表台前方朝车尾，未镜像；主驾、左门、左 B 柱和方向盘在画面右，中控在画面左，肩带右上至左下。",
+      "end_state": "电玩款完整可辨，安全带连续平整，硬切进入双款展示。",
+      "status": "storyboard_asset_approved_for_job"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 6,
+      "end_seconds": 10,
+      "duration": 4,
+      "purpose": "在同一车厢内并列对比两款商品的风格。",
+      "generation_mode": "standalone_product_pair_reference",
+      "audio_mode": "native",
+      "dialogue": "一只酷酷的，一只软萌的。",
+      "audio_direction": "女主画外普通话旁白，节奏舒缓；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:products/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "role": "白色款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "电玩款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:material-references/black-pad-material-4k.png",
+          "role": "黑色垫体材质真值"
+        },
+        {
+          "path": "library:vehicle-references/china-lhd-mercedes-sedan/source/front-row-driver-to-passenger-v1.png",
+          "role": "全片统一车厢材质与色彩参考"
+        },
+        {
+          "path": "assets/approved/storyboard-v2/S03-car-pair-display.png",
+          "role": "本任务已批准的构图、人物与车厢连续性参考"
+        }
+      ],
+      "storyboard_candidate": "assets/approved/storyboard-v2/S03-car-pair-display.png",
+      "primary_action": "两款独立放在同车白色后排座椅上并排展示，白色款在左、电玩款在右。",
+      "camera": "后排近景三分之四俯拍，固定机位；不表现安全带安装。",
+      "end_state": "两款完整黑垫和玩偶均清晰可辨，为同车双人收尾做硬切。",
+      "status": "storyboard_asset_approved_for_job"
+    },
+    {
+      "shot_id": "S04",
+      "start_seconds": 10,
+      "end_seconds": 13,
+      "duration": 3,
+      "purpose": "同车双人同框收尾，完成情侣款关系。",
+      "generation_mode": "two_character_two_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "情侣款两种风格，你更喜欢哪只？",
+      "audio_direction": "副驾女主对镜自然说普通话，带一点轻快的收尾邀请；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:characters/candidates/capibara-couple-female-20260929/01-user-selected-front.png",
+          "role": "女主身份与造型"
+        },
+        {
+          "path": "library:products/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "role": "白色款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/shuiba-tutu-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "白色款安装关系参考"
+        },
+        {
+          "path": "library:products/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "电玩款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "电玩款安装关系参考"
+        },
+        {
+          "path": "assets/approved/storyboard-v2/S04-couple-close.png",
+          "role": "本任务已批准的构图、人物与车厢连续性参考"
+        }
+      ],
+      "storyboard_candidate": "assets/approved/storyboard-v2/S04-couple-close.png",
+      "primary_action": "停稳车辆内，副驾女主与主驾男主同框轻笑；两款均已经佩戴，不触碰商品。",
+      "camera": "前排中央仪表台朝车尾，未镜像；副驾女主在画面左、主驾男主和方向盘在画面右。副驾肩带左上至右下，主驾肩带右上至左下。",
+      "end_state": "两款商品完整清楚，人物自然微笑，留作后期 CTA 前的收尾帧。",
+      "status": "storyboard_asset_approved_for_job"
+    }
+  ]
+}

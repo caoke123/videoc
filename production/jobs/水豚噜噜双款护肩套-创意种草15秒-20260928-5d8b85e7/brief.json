@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "job_id": "水豚噜噜双款护肩套-创意种草15秒-20260928-5d8b85e7",
+  "creative_concept": "水豚噜噜双款护肩套｜“这是哪个大聪明想到的”车内种草",
+  "category_id": "seatbelt-shoulder-pad",
+  "format_id": "ugc-multi-shot",
+  "pipeline_id": "standard-video-v2",
+  "created_at": "2026-09-28T12:44:22.337Z",
+  "review_policy": "human_first",
+  "product_sku_id": null,
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 21,
+  "audience": "喜欢可爱车载小物、想给爱车增加氛围感的女性短视频观众",
+  "use_occasion": "车辆停稳后，成年女性驾驶者在车内手持展示两款商品，惊喜、种草",
+  "character_profile": "成年女性驾驶者，日常穿搭，惊喜又自然的分享口吻；不指定真人身份",
+  "scene_plan": "停稳的车内，手机固定在前排乘客侧附近；商品只被手持展示，不装在安全带上，也不表现驾车过程",
+  "action_plan": "惊喜开场举起双款；近景展示墨镜与小领巾；并排肯定；结尾邀请姐妹们入手",
+  "spoken_script": "这是哪个大聪明想到的呀，在安全带的护肩套上，装饰上玩偶，整个车里装饰，一下子好有氛围，萌萌的造型，酷酷的装饰，这个水豚噜噜安全带护肩套，真是太有创意了，姐妹们抓紧给你的爱车安排上吧！",
+  "raw_copy": "口播：这是哪个大聪明想到的呀，在安全带的护肩套上，装饰上玩偶，整个车里装饰，一下子好有氛围，萌萌的造型，酷酷的装饰，这个水豚噜噜安全带护肩套，真是太有创意了，姐妹们抓紧给你的爱车安排上吧！",
+  "hook": "这是哪个大聪明想到的呀",
+  "cta": "姐妹们抓紧给你的爱车安排上吧",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system"
+  ],
+  "reference_video": null,
+  "notes": "运行测验任务。商品身份以粉色、黄色两张原图为准（产品库）。人物与车内构图沿用已通过的“车内手持双款”构图参考（已收入产品库 characters/approved）。用户文案中的“真实太有创意了”按“真是太有创意了”处理。文案提到安全带护肩套，但画面只做停车手持展示，不出现安装、佩戴或驾驶，因此无需安装态参考。"
+}

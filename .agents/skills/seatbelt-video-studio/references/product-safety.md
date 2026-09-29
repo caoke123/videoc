@@ -13,7 +13,7 @@ Never infer a missing installation mechanism from category knowledge.
 
 User-provided wearing-reference images are authoritative for the *wearing relationship only*: belt routing, the shoulder-to-upper-chest placement zone, how the belt enters and exits the pad, realistic pad-to-belt scale, subject pose, and plausible occlusion by clothing or hair. They do not establish the target product's toy design, costume, or colorway when those differ from the SKU's approved product image.
 
-Before promoting a generated still or preview frame, record a self-check against both the target SKU images and the relevant wearing reference. Mark it `pass`, `fail`, or `human_review_required`. A hard fail includes any of the following: a belt that ends at the pad or appears pasted over it; a pad not centered on the belt; a floating, detached, duplicated, or penetrated product; product placed below the upper chest or at an implausible angle; impossible hair/clothing/belt order; malformed hands, faces, vehicle controls, or seat geometry; or product identity drift. Do not auto-regenerate a fail; propose a corrected prompt and await human direction.
+Before promoting a generated installed-state still to an authoritative reference, record a self-check against the target SKU image and the relevant wearing reference. Mark it `pass`, `fail`, or `human_review_required`. A hard fail includes a belt that ends at the pad or appears pasted over it; a pad not centered on the belt; a floating, detached, duplicated, or penetrated product; product placed below the upper chest or at an implausible angle; impossible hair/clothing/belt order; malformed hands, faces, vehicle controls, or seat geometry; or product identity drift. For non-installed shots, check the visible product identity and actual interaction without requiring a wearing reference. Do not auto-regenerate a fail; propose a corrected prompt and await human direction.
 
 ## Product SKU identity contract
 
@@ -25,7 +25,7 @@ For the current Shuiba Tutu SKU:
 - physical pad aspect ratio: 24 / 6.5 = 3.6923;
 - the toy identity, costume, face, glasses, hat, limbs, attachment point, and pose are fixed to the approved product photo;
 - the toy-to-pad normalized width, height, center position, overlap, and front/back order are fixed;
-- changing the toy while retaining the same black pad creates a new SKU and requires its own approved standalone product image and installed-state reference.
+- changing the toy while retaining the same black pad creates a new SKU and requires its own approved standalone product image; an installed-state reference is additionally required if that SKU is depicted installed or worn on a belt.
 
 The 24 × 6.5 cm dimensions and 3.6923 aspect ratio define product identity and undeformed shape; they do not directly define pixel size in the frame. On-screen size must be derived from approved installed-state references and local human/belt scale anchors. Perspective may foreshorten the complete assembly, but may not independently distort the toy or pad.
 

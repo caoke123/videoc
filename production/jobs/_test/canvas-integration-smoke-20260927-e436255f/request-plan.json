@@ -1,0 +1,19 @@
+{
+  "job_id": "canvas-integration-smoke-20260927-e436255f",
+  "media_type": "video",
+  "workflow_id": "minimax_h3_z0903",
+  "resolution": "768p竖(768*1376)",
+  "audio_reference": "https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "duration": 3,
+      "seed": 1790509066,
+      "ref_images": [
+        "assets/source/1790509066893-installed-reference.png",
+        "assets/source/1790509182024-shuiba-tutu-product-identity.png"
+      ],
+      "prompt": "3-second vertical 9:16 product integration verification preview. Reference image 1 is the approved installed-state photo and defines the existing worn relationship. Reference image 2 is the exact product SKU identity: preserve the complete white plush cap and beige ears, orange muzzle and body, white round glasses, red cherry detail, small limbs, and the full continuous black shoulder pad with raised irregular loop texture and stitched binding. Keep the toy and pad as one attached assembly; do not separate, recolor, resize independently, redesign, duplicate, or deform it. China left-hand-drive sedan; the woman is already seated in the driver seat, with the steering wheel and instrument panel in front of her. Match the approved reference camera view without mirroring. The three-point belt remains continuous, flat, and already fitted through the pad along the shoulder to upper chest. Do not show installation, touching, adjustment, or removal. One gentle camera push-in; the driver only breathes and gives a slight natural smile. Soft daylight, realistic motion, no text, logos, claims, or additional people. Generate native female Mandarin off-screen narration, saying exactly: 出发前，心情也要满格。 No other spoken words."
+    }
+  ]
+}

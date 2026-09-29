@@ -1,4 +1,6 @@
-# AutoDL 画布工作台 — 改造方案（Phase 1-5 已完成）
+# AutoDL 画布工作台 — React Flow 旧版实施记录（已由 Infinite Canvas 接管）
+
+> 本文件记录旧 React Flow 工作台 Phase 1-5 的数据层与人工操作接口。前端替换方案和当前运行方式见 [Infinite Canvas 生产任务工作台](./infinite-canvas-production-workbench.md)。React Flow 画布不再是默认任务入口；本机任务/API 数据层继续复用。
 
 状态：**方向与决策点已于 2026-09-27 确认，Phase 1-5 已于同日全部完成并在浏览器实测验证**。唯一没有自动化测试覆盖的是"点击重新生成→真实触发 AutoDL 付费生成"这一步的最终真实调用，原因见 Phase 2、Phase 5 的说明——需要你自己在准备好付费测试时手动点一次验证。
 

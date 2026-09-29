@@ -1,0 +1,33 @@
+{
+  "provider": "Seed Audio",
+  "source": "user-provided external audio",
+  "status": "accepted_for_job",
+  "language": "zh-CN",
+  "total_duration_seconds": 13,
+  "clips": [
+    {
+      "shot_id": "S01",
+      "path": "audio/source/seed-audio/S01配音.wav",
+      "transcript": "上车发现，今天有两只小搭子。",
+      "duration_seconds": 3
+    },
+    {
+      "shot_id": "S02",
+      "path": "audio/source/seed-audio/S02配音.wav",
+      "transcript": "他这只是电玩风。",
+      "duration_seconds": 3
+    },
+    {
+      "shot_id": "S03",
+      "path": "audio/source/seed-audio/S03配音.wav",
+      "transcript": "一只酷酷的，一只软萌的。",
+      "duration_seconds": 4
+    },
+    {
+      "shot_id": "S04",
+      "path": "audio/source/seed-audio/S04配音.wav",
+      "transcript": "情侣款两种风格，你更喜欢哪只？",
+      "duration_seconds": 3
+    }
+  ]
+}

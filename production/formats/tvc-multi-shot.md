@@ -1,5 +1,7 @@
 # 多镜头 TVC（tvc-multi-shot）
 
+制作阶段顺序统一遵循 [标准视频制作流程](../workflows/standard-video-production.md)；本文件只补充 TVC 的镜头编排和长度规则。
+
 多个连续镜头组成一条短片，每个镜头独立生成、独立审核，最后硬切拼接（不做转场）。`shot-plan.json` 的 `shots[]` 按时间顺序排列，每个镜头有独立的 `shot_id`、时长、卖点/文案分工；`request-plan.json`（如已生成）里每个镜头对应一条发给 AutoDL 的完整英文 prompt。画布按 `shots[]` 顺序水平排列节点，节点间用直线连接表示播放顺序。
 
 已知实例：`production/jobs/pair-plush-tvc-10s-20260927/`（3 镜头，10 秒）。

@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {
+      "id": "asset:assets/source/1790509066893-installed-reference.png",
+      "kind": "asset",
+      "title": "1790509066893-installed-reference.png",
+      "path": "assets/source/1790509066893-installed-reference.png",
+      "x": -390,
+      "y": 0
+    },
+    {
+      "id": "asset:assets/source/1790509182024-shuiba-tutu-product-identity.png",
+      "kind": "asset",
+      "title": "1790509182024-shuiba-tutu-product-identity.png",
+      "path": "assets/source/1790509182024-shuiba-tutu-product-identity.png",
+      "x": -390,
+      "y": 280
+    },
+    {
+      "id": "shot:S01",
+      "kind": "shot",
+      "shotId": "S01",
+      "title": "S01",
+      "status": "RUNNING",
+      "x": 10,
+      "y": 20
+    }
+  ],
+  "connections": [
+    {
+      "id": "ref:asset:assets/source/1790509066893-installed-reference.png:shot:S01",
+      "from": "asset:assets/source/1790509066893-installed-reference.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:asset:assets/source/1790509182024-shuiba-tutu-product-identity.png:shot:S01",
+      "from": "asset:assets/source/1790509182024-shuiba-tutu-product-identity.png",
+      "to": "shot:S01"
+    }
+  ]
+}

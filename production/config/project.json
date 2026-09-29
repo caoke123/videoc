@@ -1,5 +1,7 @@
 {
   "project_name": "Ecommerce UGC Video Studio",
+  "video_production_workflow": "production/workflows/standard-video-production.md",
+  "video_production_workflow_version": "standard-video-v2",
   "default_mode": "original",
   "default_category_id": "seatbelt-shoulder-pad",
   "category_catalog": "production/config/categories.json",
@@ -7,8 +9,8 @@
   "default_review_policy": "human_first",
   "automatic_ai_review": false,
   "automatic_retry": false,
-  "asset_self_check_required": true,
-  "asset_self_check_policy": "required before promotion; no automatic regeneration; human approval remains required",
+  "asset_self_check_required_when": "promoting_generated_image_to_authoritative_reusable_status",
+  "asset_self_check_policy": "self-check and human approval before promoting a generated image to authoritative reusable status; ephemeral visual guides remain candidates; no automatic regeneration",
   "product_catalog": "production/config/products.json",
   "paid_runs_require_confirmation": true,
   "integrations": {

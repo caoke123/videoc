@@ -19,6 +19,14 @@ description: Implemented changes that still need manual verification
 - 本次 AutoDL 接入实测生成的 3 秒预览仅用于链路验证，仍需人工检查产品身份、安全带空间关系、动作和原生语音；通过前不得用于正式成片。
 - 带本地配音的任务应先点选对应镜头再上传；未发布为 URL 前应显示“等待发布配音”并禁止提交。发布时应逐镜头写入 `ref_audio_urls[]` 和操作日志，随后可直接提交，不再出现重复确认。
 
+本次调整的共享素材库需要人工验收：
+
+- 素材库分类改名：原「车辆/佩戴参考图」改为「结构参考图」，画布「从素材库选择」、资产选择弹窗的「素材库」页签、独立的素材库页面三处应同步显示新名称，不应再出现「车辆」或「佩戴」字样。
+- 素材库分组升级：产品参考图、材料参考图、结构参考图收录时应支持「产品类目/子分组」两级分组（如 `seatbelt-shoulder-pad/pink-lulu-v1`），素材库页面和画布素材库浏览器应正确显示分组名并可按分组关键字搜索；角色定妆照保持单级分组不变。
+- 素材库不再区分候选/已批准：从生图/视频工作台结果、「我的资产」或生产任务页点击「收进素材库」后，应立即出现在对应分类目录下，不应再提示「候选区」，画布和素材库页面都能直接选用，不受额外状态限制。
+- 收进素材库容错：对没有本地缓存（如跨域生成结果）的图片点击「收进素材库」，应经本机转发代理读取原始地址；代理未开启或仍读取失败时应提示需要开启本地转发代理，而不是笼统的网络错误；上传文件名的扩展名应始终与图片实际内容一致，不应再出现「文件类型和扩展名不匹配」。
+- 自定义提示词库参考图预设：选中安全带护肩套提示词库中的预设后，应按 Reference 顺序自动填入登记的参考图；使用参考图的原地替换按钮替换单张参考图时，其余已选参考图的顺序不应改变。
+
 The current release needs manual verification in these areas:
 
 - Canvas image previews: canvas image nodes, the left element list, the node reference bar, my-assets cards, the asset picker, image workbench result cards and history thumbnails, and the image/video workbench reference strips all render from a preview capped at a 768px long edge, so image-heavy views no longer decode the originals. Previews live locally only: canvas data, asset data, generation history, exported zips, and WebDAV sync must never contain preview content, and previews should be cleaned up when an image is deleted or no longer used. Opening the full-size image, editing, downloading, exporting, and generation references must keep using the original; an image that is already at or under 768px, exists only as a remote URL, or uses a custom cover should fall back to the original.

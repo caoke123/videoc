@@ -8,11 +8,12 @@ import { createReadStream } from 'node:fs';
 import { extname, join, resolve, relative, sep } from 'node:path';
 import { listJobs, getJobDetail, getJobRunLog } from './job-store.mjs';
 import {
-  createJob, patchShotField, submitShot, preflightBatchSubmission, uploadJobAsset,
+  createJob, renameJob, patchShotField, submitShot, preflightBatchSubmission, uploadJobAsset,
   publishShotAudio, pollShot, canvasGenerate, canvasGenerationStatus, reconcileUnconfirmedSubmissions,
-  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob, readBinding, syncRequestPlan
+  resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob, readBinding, syncRequestPlan,
+  promoteAssetToLibrary
 } from './job-actions.mjs';
-import { resolveAssetRef } from './asset-library.mjs';
+import { importLibraryAsset, listLibraryAssets, resolveAssetRef } from './asset-library.mjs';
 import { composeCut } from './compose.mjs';
 
 const here = resolve(new URL('.', import.meta.url).pathname.replace(/^\/(.:)/, '$1'));
@@ -159,6 +160,20 @@ const server = createServer(async (req, res) => {
       return sendJson(res, 200, { ...status, video_url: videoUrl });
     }
 
+    if (req.method === 'GET' && url.pathname === '/api/library') return sendJson(res, 200, await listLibraryAssets(allJobsRoot));
+    if (req.method === 'POST' && url.pathname === '/api/library/import') {
+      const bytes = await readBodyBuffer(req, MAX_CANVAS_BODY_BYTES);
+      return sendJson(res, 201, await importLibraryAsset(allJobsRoot, { category: url.searchParams.get('category'), group: url.searchParams.get('group'), name: url.searchParams.get('name'), mimeType: req.headers['content-type'], bytes }));
+    }
+    const libraryFile = route(req, 'GET', /^\/api\/library\/files\/(.+)$/, url);
+    if (libraryFile) {
+      const relPath = decode(libraryFile[1]);
+      if (relPath.split(/[\\/]/).some(part => !part || part === '.' || part === '..')) return sendJson(res, 400, { error: 'Invalid asset path' });
+      const target = resolveAssetRef(allJobsRoot, allJobsRoot, `library:${relPath}`);
+      if (!target) return sendJson(res, 403, { error: 'Forbidden' });
+      const type = ({ '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' })[extname(target).toLowerCase()] || 'application/octet-stream';
+      return serveFile(target, type, res);
+    }
     const jobFile = route(req, 'GET', /^\/api\/jobs\/([^/]+)\/files\/(.+)$/, url);
     if (jobFile) {
       const jobId = decode(jobFile[1]);
@@ -212,6 +227,13 @@ const server = createServer(async (req, res) => {
       if (!body.field || body.value === undefined) return sendJson(res, 400, { error: 'Body must include { field, value }' });
       return sendJson(res, 200, await patchShotField(allJobsRoot, jobId, decode(shotField[2]), body.field, body.value));
     }
+    const assetPromote = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/assets\/promote$/, url);
+    if (assetPromote) {
+      const jobId = decode(assetPromote[1]);
+      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
+      const body = await readJsonBody(req);
+      return sendJson(res, 200, await promoteAssetToLibrary(allJobsRoot, jobId, body));
+    }
     const assetUpload = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/assets$/, url);
     if (assetUpload) {
       const jobId = decode(assetUpload[1]);
@@ -259,6 +281,13 @@ const server = createServer(async (req, res) => {
       if (!(await stat(join(allJobsRoot, jobId)).then(info => info.isDirectory()).catch(() => false))) return sendJson(res, 404, { error: 'Job not found' });
       return sendJson(res, 200, await composeCut(allJobsRoot, jobId, await readJsonBody(req)));
     }
+    const jobRename = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/rename$/, url);
+    if (jobRename) {
+      const jobId = decode(jobRename[1]);
+      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
+      const body = await readJsonBody(req);
+      return sendJson(res, 200, await renameJob(allJobsRoot, jobId, body.title));
+    }
     const shotReview = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/shots\/([^/]+)\/review$/, url);
     if (shotReview) {
       const jobId = decode(shotReview[1]);
@@ -280,14 +309,15 @@ const server = createServer(async (req, res) => {
       if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
       const body = await readJsonBody(req);
       const token = await tokenFromLocalConfig();
-      const plan = await preflightBatchSubmission(allJobsRoot, jobId, { token });
+      const onlyShotIds = Array.isArray(body.shot_ids) && body.shot_ids.length ? body.shot_ids : null;
+      const plan = await preflightBatchSubmission(allJobsRoot, jobId, { token, onlyShotIds });
       const shotIds = body.mode === 'probe' ? plan.shotIds.slice(0, 1) : plan.shotIds;
       const deferred = body.mode === 'probe' ? plan.shotIds.slice(1) : [];
       if (body.dry_run === true) return sendJson(res, 200, { ...plan, shotIds, deferred });
       const submitted = [];
       for (const shotId of shotIds) {
         try {
-          const result = await submitShot(allJobsRoot, jobId, shotId, { token, reason: body.mode === 'probe' ? 'Infinite Canvas 试探提交（先验 1 镜头）' : 'Infinite Canvas 批量提交' });
+          const result = await submitShot(allJobsRoot, jobId, shotId, { token, reason: body.mode === 'probe' ? 'Infinite Canvas 试探提交（先验 1 镜头）' : onlyShotIds ? 'Infinite Canvas 单镜头提交' : 'Infinite Canvas 批量提交' });
           schedulePollShot(jobId, shotId, result.taskId, token, 1500);
           submitted.push({ shotId, taskId: result.taskId, status: result.status });
         } catch (error) {

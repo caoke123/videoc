@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { App, Button, Card, Empty, Input, Modal, Select, Spin, Tag } from "antd";
-import { Clapperboard, Plus, RefreshCw } from "lucide-react";
+import { Clapperboard, Copy, Pencil, Plus, RefreshCw } from "lucide-react";
 import dayjs from "dayjs";
 
-import { createProductionJob, listProductionCategories, listProductionFormats, listProductionJobs, type ProductionCategory, type ProductionFormat, type ProductionJob } from "@/services/api/production";
+import { useCopyText } from "@/hooks/use-copy-text";
+import { createProductionJob, listProductionCategories, listProductionFormats, listProductionJobs, renameProductionJob, type ProductionCategory, type ProductionFormat, type ProductionJob } from "@/services/api/production";
 
 function statusLabel(status: string | null, pendingReview = 0) {
     if (status === "success" && pendingReview > 0) return "待人工审片";
@@ -18,6 +19,7 @@ function statusLabel(status: string | null, pendingReview = 0) {
 export default function ProductionJobsPage() {
     const { message } = App.useApp();
     const navigate = useNavigate();
+    const copyText = useCopyText();
     const [jobs, setJobs] = useState<ProductionJob[]>([]);
     const [formats, setFormats] = useState<ProductionFormat[]>([]);
     const [categories, setCategories] = useState<ProductionCategory[]>([]);
@@ -27,6 +29,9 @@ export default function ProductionJobsPage() {
     const [title, setTitle] = useState("");
     const [formatId, setFormatId] = useState<string>();
     const [categoryId, setCategoryId] = useState<string>();
+    const [renamingJob, setRenamingJob] = useState<ProductionJob | null>(null);
+    const [renameValue, setRenameValue] = useState("");
+    const [renaming, setRenaming] = useState(false);
 
     const refresh = useCallback(async () => {
         setLoading(true);
@@ -60,6 +65,27 @@ export default function ProductionJobsPage() {
         }
     };
 
+    const openRename = (event: React.MouseEvent, job: ProductionJob) => {
+        event.stopPropagation();
+        setRenamingJob(job);
+        setRenameValue(job.title);
+    };
+    const submitRename = async () => {
+        if (!renamingJob) return;
+        const next = renameValue.trim();
+        if (!next) return void message.warning("标题不能为空");
+        setRenaming(true);
+        try {
+            await renameProductionJob(renamingJob.job_id, next);
+            setRenamingJob(null);
+            await refresh();
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : "重命名失败");
+        } finally {
+            setRenaming(false);
+        }
+    };
+
     const formatNames = new Map(formats.map((item) => [item.format_id, item.name]));
     const categoryNames = new Map(categories.map((item) => [item.category_id, item.name]));
 
@@ -86,8 +112,12 @@ export default function ProductionJobsPage() {
                                     <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted"><Clapperboard className="size-5" /></div>
                                     <Tag color={job.status === "success" && (job.review?.pending || 0) > 0 ? "orange" : job.status === "success" ? "green" : job.status === "failed" ? "red" : job.status === "running" ? "blue" : "default"}>{statusLabel(job.status, job.review?.pending || 0)}</Tag>
                                 </div>
-                                <h2 className="mt-4 line-clamp-2 text-lg font-medium">{job.title}</h2>
-                                <p className="mt-1 text-xs text-muted-foreground">{job.job_id}</p>
+                                <div className="mt-4 flex items-start justify-between gap-2">
+                                    <h2 className="line-clamp-2 text-lg font-medium">{job.title}</h2>
+                                    <Button type="text" size="small" icon={<Pencil className="size-3.5" />} onClick={(event) => openRename(event, job)} />
+                                </div>
+                                <p className="mt-1 truncate text-xs text-muted-foreground">{job.job_id}</p>
+                                <Button type="text" size="small" className="mt-1 h-auto px-0 text-xs text-muted-foreground" icon={<Copy className="size-3" />} onClick={(event) => { event.stopPropagation(); copyText(job.local_path, "已复制任务根目录"); }}>复制资产目录</Button>
                                 <div className="mt-4 flex flex-wrap gap-2">
                                     <Tag>{formatNames.get(job.format_id || "") || job.format_id || "未标注形式"}</Tag>
                                     <Tag>{categoryNames.get(job.category_id || "") || job.category_id || "未标注类目"}</Tag>
@@ -108,6 +138,11 @@ export default function ProductionJobsPage() {
                     {formats.find((item) => item.format_id === formatId)?.media_type === "image" && !formats.find((item) => item.format_id === formatId)?.workflow_id ? <p className="text-xs text-amber-600 dark:text-amber-400">此形式尚未配置图像工作流，可保存分镜和素材，暂不能在任务页提交生成。</p> : null}
                     <p className="text-xs text-muted-foreground">这里建立任务记录：每个镜头预留一个位置，不会预先生成占位文件。按镜头实际需要准备最小素材包（产品原图、必要的人物或场景参考），在“我的画布”里搭节点、填提示词，或交给 Codex 准备；明确提交后才会调用生成服务，生成后在任务页人工审片。</p>
                 </div>
+            </Modal>
+
+            <Modal title="重命名任务" open={Boolean(renamingJob)} onCancel={() => setRenamingJob(null)} onOk={() => void submitRename()} confirmLoading={renaming} okText="保存" cancelText="取消">
+                <Input className="mt-2" value={renameValue} onChange={(event) => setRenameValue(event.target.value)} placeholder="任务标题" maxLength={80} onPressEnter={() => void submitRename()} />
+                <p className="mt-2 text-xs text-muted-foreground">只改显示标题，任务文件夹名不变。</p>
             </Modal>
         </main>
     );

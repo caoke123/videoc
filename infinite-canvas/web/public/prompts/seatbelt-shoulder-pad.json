@@ -1,0 +1,64 @@
+[
+  {
+    "id": "seatbelt-driver-installed-front",
+    "title": "主驾驶位安装佩戴（第三人称正面）",
+    "tags": ["安全带护肩套", "主驾", "已安装", "中国左舵车"],
+    "description": "中国左舵车主驾第三人称正面机位，已安装佩戴状态的中近景模板，整合安全带路径、产品比例、发丝遮挡规则。选中后会自动按 Reference 1/2/3 顺序填入：角色定妆照、产品佩戴参考图、产品原图。",
+    "referenceImageUrls": [
+      "/api/library/files/characters/approved/urban-woman-a-20260925-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png"
+    ],
+    "prompt": "Photorealistic vertical 9:16 Chinese UGC shot inside a stationary Chinese left-hand-drive car, daylight. Reference 1 is the exact adult woman identity (face, hair, outfit). Reference 2 is authoritative for the already-installed shoulder-pad product on the driver's belt: exact belt routing, pad placement, scale and occlusion. Reference 3 is the exact product SKU identity (plush toy, pad, colorway, stitching). Camera is fixed near the front-passenger dashboard, angled toward the driver, non-mirrored (camera_origin = front dashboard/windshield area facing the driver; camera_facing = toward rear; software_mirror = no). The woman is seated in the vehicle-left driver seat, already buckled in, product already installed at frame one on the shoulder belt. Driver-side door and left B-pillar on image-right, steering wheel in the right foreground, center console and inboard buckle toward image-left; the shoulder belt runs from the left B-pillar over her left shoulder, diagonally across the chest, down to the inboard buckle near the center console at her right hip — belt line reads upper-right to lower-left on screen. The shoulder pad sits centered on the belt at the shoulder-to-upper-chest zone, its centerline aligned with the belt centerline; belt is continuous, flat, untwisted, unobstructed at the buckle/latch/retractor. Hair falls naturally behind the belt and product; only genuinely foreground loose strands may overlap the product edge. No installation, opening, fastening, adjustment, removal, or pulling of the belt/product; the car remains parked. One primary action only (look, speak, small gesture). No visible price, logo, watermark, subtitles, or safety/certification claims."
+  },
+  {
+    "id": "seatbelt-passenger-installed-front",
+    "title": "副驾驶位安装佩戴（第三人称正面）",
+    "tags": ["安全带护肩套", "副驾", "已安装", "中国左舵车"],
+    "description": "中国左舵车副驾第三人称正面机位，与主驾模板呈镜像关系：车门/B柱/肩带方向左右互换，前方不出现方向盘。选中后会自动按 Reference 1/2/3 顺序填入：角色定妆照、产品佩戴参考图、产品原图。",
+    "referenceImageUrls": [
+      "/api/library/files/characters/approved/urban-woman-b-20260925-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png"
+    ],
+    "prompt": "Photorealistic vertical 9:16 Chinese UGC shot inside a stationary Chinese left-hand-drive car, daylight. Reference 1 is the exact adult identity (face, hair, outfit) seated in the front passenger seat. Reference 2 is authoritative for the already-installed shoulder-pad product on the passenger's belt: exact belt routing, pad placement, scale and occlusion. Reference 3 is the exact product SKU identity (plush toy, pad, colorway, stitching). Camera is fixed near the driver-side dashboard, angled toward the passenger, non-mirrored (camera_origin = front dashboard/windshield area facing the passenger; camera_facing = toward rear; software_mirror = no). The passenger is seated in the vehicle-right seat, already buckled in, product already installed at frame one on the shoulder belt. Passenger-side door and right B-pillar on image-left, no steering wheel or second set of instruments in frame, center console and inboard buckle toward image-right; the shoulder belt runs from the right B-pillar over the passenger's right shoulder, diagonally across the chest, down to the inboard buckle near the center console at their left hip — belt line reads upper-left to lower-right on screen. The shoulder pad sits centered on the belt at the shoulder-to-upper-chest zone, its centerline aligned with the belt centerline; belt is continuous, flat, untwisted, unobstructed at the buckle/latch/retractor. Hair falls naturally behind the belt and product; only genuinely foreground loose strands may overlap the product edge. The plush toy and its black shoulder pad are a single rigid, pre-assembled product — never treat them as separate or independently movable elements. The toy's attachment point, orientation, and position on the pad must exactly match reference 3; do not bend, twist, warp, stretch, or shift the toy relative to the pad, and do not let the pad itself twist or fold out of a flat plane. The whole assembly moves and rests as one rigid unit along the belt. No installation, opening, fastening, adjustment, removal, or pulling of the belt/product; the car remains parked. One primary action only. No visible price, logo, watermark, subtitles, or safety/certification claims."
+  },
+  {
+    "id": "seatbelt-product-detail-closeup",
+    "title": "产品佩戴特写与比例锚点",
+    "tags": ["安全带护肩套", "产品特写", "比例", "已安装"],
+    "description": "商品近景特写，锁定护肩垫宽度相对同深度安全带宽度约 1.4 倍的比例锚点，以及产品在肩带上的合理区间。选中后会自动按 Reference 1/2 顺序填入：产品原图、产品佩戴参考图。",
+    "referenceImageUrls": [
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png"
+    ],
+    "prompt": "Photorealistic close-up product-detail shot inside the same stationary Chinese left-hand-drive car, continuous with the wide shot. Reference 1 is the exact product SKU identity (plush toy, pad, colorway, all attachments). Reference 2 is authoritative for the already-installed state, belt route, and scale. Tight, stable crop centered on the shoulder pad and toy; shallow depth of field, car interior softly blurred behind. The vehicle belt passes through the center of the shoulder pad and wraps around it — the pad is not pasted on top of the belt. Match the on-screen pad width to about 1.4x the local belt width measured at the same depth (never use a distant belt segment or the full frame width as reference). The product's top anchor begins at the shoulder-belt contact zone and the lower end stays in the upper-chest area, never extending into the abdomen. Belt continuous, flat, untwisted, unobstructed at the buckle. No installation, adjustment, or removal action; product already installed at frame one. Preserve natural hair-over-belt occlusion order from the source scene. No visible price, logo, watermark, or safety/certification claims."
+  },
+  {
+    "id": "seatbelt-black-pad-material",
+    "title": "黑色护肩垫材质保真",
+    "tags": ["安全带护肩套", "材质", "黑色护肩垫"],
+    "description": "类目级共享材质约束：黑色护肩垫的凸起圈纹、哑光质感与包边缝制，防止被生成成平绒面或规整花纹。选中后会自动填入材质参考图。",
+    "referenceImageUrls": [
+      "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
+    ],
+    "prompt": "When generating or compositing any shot showing the black shoulder pad, use the material reference image as the ground truth for its surface: dense irregular bump-ring texture across the whole pad, matte (non-glossy) finish, with visible stitched binding along the top and bottom edges. Check texture continuity frame to frame; never render the pad as smooth velvet, a regular repeating pattern, or a flat grey patch. Keep this material contract identical across every shot that shows the pad, regardless of camera distance or lighting."
+  },
+  {
+    "id": "seatbelt-hard-constraints",
+    "title": "通用禁止项（附加到任意提示词末尾）",
+    "tags": ["安全带护肩套", "负面约束", "判退红线"],
+    "description": "把这段拼接到任意安全带护肩套镜头提示词末尾，覆盖直接判退的硬性红线：安装动作、方向盘位置、安全带路径、锁扣锁舌、产品位置、安全宣称。",
+    "prompt": "Hard constraints — do not violate: the plush toy and its black shoulder pad are a single rigid, pre-assembled product, never separable or independently movable elements; the toy's attachment point, orientation, and position on the pad must always match the approved product photo, with no bending, twisting, warping, stretching, or shifting of the toy relative to the pad, and no twisting or folding of the pad out of a flat plane. Do not show opening, wrapping, fastening, sliding, repositioning, pulling, or removal of the belt or product; the product is already installed at the first frame. Never show a steering wheel in front of the passenger seat or two steering wheels in one frame. Never start the shoulder belt from the inboard/console side or buckle it to the outboard/door side. Never let the driver's belt start from the right shoulder or the passenger's belt start from the left shoulder without an explicit vehicle exception. The belt must read as one continuous three-point path (B-pillar anchor -> shoulder -> chest -> buckle -> lap -> outboard anchor); never a disconnected or duplicated segment. The buckle receiver is a fixed black housing on the inboard seat side near the console with its red release button reachable by the occupant — never floating, duplicated, mounted on the door side, hanging loose on the webbing, or drawn as the moving latch plate. Never place the product below the buckle, on the lap belt, over the abdomen, on outboard slack webbing, or at an angle that breaks from the belt centerline. No crash-protection, injury-reduction, certification, or vehicle-restraint-replacement claims unless explicitly verified and approved. No price, logo, watermark, or subtitle text rendered by the model."
+  },
+  {
+    "id": "seatbelt-standalone-handheld",
+    "title": "非佩戴独立/手持展示",
+    "tags": ["安全带护肩套", "非佩戴", "产品展示"],
+    "description": "商品单独出现、手持或桌面/展示场景，不涉及安全带佩戴关系，不需要已批准的佩戴参考图，只需产品身份原图。选中后会自动填入产品原图。",
+    "referenceImageUrls": [
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png"
+    ],
+    "prompt": "Photorealistic product shot of the exact SKU (plush toy, shoulder pad, colorway, all attachments matching the approved product photo) shown standalone or handheld, not installed on any seatbelt. Describe the actual scene explicitly (car interior on a seat/console, desk, showroom, gift box, hand holding it, etc.) and avoid implying it is currently worn or installed. Preserve exact product identity, proportions, and colors from the reference; natural realistic lighting and shadow. No price, logo, watermark, or unverified safety/comfort claims."
+  }
+]

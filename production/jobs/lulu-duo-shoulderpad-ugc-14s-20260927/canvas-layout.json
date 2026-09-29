@@ -1,0 +1,196 @@
+{
+  "nodes": [
+    {
+      "id": "asset:library:material-references/black-pad-material-4k.png",
+      "kind": "asset",
+      "title": "护肩垫｜黑色织纹材料参考图",
+      "path": "library:material-references/black-pad-material-4k.png",
+      "x": -390,
+      "y": 480
+    },
+    {
+      "id": "asset:assets/approved/S01-storyboard-approved-v1.png",
+      "kind": "asset",
+      "title": "分镜图｜S01-storyboard-approved-v1.png",
+      "path": "assets/approved/S01-storyboard-approved-v1.png",
+      "x": 0,
+      "y": -270
+    },
+    {
+      "id": "asset:assets/approved/S02-storyboard-approved-v1.png",
+      "kind": "asset",
+      "title": "分镜图｜S02-storyboard-approved-v1.png",
+      "path": "assets/approved/S02-storyboard-approved-v1.png",
+      "x": 460,
+      "y": -270
+    },
+    {
+      "id": "asset:assets/approved/S03-storyboard-approved-v1.png",
+      "kind": "asset",
+      "title": "分镜图｜S03-storyboard-approved-v1.png",
+      "path": "assets/approved/S03-storyboard-approved-v1.png",
+      "x": 920,
+      "y": -270
+    },
+    {
+      "id": "asset:library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "kind": "asset",
+      "title": "粉裤噜妹｜产品原图",
+      "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "x": -390,
+      "y": 0
+    },
+    {
+      "id": "asset:library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "kind": "asset",
+      "title": "阳光噜噜｜产品原图",
+      "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "x": -390,
+      "y": 240
+    },
+    {
+      "id": "shot:S01",
+      "kind": "shot",
+      "shotId": "S01",
+      "title": "S01",
+      "status": "SUCCESS",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "shot:S02",
+      "kind": "shot",
+      "shotId": "S02",
+      "title": "S02",
+      "status": "SUCCESS",
+      "x": 460,
+      "y": 0
+    },
+    {
+      "id": "shot:S03",
+      "kind": "shot",
+      "shotId": "S03",
+      "title": "S03",
+      "status": "SUCCESS",
+      "x": 909.3550304853893,
+      "y": 11.97562877353258
+    },
+    {
+      "id": "render:renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "kind": "render",
+      "title": "S01｜生成结果",
+      "shotId": "S01",
+      "status": "SUCCESS",
+      "path": "renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "x": 0,
+      "y": 250
+    },
+    {
+      "id": "render:renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "kind": "render",
+      "title": "S02｜生成结果",
+      "shotId": "S02",
+      "status": "SUCCESS",
+      "path": "renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "x": 460,
+      "y": 250
+    },
+    {
+      "id": "render:renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "kind": "render",
+      "title": "S03｜生成结果",
+      "shotId": "S03",
+      "status": "SUCCESS",
+      "path": "renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "x": 920,
+      "y": 250
+    }
+  ],
+  "connections": [
+    {
+      "id": "sequence:shot:S01:shot:S02",
+      "from": "shot:S01",
+      "to": "shot:S02"
+    },
+    {
+      "id": "sequence:shot:S02:shot:S03",
+      "from": "shot:S02",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:asset:library:products/pink-lulu-shoulder-pad-v1/source/product-front.png:shot:S01",
+      "from": "asset:library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:asset:library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png:shot:S01",
+      "from": "asset:library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:asset:library:material-references/black-pad-material-4k.png:shot:S01",
+      "from": "asset:library:material-references/black-pad-material-4k.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:asset:assets/approved/S01-storyboard-approved-v1.png:shot:S01",
+      "from": "asset:assets/approved/S01-storyboard-approved-v1.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "result:shot:S01:render:renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "from": "shot:S01",
+      "to": "render:renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4"
+    },
+    {
+      "id": "ref:asset:library:products/pink-lulu-shoulder-pad-v1/source/product-front.png:shot:S02",
+      "from": "asset:library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "ref:asset:library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png:shot:S02",
+      "from": "asset:library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "ref:asset:library:material-references/black-pad-material-4k.png:shot:S02",
+      "from": "asset:library:material-references/black-pad-material-4k.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "ref:asset:assets/approved/S02-storyboard-approved-v1.png:shot:S02",
+      "from": "asset:assets/approved/S02-storyboard-approved-v1.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "result:shot:S02:render:renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "from": "shot:S02",
+      "to": "render:renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4"
+    },
+    {
+      "id": "ref:asset:library:products/pink-lulu-shoulder-pad-v1/source/product-front.png:shot:S03",
+      "from": "asset:library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:asset:library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png:shot:S03",
+      "from": "asset:library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:asset:library:material-references/black-pad-material-4k.png:shot:S03",
+      "from": "asset:library:material-references/black-pad-material-4k.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:asset:assets/approved/S03-storyboard-approved-v1.png:shot:S03",
+      "from": "asset:assets/approved/S03-storyboard-approved-v1.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "result:shot:S03:render:renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "from": "shot:S03",
+      "to": "render:renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4"
+    }
+  ]
+}

@@ -39,7 +39,7 @@ export function PromptCard({
             <button type="button" className={compact ? "block w-full cursor-pointer text-left" : "block w-full flex-1 cursor-pointer text-left"} onClick={onOpen}>
                 <div className={compact ? "px-3 py-2.5" : "p-4"}>
                     <div className="flex items-start justify-between gap-3">
-                        <h2 className="line-clamp-1 text-sm font-semibold text-stone-950 dark:text-stone-100">{item.title}</h2>
+                        <h2 className={compact ? "line-clamp-2 text-xs font-semibold leading-snug text-stone-950 dark:text-stone-100" : "line-clamp-1 text-sm font-semibold text-stone-950 dark:text-stone-100"}>{item.title}</h2>
                         {!compact ? <span className="shrink-0 text-xs text-stone-400 dark:text-stone-500">{formatPromptDate(item.updatedAt, i18n.resolvedLanguage)}</span> : null}
                     </div>
                     {!compact ? <><p className="mt-2 line-clamp-3 text-xs leading-5 text-stone-600 dark:text-stone-400">{item.description || item.prompt}</p><div className="mt-3 flex flex-wrap gap-1.5">{item.tags.map((tag) => <Tag key={tag} className="m-0 text-[11px]">{tag}</Tag>)}</div></> : null}

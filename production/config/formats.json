@@ -3,25 +3,64 @@
   "formats": [
     {
       "format_id": "tvc-multi-shot",
+      "pipeline_id": "standard-video-v2",
       "name": "多镜头 TVC",
       "status": "active",
       "profile": "production/formats/tvc-multi-shot.md",
-      "layout": "sequential"
+      "layout": "sequential",
+      "media_type": "video",
+      "workflow_id": "minimax_h3_z0903"
     },
     {
       "format_id": "ugc-single-shot",
+      "pipeline_id": "standard-video-v2",
       "name": "单镜头口播 UGC",
       "status": "active",
       "profile": "production/formats/ugc-single-shot.md",
-      "layout": "sequential"
+      "layout": "sequential",
+      "media_type": "video",
+      "workflow_id": "minimax_h3_z0903"
+    },
+    {
+      "format_id": "main-image-hosted-12s",
+      "pipeline_id": "standard-video-v2",
+      "name": "主图人物口播展示（12 秒）",
+      "status": "draft",
+      "profile": "production/formats/main-image-hosted-12s.md",
+      "layout": "sequential",
+      "media_type": "video",
+      "workflow_id": "minimax_h3_z0903",
+      "node_count": 4,
+      "shot_duration_seconds": 3,
+      "total_duration_seconds": 12,
+      "aspect_ratio": "9:16",
+      "output": {
+        "width": 720,
+        "height": 1280,
+        "fps": 24,
+        "cut_style": "hard_cuts"
+      }
     },
     {
       "format_id": "nine-grid-storyboard",
+      "pipeline_id": "standard-video-v2",
       "name": "9 宫格分镜",
       "status": "draft",
       "profile": "production/formats/nine-grid-storyboard.md",
       "layout": "grid-3x3",
-      "node_count": 9
+      "node_count": 9,
+      "media_type": "image",
+      "workflow_id": null
+    },
+    {
+      "format_id": "ugc-multi-shot",
+      "pipeline_id": "standard-video-v2",
+      "name": "多镜头 UGC",
+      "status": "active",
+      "profile": "production/formats/ugc-multi-shot.md",
+      "layout": "sequential",
+      "media_type": "video",
+      "workflow_id": "minimax_h3_z0903"
     }
   ]
 }

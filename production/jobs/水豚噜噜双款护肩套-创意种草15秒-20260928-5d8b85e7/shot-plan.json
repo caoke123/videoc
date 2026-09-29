@@ -1,0 +1,115 @@
+{
+  "schema_version": 2,
+  "job_id": "水豚噜噜双款护肩套-创意种草15秒-20260928-5d8b85e7",
+  "format_id": "ugc-multi-shot",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 6,
+      "purpose": "惊喜开场：双款同框，质问式钩子",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "这是哪个大聪明想到的呀，在安全带的护肩套上，装饰上玩偶！",
+      "primary_action": "成年女性又惊又喜，把两款完整商品举向镜头",
+      "camera": "前排乘客侧固定手机，9:16 中近景，轻微随手拍感",
+      "end_state": "粉色左、黄色右，两款完整可辨",
+      "references": [
+        {
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "粉色 SKU 身份真值"
+        },
+        {
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "黄色 SKU 身份真值"
+        },
+        {
+          "path": "library:characters/approved/car-handheld-duo-composition-v1.png",
+          "role": "仅作成年女性、停稳车内和双款手持构图；不覆盖商品身份"
+        }
+      ],
+      "status": "ready_for_submission"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 6,
+      "end_seconds": 12,
+      "purpose": "近景展示墨镜与小领巾，讲车里的氛围",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "整个车里装饰，一下子好有氛围，萌萌的造型，酷酷的装饰。",
+      "primary_action": "先把粉色款、再把黄色款稍向镜头靠近，展示墨镜与小领巾；商品完整不遮挡",
+      "camera": "同一机位近景，车内座椅与仪表台虚化在背景",
+      "end_state": "两款回到并排位置",
+      "references": [
+        {
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "粉色 SKU 身份真值"
+        },
+        {
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "黄色 SKU 身份真值"
+        },
+        {
+          "path": "library:characters/approved/car-handheld-duo-composition-v1.png",
+          "role": "仅作人物及车内连续性；不覆盖商品身份"
+        }
+      ],
+      "status": "ready_for_submission"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 12,
+      "end_seconds": 17,
+      "purpose": "并排肯定，点名商品",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "这个水豚噜噜安全带护肩套，真是太有创意了！",
+      "primary_action": "两款并排举稳，认可地点头、看向镜头",
+      "camera": "同一前排乘客侧机位，完整商品同框",
+      "end_state": "两款完整同框稳定",
+      "references": [
+        {
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "粉色 SKU 身份真值"
+        },
+        {
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "黄色 SKU 身份真值"
+        },
+        {
+          "path": "library:characters/approved/car-handheld-duo-composition-v1.png",
+          "role": "仅作手持同框构图；不覆盖商品身份"
+        }
+      ],
+      "status": "ready_for_submission"
+    },
+    {
+      "shot_id": "S04",
+      "start_seconds": 17,
+      "end_seconds": 21,
+      "purpose": "结尾邀请，留 CTA 字幕安全区",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "姐妹们，抓紧给你的爱车安排上吧！",
+      "primary_action": "微笑，向镜头做一个小的邀请手势后把两款稳稳举住",
+      "camera": "同一机位，画面下方留字幕安全区",
+      "end_state": "两款完整同框定住一秒供后期字幕",
+      "references": [
+        {
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "粉色 SKU 身份真值"
+        },
+        {
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "黄色 SKU 身份真值"
+        },
+        {
+          "path": "library:characters/approved/car-handheld-duo-composition-v1.png",
+          "role": "仅作手持同框构图；不覆盖商品身份"
+        }
+      ],
+      "status": "ready_for_submission"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 4,
+      "purpose": "第一秒双款同框抓注意力，快速建立随手分享情境。",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "这两只也太有个性了！",
+      "primary_action": "镜头轻轻拉开，成年女性创作者在桌后对镜微笑；双款已完整摆好，不拿起、不触碰。",
+      "camera": "9:16手机中近景，桌面高度，轻微自然手持；人物和双款同时可见。",
+      "end_state": "粉色款在左、黄色款在右，两件 SKU 均完整且身份清楚。",
+      "references": [
+        {
+          "role": "粉裤噜妹完整 SKU 身份真值",
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png"
+        },
+        {
+          "role": "阳光噜噜完整 SKU 身份真值",
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png"
+        },
+        {
+          "role": "S01构图候选，仅人物/桌面/构图参考；不可覆盖SKU真值；用户已要求提交全部镜头",
+          "path": "assets/approved/S01-storyboard-approved-v1.png"
+        }
+      ],
+      "audio_direction": "同一成年女性创作者自然普通话画外音，朋友分享口吻、轻松带笑、强度 2/5；本镜仅说指定原句，不加词。",
+      "status": "user_authorized_for_generation_pending_category_gate"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 4,
+      "end_seconds": 10,
+      "purpose": "报出两款名称并对比粉色与黄色；保留双款连续性。",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "粉裤噜妹和阳光噜噜，一粉一黄，各有各的感觉。",
+      "primary_action": "镜头从粉裤噜妹缓慢平移到阳光噜噜；两件商品静止，完整可见。",
+      "camera": "9:16桌面近景，平稳短距离横移，不能裁掉两款任一黑色长条护肩垫。",
+      "end_state": "粉色款在左、黄色款在右，两件 SKU 均完整且身份清楚。",
+      "references": [
+        {
+          "role": "粉裤噜妹完整 SKU 身份真值",
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png"
+        },
+        {
+          "role": "阳光噜噜完整 SKU 身份真值",
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png"
+        },
+        {
+          "role": "S02构图候选；保留双款并排完整展示；用户已要求提交全部镜头",
+          "path": "assets/approved/S02-storyboard-approved-v1.png"
+        }
+      ],
+      "audio_direction": "同一成年女性创作者自然普通话画外音，朋友分享口吻、轻松带笑、强度 2/5；本镜仅说指定原句，不加词。",
+      "status": "user_authorized_for_generation_pending_category_gate"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 10,
+      "end_seconds": 14,
+      "purpose": "扫过墨镜和领巾细节，邀请观众选款收尾。",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "墨镜和小领巾太抢眼了，你会选哪只？",
+      "primary_action": "手指从画面边缘分别指向两款但不触碰；最后稳定停留在双款完整同框。",
+      "camera": "9:16中近景，手部仅边缘入画；两款完整并排，底部留出后期字幕安全区。",
+      "end_state": "双款完整同框稳定定格，等待后期字幕收尾。",
+      "references": [
+        {
+          "role": "粉裤噜妹完整 SKU 身份真值",
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png"
+        },
+        {
+          "role": "阳光噜噜完整 SKU 身份真值",
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png"
+        },
+        {
+          "role": "S03构图候选；手势不接触商品；用户已要求提交全部镜头",
+          "path": "assets/approved/S03-storyboard-approved-v1.png"
+        }
+      ],
+      "audio_direction": "同一成年女性创作者自然普通话画外音，朋友分享口吻、轻松带笑、强度 2/5；本镜仅说指定原句，不加词。",
+      "status": "user_authorized_for_generation_pending_category_gate"
+    }
+  ]
+}

@@ -8,13 +8,19 @@
 // workflows don't have request-plan.json and simply don't expose this action.
 
 import { readFile, writeFile, rename, unlink, mkdir, readdir, appendFile, copyFile, stat, access } from 'node:fs/promises';
-import { basename, dirname, extname, join } from 'node:path';
+import { basename, dirname, extname, join, resolve, sep } from 'node:path';
 import { createHash, randomInt, randomUUID } from 'node:crypto';
 import { AwsClient } from 'aws4fetch';
-import { buildLibraryIndex, resolveAssetRef } from './asset-library.mjs';
+import { buildLibraryIndex, isImageFile, libraryRoot, LIBRARY_CATEGORY_IDS, LIBRARY_PREFIX, resolveAssetRef, sanitizeGroupSegments, sha256OfFile } from './asset-library.mjs';
 
 const SINGLE_SHOT_ID = 'MAIN';
 const planLockTails = new Map();
+// AutoDL rejects parameter names beyond the actual workflow input slots. Keep this
+// contract next to payload construction so preflight rejects an invalid request
+// before a paid submission is attempted.
+const WORKFLOW_INPUT_LIMITS = Object.freeze({
+  minimax_h3_z0903: Object.freeze({ maxRefImages: 6, maxRefAudio: 3 })
+});
 
 // request-plan.json is edited from two entry points (manual canvas edits and Codex
 // automation); serialize every read-modify-write on it so neither loses updates.
@@ -74,6 +80,46 @@ async function appendRunLog(jobDir, entry) {
 }
 
 const autodlApiRoot = () => (process.env.AUTODL_API_BASE || 'https://autodl.art').replace(/\/+$/, '');
+
+export async function renameJob(jobsRoot, jobId, title) {
+  const name = String(title || '').trim();
+  if (!name) throw new Error('标题不能为空');
+  if (name.length > 80) throw new Error('标题不能超过 80 字');
+  const jobDir = join(jobsRoot, jobId);
+  const briefPath = join(jobDir, 'brief.json');
+  const brief = await readJson(briefPath).catch(() => { throw new Error('任务不存在或没有 brief.json'); });
+  const before = brief.creative_concept || null;
+  if (before === name) return { title: name, changed: false };
+  brief.creative_concept = name;
+  await writeJsonAtomic(briefPath, brief);
+  await appendRunLog(jobDir, { job_id: jobId, actor: 'user', type: 'job_renamed', before, after: name });
+  return { title: name, changed: true };
+}
+
+// Copies a job's own image into the shared library under "<category>/candidates/[group/]<filename>".
+// Always lands in candidates, never approved: promotion to approved truth stays a separate,
+// deliberate human action on the library page. Skips the copy (and returns the existing ref)
+// when an identical file (by sha256) is already in the library, so re-running this never duplicates.
+export async function promoteAssetToLibrary(jobsRoot, jobId, { path, category, group }) {
+  const relPath = typeof path === 'string' ? path.replaceAll('\\', '/').replace(/^\.\//, '') : '';
+  if (!relPath || relPath.split('/').some(part => !part || part === '.' || part === '..')) throw new Error('素材路径无效');
+  if (!LIBRARY_CATEGORY_IDS.includes(category)) throw new Error('素材分类无效');
+  const jobDir = join(jobsRoot, jobId);
+  const source = resolve(jobDir, relPath);
+  if (!(source + sep).startsWith(jobDir + sep)) throw new Error('素材路径必须属于当前任务');
+  if (!isImageFile(source)) throw new Error('只能收录图片素材');
+  await access(source).catch(() => { throw new Error('素材文件不存在'); });
+  const sha256 = await sha256OfFile(source);
+  const existingRef = (await buildLibraryIndex(jobsRoot)).get(sha256);
+  if (existingRef) return { ref: existingRef, path: existingRef.slice(LIBRARY_PREFIX.length), duplicate: true };
+  const segments = [category, ...sanitizeGroupSegments(group), basename(source)];
+  const targetRelPath = segments.join('/');
+  const target = join(libraryRoot(jobsRoot), ...segments);
+  await mkdir(dirname(target), { recursive: true });
+  await copyFile(source, target);
+  await appendRunLog(jobDir, { job_id: jobId, actor: 'user', type: 'asset_promoted_to_library', source: relPath, target: targetRelPath, category });
+  return { ref: `${LIBRARY_PREFIX}${targetRelPath}`, path: targetRelPath, duplicate: false };
+}
 
 export async function createJob(jobsRoot, { title, categoryId, formatId }, { formats, categories }) {
   const format = formats.find(item => item.format_id === formatId);
@@ -366,13 +412,15 @@ async function writeShotRunState(jobDir, files, shotId, shape, patch) {
   }
 }
 
-export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
+export async function preflightBatchSubmission(jobsRoot, jobId, { token, onlyShotIds } = {}) {
   if (!token) throw new Error('缺少 AUTODL_COMFYUI_TOKEN');
   const jobDir = join(jobsRoot, jobId);
   await syncRequestPlan(jobsRoot, jobId, { reason: 'batch preflight' });
   const plan = await readJson(join(jobDir, 'request-plan.json'));
   if (plan.media_type && plan.media_type !== 'video') throw new Error('当前任务不是视频生成任务');
   if (!Array.isArray(plan.shots) || !plan.shots.length) throw new Error('批量提交需要多镜头 request-plan.json');
+  const scopedShots = onlyShotIds ? plan.shots.filter(shot => onlyShotIds.includes(shot.shot_id)) : plan.shots;
+  if (onlyShotIds && !scopedShots.length) throw new Error('指定的镜头不存在');
   const normalized = normalizePlan(plan);
   if (!normalized.workflowId || !normalized.resolution) throw new Error('工作流或分辨率未配置');
   const files = await listFileNames(jobDir);
@@ -382,15 +430,15 @@ export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
     const run = state.shots?.[shot.shot_id];
     return !run || (!run.task_id && !run.output_file && (['PLANNED', 'PREPARING'].includes(run.status || 'PLANNED') || (run.status === 'SUBMIT_FAILED' && run.retry_approved === true)));
   };
-  const pending = plan.shots.filter(isFreshShot);
-  const blocked = plan.shots.filter(shot => {
+  const pending = scopedShots.filter(isFreshShot);
+  const blocked = scopedShots.filter(shot => {
     const run = state.shots?.[shot.shot_id];
     return !run?.task_id && (['SUBMITTING', 'NEEDS_ATTENTION'].includes(run?.status) || (run?.status === 'SUBMIT_FAILED' && run.retry_approved !== true));
   }).map(shot => shot.shot_id);
   if (!pending.length) {
     if (blocked.length) throw new Error(`镜头 ${blocked.join('、')} 的提交结果尚未人工核对；请在任务页核对 AutoDL 是否创建任务后再提交`);
-    if (plan.shots.every(shot => state.shots?.[shot.shot_id]?.task_id)) throw new Error('所有镜头已有任务编号；批量提交不会重复生成');
-    throw new Error('没有可批量提交的镜头；请检查各镜头的生成状态');
+    if (scopedShots.every(shot => state.shots?.[shot.shot_id]?.task_id)) throw new Error(onlyShotIds ? '该镜头已有任务编号；不会重复生成' : '所有镜头已有任务编号；批量提交不会重复生成');
+    throw new Error(onlyShotIds ? '该镜头当前状态不可提交' : '没有可批量提交的镜头；请检查各镜头的生成状态');
   }
   const check = await validateJobFiles(jobsRoot, jobId, { shotIds: pending.map(shot => shot.shot_id) });
   const errors = [...check.errors];
@@ -401,7 +449,7 @@ export async function preflightBatchSubmission(jobsRoot, jobId, { token }) {
     if (audioUrls.some(url => typeof url !== 'string' || !/^https:\/\//.test(url))) errors.push(`${shot.shot_id || '未知镜头'}：配音 URL 无效`);
   }
   if (errors.length) throw new Error(errors.join('；'));
-  return { shotIds: pending.map(shot => shot.shot_id), skipped: plan.shots.filter(shot => !isFreshShot(shot)).map(shot => shot.shot_id), blocked, warnings: check.warnings };
+  return { shotIds: pending.map(shot => shot.shot_id), skipped: scopedShots.filter(shot => !isFreshShot(shot)).map(shot => shot.shot_id), blocked, warnings: check.warnings };
 }
 
 export async function submitShot(jobsRoot, jobId, shotId, { token, reason }) {
@@ -758,6 +806,7 @@ export async function validateJobFiles(jobsRoot, jobId, { shotIds = null } = {})
   const shotPlan = await readJson(join(jobDir, 'shot-plan.json')).catch(() => null);
   const brief = await readJson(join(jobDir, 'brief.json')).catch(() => null);
   const shots = Array.isArray(plan.shots) ? plan.shots : [];
+  const inputLimits = WORKFLOW_INPUT_LIMITS[plan.workflow_id] || null;
   let checkShots = shots;
   if (!plan.workflow_id) errors.push('request-plan 未配置 workflow_id');
   const ids = shots.map(shot => shot.shot_id);
@@ -787,13 +836,16 @@ export async function validateJobFiles(jobsRoot, jobId, { shotIds = null } = {})
     if (!String(shot.prompt || '').trim()) errors.push(`${tag}：提示词为空`);
     const refs = Array.isArray(shot.ref_images) ? shot.ref_images : [];
     if (plan.media_type !== 'image' && !refs.length) errors.push(`${tag}：缺少参考图`);
+    if (inputLimits && refs.length > inputLimits.maxRefImages) errors.push(`${tag}：${plan.workflow_id} 最多支持 ${inputLimits.maxRefImages} 张参考图，当前为 ${refs.length} 张`);
     if (new Set(refs).size !== refs.length) warnings.push(`${tag}：参考图重复引用`);
     for (const relative of refs) {
       const target = resolveAssetRef(jobsRoot, jobDir, relative);
       if (!target) errors.push(`${tag}：参考图路径无效 ${String(relative)}`);
       else if (!(await access(target).then(() => true).catch(() => false))) errors.push(`${tag}：参考图不存在 ${relative}`);
     }
-    if ((shot.ref_audio_urls || []).some(url => !/^https:\/\//.test(String(url)))) errors.push(`${tag}：配音 URL 必须是 https`);
+    const audios = Array.isArray(shot.ref_audio_urls) ? shot.ref_audio_urls : [];
+    if (inputLimits && audios.length > inputLimits.maxRefAudio) errors.push(`${tag}：${plan.workflow_id} 最多支持 ${inputLimits.maxRefAudio} 段参考音频，当前为 ${audios.length} 段`);
+    if (audios.some(url => !/^https:\/\//.test(String(url)))) errors.push(`${tag}：配音 URL 必须是 https`);
   }
   const log = await readFile(join(jobDir, 'run-log.jsonl'), 'utf8').catch(() => '');
   let badLines = 0;

@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "purpose": "用自拍视频式开场建立人物与车内情境",
+      "generation_mode": "character_i2v",
+      "audio_mode": "native",
+      "dialogue": "本来想拍个车内自拍。",
+      "audio_direction": "成年女性自然口播，像对手机分享；清楚、轻松，不夸张。保留轻微真实车厢底噪，无音乐、无其他人声。",
+      "references": [
+        { "path": "assets/source/photo_2026-08-22_00-56-33 (2).jpg", "role": "女主角身份、深棕高马尾、灰色针织造型主参考" },
+        { "path": "library:products/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png", "role": "主驾车内、安全带和商品佩戴关系参考" },
+        { "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png", "role": "粉裤噜妹完整 SKU 身份真值" },
+        { "path": "library:material-references/black-pad-material-4k.png", "role": "黑色护肩垫表面纹理参考" },
+        { "path": "assets/generated/storyboards/S01-driver-product-keyvisual-v1.png", "role": "本镜头人物/车内/商品组合候选，待人工审看，不替代 SKU 真值" }
+      ],
+      "primary_action": "女主角看向固定手机镜头，露出自拍视频开场的自然微笑；手保持在画面外，不碰方向盘或安全带。",
+      "camera": "9:16 中近景，固定手机位于副驾侧仪表台附近，斜向主驾拍摄，未镜像。女主角位于画面中左，方向盘在画面右下前景，主驾左门/B柱在画面右，中控与右髋锁扣偏画面左；肩带从画面右上斜向左下。",
+      "end_state": "人物正面和肩部安全带关系清楚，护肩套在肩带上可辨认但尚未占满画面。",
+      "status": "planned"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 3,
+      "end_seconds": 8,
+      "purpose": "用女主角的反应揭示商品是画面焦点",
+      "generation_mode": "character_i2v",
+      "audio_mode": "native",
+      "dialogue": "结果安全带上这只，比我还抢镜。",
+      "audio_direction": "同一成年女性口播，语气带一点意外和笑意，节奏自然；保留轻微车厢底噪，无音乐。",
+      "references": [
+        { "path": "assets/source/photo_2026-08-22_00-56-33 (2).jpg", "role": "同一女主角身份及灰色针织造型" },
+        { "path": "library:products/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png", "role": "主驾车内、安全带和商品佩戴关系参考" },
+        { "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png", "role": "粉裤噜妹完整 SKU 身份真值" },
+        { "path": "library:material-references/black-pad-material-4k.png", "role": "黑色护肩垫表面纹理参考" },
+        { "path": "assets/generated/storyboards/S02-look-at-product-v1.png", "role": "本镜头表情、视线和景别候选，待人工审看" }
+      ],
+      "primary_action": "女主角先看手机镜头，再自然低眼看向肩带上的粉裤噜妹，露出短促的会心笑；不触碰商品。",
+      "camera": "与 S01 相同的副驾侧斜向主驾机位，剪辑时切成胸肩范围的中近景；不做镜头内摇移。",
+      "end_state": "女主角视线落在商品上，粉裤噜妹完整轮廓和肩带连接关系清楚。",
+      "status": "planned"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 8,
+      "end_seconds": 14,
+      "purpose": "给出商品外观近景和轻量购买引导",
+      "generation_mode": "character_i2v",
+      "audio_mode": "native",
+      "dialogue": "粉裤噜妹的小眼镜太有戏了，喜欢就点进来看看。",
+      "audio_direction": "同一成年女性画外口播，温和、像朋友分享；商品近景时声音保持连续清晰。保留轻微车厢底噪，无音乐、无额外对白。",
+      "references": [
+        { "path": "assets/source/photo_2026-08-22_00-56-33 (2).jpg", "role": "同一女主角身份与造型连续性" },
+        { "path": "library:products/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png", "role": "准确的已安装状态、比例和安全带拓扑" },
+        { "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png", "role": "商品正面身份、配件位置与整体比例" },
+        { "path": "library:material-references/black-pad-material-4k.png", "role": "黑色护肩垫密集不规则凸起圈纹与包边" },
+        { "path": "assets/generated/storyboards/S03-product-closeup-v1.png", "role": "本镜头近景构图候选，待人工审看，不替代商品身份与佩戴真值" }
+      ],
+      "primary_action": "切至女主角肩部与粉裤噜妹的稳定近景，人物视线轻落商品，保持一秒清晰展示；不做拿取、拉扯、安装或拆卸。",
+      "camera": "同一副驾侧斜向主驾方向的紧凑裁切近景，肩带、护肩套、玩偶和肩部保持同一平面关系；商品完整且不被头发遮住，背景仍能辨认车内。",
+      "end_state": "以商品近景定住，留出下方字幕安全区供后期叠加商品名与平台 CTA。",
+      "status": "planned"
+    }
+  ]
+}

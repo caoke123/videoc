@@ -15,8 +15,8 @@
         "spatial_rules": ".agents/skills/seatbelt-video-studio/references/vehicle-spatial-rules.md"
       },
       "show_installation_process": false,
-      "installed_reference_required": true,
-      "product_geometry_review_required": true,
+      "installed_reference_required_when": "shot_depicts_product_installed_or_worn_on_belt",
+      "product_geometry_review_required_when": "shot_depicts_product_or_generated_asset_is_promoted_to_authoritative_status",
       "product_geometry_tolerance_percent": 5
     },
     {

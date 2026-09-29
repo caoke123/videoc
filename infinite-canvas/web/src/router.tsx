@@ -8,6 +8,7 @@ import CanvasProjectPage from "@/pages/canvas/project";
 import ConfigPage from "@/pages/config";
 import HomePage from "@/pages/home";
 import ImagePage from "@/pages/image";
+import LibraryPage from "@/pages/library";
 import NotFound from "@/pages/not-found";
 import PromptsPage from "@/pages/prompts";
 import ProductionJobsPage from "@/pages/production";
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
             { path: "/canvas/:id", element: <CanvasProjectPage /> },
             { path: "/production", element: <ProductionJobsPage /> },
             { path: "/production/:jobId", element: <ProductionJobPage /> },
+            { path: "/library", element: <LibraryPage /> },
             { path: "/config", element: <ConfigPage /> },
         ],
     },

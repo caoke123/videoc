@@ -1,0 +1,43 @@
+{
+  "status": "SUCCESS",
+  "shots": {
+    "S01": {
+      "status": "SUCCESS",
+      "task_id": "70fde0a5-d79e-47fe-90ee-20b8d512c43a",
+      "submitted_at": "2026-09-27T14:49:06.146Z",
+      "seed": 2026092701,
+      "duration": 4,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 349,
+      "last_polled_at": "2026-09-27T14:54:59.277Z",
+      "output_file": "renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "downloaded_at": "2026-09-27T14:54:59.651Z"
+    },
+    "S02": {
+      "status": "SUCCESS",
+      "task_id": "149ccd5e-a845-4a0b-959a-98cbb572ed1a",
+      "submitted_at": "2026-09-27T14:49:11.012Z",
+      "seed": 2026092702,
+      "duration": 6,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 482,
+      "last_polled_at": "2026-09-27T14:58:31.177Z",
+      "output_file": "renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "downloaded_at": "2026-09-27T14:58:31.866Z"
+    },
+    "S03": {
+      "status": "SUCCESS",
+      "task_id": "d9c4690c-0668-4a52-936c-dbc7f6cd85c4",
+      "submitted_at": "2026-09-27T14:49:16.026Z",
+      "seed": 2026092703,
+      "duration": 4,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 461,
+      "last_polled_at": "2026-09-27T14:56:57.918Z",
+      "output_file": "renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "downloaded_at": "2026-09-27T14:56:58.259Z"
+    }
+  },
+  "updated_at": "2026-09-27T15:12:19.676Z",
+  "blocked_by": null
+}

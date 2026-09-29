@@ -1,0 +1,59 @@
+{
+  "shots": {
+    "S01": {
+      "task_id": "82fb161f-3277-4d31-84b9-e76286e1b4db",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T16:15:26.759Z",
+      "seed": 2026092801,
+      "duration": 4,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 376,
+      "last_polled_at": "2026-09-27T16:21:46.340Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S01/82fb161f-3277-4d31-84b9-e76286e1b4db.mp4",
+      "downloaded_at": "2026-09-27T16:21:46.706Z"
+    },
+    "S02": {
+      "task_id": "ab8a1d34-d796-49ad-9e73-2148ef2cd63c",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T16:15:27.934Z",
+      "seed": 2026092802,
+      "duration": 5,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 445,
+      "last_polled_at": "2026-09-27T16:22:53.134Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S02/ab8a1d34-d796-49ad-9e73-2148ef2cd63c.mp4",
+      "downloaded_at": "2026-09-27T16:22:53.460Z"
+    },
+    "S03": {
+      "task_id": "3613b604-5299-4a4f-a959-00be95cf6ace",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T16:15:29.062Z",
+      "seed": 2026092803,
+      "duration": 5,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 380,
+      "last_polled_at": "2026-09-27T16:21:53.539Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S03/3613b604-5299-4a4f-a959-00be95cf6ace.mp4",
+      "downloaded_at": "2026-09-27T16:21:53.859Z"
+    },
+    "S04": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "task_id": "d0841206-5538-4dee-853f-75bca8d15459",
+      "submitted_at": "2026-09-28T08:02:32.401Z",
+      "seed": 703251202,
+      "duration": 6,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 606,
+      "last_polled_at": "2026-09-28T08:12:41.938Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S04/d0841206-5538-4dee-853f-75bca8d15459.mp4",
+      "downloaded_at": "2026-09-28T08:12:42.341Z"
+    }
+  },
+  "updated_at": "2026-09-28T08:12:42.341Z"
+}

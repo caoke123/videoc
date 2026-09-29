@@ -2,9 +2,9 @@
 
 ## States
 
-`draft -> assets_pending -> storyboard_pending -> images_pending -> asset_self_check -> human_asset_approval -> ready_for_video -> generating -> human_review -> ai_review_requested -> postproduction -> delivered`
+`draft -> minimum_assets_ready -> batch_preflight -> ready_for_video -> generating -> human_review -> postproduction -> delivered`
 
-Do not skip `human_review` or `human_asset_approval`. Asset self-check is mandatory for each generated visual before it can be promoted; it records pass/fail and does not auto-retry. AI review is optional and initiated only after the user flags a problem.
+Do not skip final human review. Add `asset_self_check -> human_asset_approval` only for a generated image being promoted to an authoritative reusable SKU, installed-state, or other truth reference; record pass/fail and do not auto-retry. Candidate keyframes and composition guides do not need their own approval state. AI review is optional and initiated only after the user flags a problem. The setting never selects a gate by itself; the depicted product state, action, and claim do.
 
 ## Creative modes
 

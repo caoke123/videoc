@@ -1,0 +1,56 @@
+{
+  "status": "SUCCESS",
+  "shots": {
+    "S01": {
+      "task_id": "44a8143a-c304-4ffb-b318-05e9797f5f8d",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T12:50:07.627Z",
+      "seed": 1790512030,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 316,
+      "last_polled_at": "2026-09-27T12:55:26.884Z",
+      "output_file": "renders/runs/S01/44a8143a-c304-4ffb-b318-05e9797f5f8d.mp4",
+      "downloaded_at": "2026-09-27T12:55:28.205Z"
+    },
+    "S02": {
+      "task_id": "dbb89f2b-b680-4fd5-8f07-f968eaac84f2",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T12:50:25.749Z",
+      "seed": 1790512031,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 302,
+      "last_polled_at": "2026-09-27T12:55:29.619Z",
+      "output_file": "renders/runs/S02/dbb89f2b-b680-4fd5-8f07-f968eaac84f2.mp4",
+      "downloaded_at": "2026-09-27T12:55:30.1Z"
+    },
+    "S03": {
+      "task_id": "1c61f1c9-8d43-4c80-92ec-ae9d0c3f4f82",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T12:50:32.095Z",
+      "seed": 1790512032,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 385,
+      "last_polled_at": "2026-09-27T12:57:01.747Z",
+      "output_file": "renders/runs/S03/1c61f1c9-8d43-4c80-92ec-ae9d0c3f4f82.mp4",
+      "downloaded_at": "2026-09-27T12:57:01.948Z"
+    },
+    "S04": {
+      "task_id": "74330783-4a70-4434-b6de-0d46334fd5d2",
+      "status": "SUCCESS",
+      "submitted_at": "2026-09-27T12:50:38.229Z",
+      "seed": 1790512033,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 375,
+      "last_polled_at": "2026-09-27T12:56:57.739Z",
+      "output_file": "renders/runs/S04/74330783-4a70-4434-b6de-0d46334fd5d2.mp4",
+      "downloaded_at": "2026-09-27T12:56:58.042Z"
+    }
+  },
+  "updated_at": "2026-09-27T12:57:01.948Z",
+  "final_video": "renders/preview/final-12s-review.mp4",
+  "assembled_at": "2026-09-27T13:06:06.8921984Z"
+}

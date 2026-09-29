@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "job_id": "lulu-duo-car-handheld-ugc-14s-20260928",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": null,
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 14,
+  "audience": "喜欢可爱车载小物和个性化配件的短视频观众",
+  "use_occasion": "车辆停稳后，成年女性驾驶者在车内手持展示两款商品",
+  "creative_concept": "车内随手分享两只外观不同的噜噜，最后邀请观众选款",
+  "character_profile": "成年女性驾驶者，日常穿搭，自然友好的随手分享口吻；不指定真人身份",
+  "scene_plan": "停稳的车内，手机置于前排乘客侧附近；商品只被手持，不装在安全带上，也不表现驾车过程",
+  "action_plan": "开场双款举起；中段依次展示外观；结尾并排停留并邀请选款",
+  "spoken_script": "停车等人，给你们看两只新搭子！粉裤噜妹甜酷，阳光噜噜元气。墨镜和小领巾都好可爱，你会选哪只？",
+  "raw_copy": "口播：停车等人，给你们看两只新搭子！粉裤噜妹甜酷，阳光噜噜元气。墨镜和小领巾都好可爱，你会选哪只？\n后期字幕：粉裤噜妹 / 阳光噜噜｜评论区选一只",
+  "hook": "停车等人，给你们看两只新搭子！",
+  "cta": "你会选哪只？",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system"
+  ],
+  "reference_video": null,
+  "notes": "商品身份以两张用户原图为准。车内合成图仅是人物、氛围与手持构图候选，不是商品真值。无安装或佩戴镜头，因此本批素材准备不要求安装状态图。"
+}

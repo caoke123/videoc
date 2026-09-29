@@ -5,6 +5,7 @@ import { saveAs } from "file-saver";
 import { useTranslation } from "react-i18next";
 
 import { useCopyText } from "@/hooks/use-copy-text";
+import { SaveToLibraryButton } from "@/components/library/save-to-library-button";
 import { formatBytes, readFileAsDataUrl } from "@/lib/image-utils";
 import { getMediaBlob } from "@/services/file-storage";
 import { getImageBlob, getImagePreviewRevision, subscribeImagePreviews, uploadImage } from "@/services/image-storage";
@@ -473,6 +474,9 @@ function AssetCard({ asset, onOpen, onEdit, onCopy, onDownload, onDelete }: { as
                         {t("common.download")}
                     </Button>
                 ) : null}
+                {asset.kind === "image" ? (
+                    <SaveToLibraryButton dataUrl={asset.data.dataUrl} storageKey={asset.data.storageKey} name={libraryAssetName(asset)} />
+                ) : null}
                 <Button size="small" danger icon={<Trash2 className="size-3.5" />} onClick={onDelete}>
                     {t("common.delete")}
                 </Button>
@@ -553,6 +557,11 @@ async function readAssetMediaBlob(asset: Extract<Asset, { kind: "image" | "video
     if (!url) return null;
     const response = await fetch(url);
     return response.ok ? response.blob() : null;
+}
+
+function libraryAssetName(asset: ImageAsset) {
+    const ext = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" }[asset.data.mimeType] || "png";
+    return `${(asset.title || "asset").replace(/\.[^./]+$/, "")}.${ext}`;
 }
 
 function assetSummary(asset: Asset) {

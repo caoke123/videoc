@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { Empty, Input, Modal, Pagination, Tag } from "antd";
+import { App, Empty, Input, Modal, Pagination, Tabs, Tag } from "antd";
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 import { getImagePreviewRevision, subscribeImagePreviews } from "@/services/image-storage";
+import { libraryFileUrl } from "@/services/api/library";
 import { assetCoverUrl, useAssetStore, type Asset } from "@/stores/use-asset-store";
+import { LibraryBrowser } from "./library-browser";
 
 export type InsertAssetPayload = { kind: "text"; content: string; title: string } | { kind: "image"; dataUrl: string; title: string; storageKey?: string } | { kind: "video"; url: string; title: string; storageKey?: string; width?: number; height?: number };
 
@@ -16,11 +18,17 @@ type Props = {
     onClose: () => void;
 };
 
-export function AssetPickerModal({ open, onInsert, onClose }: Props) {
+export function AssetPickerModal({ open, defaultTab, onInsert, onClose }: Props) {
     const { t } = useTranslation();
     return (
         <Modal title={t("canvas.assetPicker.title")} open={open} onCancel={onClose} footer={null} width={860} destroyOnHidden styles={{ body: { padding: "0 24px 24px", minHeight: 480 } }}>
-            <MyAssetsTab onInsert={onInsert} />
+            <Tabs
+                defaultActiveKey={defaultTab || "my-assets"}
+                items={[
+                    { key: "my-assets", label: t("canvas.assetPicker.myAssets"), children: <MyAssetsTab onInsert={onInsert} /> },
+                    { key: "library", label: t("canvas.assetPicker.library"), children: <LibraryTab onInsert={onInsert} /> },
+                ]}
+            />
         </Modal>
     );
 }
@@ -132,5 +140,18 @@ function MyAssetsTab({ onInsert }: { onInsert: (payload: InsertAssetPayload) => 
                 </div>
             )}
         </div>
+    );
+}
+
+function LibraryTab({ onInsert }: { onInsert: (payload: InsertAssetPayload) => void }) {
+    const { t } = useTranslation();
+    const { message } = App.useApp();
+    return (
+        <LibraryBrowser
+            onSelect={(item) => {
+                onInsert({ kind: "image", dataUrl: libraryFileUrl(item.path), title: item.name });
+                message.success(t("canvas.assetPicker.libraryInserted"));
+            }}
+        />
     );
 }

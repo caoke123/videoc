@@ -1,4 +1,4 @@
-import { Clapperboard, FileText, ImagePlus, Images, Maximize2, Settings2, Video } from "lucide-react";
+import { Clapperboard, FileText, ImagePlus, Images, LibraryBig, Maximize2, Settings2, Video } from "lucide-react";
 
 export const navigationTools = [
     {
@@ -24,6 +24,10 @@ export const navigationTools = [
     {
         slug: "assets",
         icon: Images,
+    },
+    {
+        slug: "library",
+        icon: LibraryBig,
     },
     {
         slug: "config",

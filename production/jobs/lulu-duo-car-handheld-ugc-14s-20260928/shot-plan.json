@@ -1,0 +1,97 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 4,
+      "purpose": "双款同框开场，建立停稳车内的随手分享情境",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "停车等人，给你们看两只新搭子！",
+      "primary_action": "成年女性把两款完整商品举向镜头，双手不触碰方向盘",
+      "camera": "前排乘客侧固定手机，9:16 中近景，轻微随手拍感",
+      "end_state": "粉色款在画面左、黄色款在画面右，两款完整可辨",
+      "references": [
+        {
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "粉色 SKU 身份真值"
+        },
+        {
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "黄色 SKU 身份真值"
+        },
+        {
+          "path": "assets/generated/references/car-handheld-duo-composition-v1.png",
+          "role": "仅作成年女性、停稳车内氛围和双手手持构图候选；不覆盖商品身份"
+        }
+      ],
+      "status": "ready_for_submission"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 4,
+      "end_seconds": 9,
+      "purpose": "依次展示两款可见外观差异",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "粉裤噜妹甜酷，阳光噜噜元气。",
+      "primary_action": "先将粉色款稍向镜头靠近，再将黄色款稍向镜头靠近；商品完整、不遮挡墨镜头饰与领巾",
+      "camera": "同一车内位置近景，保持人物和方向关系连续",
+      "end_state": "两款回到并排位置",
+      "references": [
+        {
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "粉色 SKU 身份真值"
+        },
+        {
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "黄色 SKU 身份真值"
+        },
+        {
+          "path": "assets/generated/references/car-handheld-duo-composition-v1.png",
+          "role": "仅作人物及车内连续性候选"
+        }
+      ],
+      "status": "ready_for_submission"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 9,
+      "end_seconds": 14,
+      "purpose": "双款并排收尾，邀请观众选色",
+      "generation_mode": "product_i2v",
+      "audio_mode": "native",
+      "dialogue": "墨镜和小领巾都好可爱，你会选哪只？",
+      "primary_action": "成年女性并排举稳两款、看向镜头，末尾停留一秒",
+      "camera": "同一前排乘客侧机位，完整商品同框并留字幕安全区",
+      "end_state": "两款完整同框定住供后期字幕",
+      "references": [
+        {
+          "path": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "粉色 SKU 身份真值"
+        },
+        {
+          "path": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+          "role": "黄色 SKU 身份真值"
+        },
+        {
+          "path": "assets/generated/references/car-handheld-duo-composition-v1.png",
+          "role": "仅作手持同框构图候选"
+        }
+      ],
+      "status": "ready_for_submission"
+    },
+    {
+      "shot_id": "S04",
+      "purpose": "画布手动生成",
+      "duration": 6,
+      "references": [
+        "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+        "assets/source/0289741a3739.png",
+        "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png"
+      ],
+      "status": "planned"
+    }
+  ]
+}

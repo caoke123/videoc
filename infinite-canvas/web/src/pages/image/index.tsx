@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, BookOpen, CheckSquare, ClipboardPaste, Download, FolderPlus, History, ImagePlus, LoaderCircle, PenLine, Plus, SlidersHorizontal, Sparkles, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, CheckSquare, ClipboardPaste, Download, FolderPlus, History, ImagePlus, LoaderCircle, PenLine, Plus, RefreshCw, SlidersHorizontal, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { App, Button, Checkbox, Drawer, Empty, Image, Input, Modal, Tag, Tooltip, Typography } from "antd";
 import localforage from "localforage";
@@ -9,6 +9,7 @@ import { ImageSettingsPanel } from "@/components/image-settings-panel";
 import { ModelPicker } from "@/components/model-picker";
 import { PromptSelectDialog } from "@/components/prompts/prompt-select-dialog";
 import { AssetPickerModal, type InsertAssetPayload } from "@/components/canvas/asset-picker-modal";
+import { SaveToLibraryButton } from "@/components/library/save-to-library-button";
 import { canvasThemes } from "@/lib/canvas-theme";
 import { imageReferenceLabel } from "@/lib/image-reference-prompt";
 import { modelOptionLabel, useConfigStore, useEffectiveConfig, type AiConfig } from "@/stores/use-config-store";
@@ -16,6 +17,7 @@ import { useThemeStore } from "@/stores/use-theme-store";
 import { nanoid } from "nanoid";
 import { formatBytes, formatDuration } from "@/lib/image-utils";
 import { requestEdit, requestGeneration } from "@/services/api/image";
+import type { Prompt } from "@/services/api/prompts";
 import { deleteStoredImages, ensureImagePreview, getImagePreviewRevision, previewUrlFor, resolveImageUrl, subscribeImagePreviews, uploadImage } from "@/services/image-storage";
 import { useAssetStore } from "@/stores/use-asset-store";
 import { useWorkbenchAgentStore } from "@/stores/use-workbench-agent-store";
@@ -64,6 +66,10 @@ type GenerationLogConfig = Pick<AiConfig, "model" | "imageModel" | "quality" | "
 type UpdateAiConfig = <K extends keyof AiConfig>(key: K, value: AiConfig[K]) => void;
 
 const LOG_STORE_KEY = "infinite-canvas:image_generation_logs";
+
+function libraryFileExt(mimeType?: string) {
+    return { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" }[mimeType || ""] || "png";
+}
 const RESULT_ACTION_BUTTON_CLASS = "min-w-0 px-1.5 [&_.ant-btn-icon]:shrink-0 [&>span:last-child]:min-w-0 [&>span:last-child]:truncate";
 const logStore = localforage.createInstance({ name: "infinite-canvas", storeName: "image_generation_logs" });
 
@@ -124,6 +130,16 @@ export default function ImagePage() {
             }),
         );
         setReferences((value) => [...value, ...nextReferences]);
+    };
+
+    const replaceIndexRef = useRef<number | null>(null);
+    const replaceInputRef = useRef<HTMLInputElement>(null);
+    const replaceReference = async (file?: File) => {
+        const index = replaceIndexRef.current;
+        if (!file || index === null) return;
+        const image = await uploadImage(file);
+        const next: ReferenceImage = { id: nanoid(), name: file.name, type: image.mimeType, dataUrl: image.url, storageKey: image.storageKey };
+        setReferences((value) => value.map((ref, i) => (i === index ? next : ref)));
     };
 
     const addReferencesFromClipboard = async () => {
@@ -251,6 +267,25 @@ export default function ImagePage() {
             metadata: { source: "image-page", prompt },
         });
         message.success(t("common.addedToAssets"));
+    };
+
+    const applyPromptPreset = async (item: Prompt) => {
+        setPrompt((prev) => (prev.trim() ? `${prev}\n\n${item.prompt}` : item.prompt));
+        if (!item.referenceImageUrls.length) return;
+        const hide = message.loading(t("prompts.loadingPresetReferences"), 0);
+        try {
+            const loaded = await Promise.all(
+                item.referenceImageUrls.map(async (url, index) => {
+                    const stored = await uploadImage(url);
+                    return { id: nanoid(), name: `${item.title}-${index + 1}`, type: stored.mimeType, dataUrl: stored.url, storageKey: stored.storageKey };
+                }),
+            );
+            setReferences(loaded);
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : t("prompts.loadPresetReferencesFailed"));
+        } finally {
+            hide();
+        }
     };
 
     const insertPickedAsset = async (payload: InsertAssetPayload) => {
@@ -455,14 +490,27 @@ export default function ImagePage() {
                                             <img src={previewUrlFor(item.storageKey) || item.dataUrl} alt={item.name} className="size-full object-cover" />
                                             <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white">{imageReferenceLabel(index)}</span>
                                             <ReferenceOrderButtons index={index} total={references.length} onMove={(offset) => setReferences((value) => moveListItem(value, index, offset))} />
-                                            <button
-                                                type="button"
-                                                className="absolute right-1 top-1 hidden size-6 items-center justify-center rounded bg-black/60 text-white group-hover:flex"
-                                                onClick={() => setReferences((value) => value.filter((ref) => ref.id !== item.id))}
-                                                aria-label={t("imageWorkbench.removeReference")}
-                                            >
-                                                <Trash2 className="size-3.5" />
-                                            </button>
+                                            <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex">
+                                                <button
+                                                    type="button"
+                                                    className="flex size-6 items-center justify-center rounded bg-black/60 text-white"
+                                                    onClick={() => {
+                                                        replaceIndexRef.current = index;
+                                                        replaceInputRef.current?.click();
+                                                    }}
+                                                    aria-label={t("imageWorkbench.replaceReference")}
+                                                >
+                                                    <RefreshCw className="size-3.5" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="flex size-6 items-center justify-center rounded bg-black/60 text-white"
+                                                    onClick={() => setReferences((value) => value.filter((ref) => ref.id !== item.id))}
+                                                    aria-label={t("imageWorkbench.removeReference")}
+                                                >
+                                                    <Trash2 className="size-3.5" />
+                                                </button>
+                                            </div>
                                         </div>
                                     ))}
                                     {!references.length ? <div className="flex min-w-full items-center justify-center text-sm text-stone-500">{isReferenceDragActive ? t("imageWorkbench.dropReferences") : t("imageWorkbench.noReferences")}</div> : null}
@@ -529,6 +577,16 @@ export default function ImagePage() {
                     event.target.value = "";
                 }}
             />
+            <input
+                ref={replaceInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(event) => {
+                    void replaceReference(event.target.files?.[0]);
+                    event.target.value = "";
+                }}
+            />
             <Drawer title={t("workbench.logs")} placement="bottom" size="large" open={logsOpen} onClose={() => setLogsOpen(false)}>
                 <LogPanel
                     logs={logs}
@@ -545,7 +603,7 @@ export default function ImagePage() {
                     <GenerationSettings config={effectiveConfig} model={model} updateConfig={updateConfig} openConfigDialog={openConfigDialog} />
                 </div>
             </Drawer>
-            <PromptSelectDialog open={promptDialogOpen} onOpenChange={setPromptDialogOpen} onSelect={setPrompt} />
+            <PromptSelectDialog open={promptDialogOpen} onOpenChange={setPromptDialogOpen} onSelect={(item) => void applyPromptPreset(item)} />
             <AssetPickerModal open={assetPickerOpen} defaultTab="my-assets" onInsert={(payload) => void insertPickedAsset(payload)} onClose={() => setAssetPickerOpen(false)} />
             <Modal title={t("workbench.deleteLogs")} open={deleteConfirmOpen} onCancel={() => setDeleteConfirmOpen(false)} onOk={deleteSelectedLogs} okText={t("common.delete")} okButtonProps={{ danger: true }} cancelText={t("common.cancel")}>
                 {t("workbench.deleteLogsConfirm", { count: selectedLogIds.length })}
@@ -597,7 +655,7 @@ function ResultImageCard({
                     <span>{formatBytes(image.bytes)}</span>
                     <span>{formatDuration(image.durationMs)}</span>
                 </div>
-                <div className="grid min-w-0 grid-cols-3 gap-2">
+                <div className="grid min-w-0 grid-cols-2 gap-2">
                     <Tooltip title={t("common.addToAssets")}>
                         <Button className={RESULT_ACTION_BUTTON_CLASS} size="small" icon={<FolderPlus className="size-3.5" />} onClick={() => void onSaveAsset(image, index)}>
                             {t("common.addToAssets")}
@@ -613,6 +671,7 @@ function ResultImageCard({
                             {t("common.download")}
                         </Button>
                     </Tooltip>
+                    <SaveToLibraryButton className={RESULT_ACTION_BUTTON_CLASS} dataUrl={image.dataUrl} storageKey={image.storageKey} name={`result-${index + 1}.${libraryFileExt(image.mimeType)}`} />
                 </div>
             </div>
         </div>

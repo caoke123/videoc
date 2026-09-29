@@ -1,0 +1,494 @@
+{
+  "nodes": [
+    {
+      "id": "asset:assets/source/black-pad-material-4k.png",
+      "kind": "asset",
+      "title": "黑色护肩垫｜材质参考",
+      "path": "assets/source/black-pad-material-4k.png",
+      "x": -520,
+      "y": 460
+    },
+    {
+      "id": "asset:assets/generated/references/reference-register.md",
+      "kind": "asset",
+      "title": "参考图｜reference-register.md",
+      "path": "assets/generated/references/reference-register.md",
+      "x": -390,
+      "y": 10
+    },
+    {
+      "id": "asset:assets/generated/references/yellow-installed-approval-needed.md",
+      "kind": "asset",
+      "title": "参考图｜yellow-installed-approval-needed.md",
+      "path": "assets/generated/references/yellow-installed-approval-needed.md",
+      "x": -390,
+      "y": 270
+    },
+    {
+      "id": "asset:assets/generated/references/yellow-installed-self-check.md",
+      "kind": "asset",
+      "title": "参考图｜yellow-installed-self-check.md",
+      "path": "assets/generated/references/yellow-installed-self-check.md",
+      "x": -390,
+      "y": 530
+    },
+    {
+      "id": "asset:assets/generated/references/yellow-lulu-installed-candidate-v1.png",
+      "kind": "asset",
+      "title": "参考图｜yellow-lulu-installed-candidate-v1.png",
+      "path": "assets/generated/references/yellow-lulu-installed-candidate-v1.png",
+      "x": -390,
+      "y": 790
+    },
+    {
+      "id": "asset:assets/approved/S01-storyboard-approved-v1.png",
+      "kind": "asset",
+      "title": "分镜图｜S01-storyboard-approved-v1.png",
+      "path": "assets/approved/S01-storyboard-approved-v1.png",
+      "x": -390,
+      "y": 1050
+    },
+    {
+      "id": "asset:assets/approved/S02-storyboard-approved-v1.png",
+      "kind": "asset",
+      "title": "分镜图｜S02-storyboard-approved-v1.png",
+      "path": "assets/approved/S02-storyboard-approved-v1.png",
+      "x": -390,
+      "y": 1310
+    },
+    {
+      "id": "asset:assets/approved/S03-storyboard-approved-v1.png",
+      "kind": "asset",
+      "title": "分镜图｜S03-storyboard-approved-v1.png",
+      "path": "assets/approved/S03-storyboard-approved-v1.png",
+      "x": -390,
+      "y": 1570
+    },
+    {
+      "id": "asset:assets/generated/storyboards/contact-sheet-v1.png",
+      "kind": "asset",
+      "title": "12–15秒UGC｜三镜头分镜总览候选",
+      "path": "assets/generated/storyboards/contact-sheet-v1.png",
+      "x": -250,
+      "y": 620
+    },
+    {
+      "id": "asset:assets/generated/storyboards/S01-v1.png",
+      "kind": "asset",
+      "title": "S01｜桌面双款开场分镜候选",
+      "path": "assets/generated/storyboards/S01-v1.png",
+      "x": -250,
+      "y": -160
+    },
+    {
+      "id": "asset:assets/generated/storyboards/S02-v1.png",
+      "kind": "asset",
+      "title": "S02｜双款细节分镜候选",
+      "path": "assets/generated/storyboards/S02-v1.png",
+      "x": -250,
+      "y": 100
+    },
+    {
+      "id": "asset:assets/generated/storyboards/S03-v1.png",
+      "kind": "asset",
+      "title": "S03｜选款手势分镜候选",
+      "path": "assets/generated/storyboards/S03-v1.png",
+      "x": -250,
+      "y": 360
+    },
+    {
+      "id": "asset:assets/generated/production-assets/asset-register.md",
+      "kind": "asset",
+      "title": "资产图｜asset-register.md",
+      "path": "assets/generated/production-assets/asset-register.md",
+      "x": -390,
+      "y": 2870
+    },
+    {
+      "id": "asset:audio/brief/seed-audio-1.0.md",
+      "kind": "asset",
+      "title": "Seed Audio｜逐镜配音交接稿",
+      "path": "audio/brief/seed-audio-1.0.md",
+      "x": -827.4609860372543,
+      "y": 1030.2767329788207
+    },
+    {
+      "id": "asset:creative-direction.md",
+      "kind": "asset",
+      "title": "14秒UGC｜创意与分镜方案",
+      "path": "creative-direction.md",
+      "x": -809.8918167552948,
+      "y": 739.0332888298035
+    },
+    {
+      "id": "asset:assets/approved/pink-lulu-installed-approved-v1.png",
+      "kind": "asset",
+      "title": "pink-lulu-installed-approved-v1.png",
+      "path": "assets/approved/pink-lulu-installed-approved-v1.png",
+      "x": -390,
+      "y": 3650
+    },
+    {
+      "id": "asset:assets/approved/yellow-lulu-installed-approved-v1.png",
+      "kind": "asset",
+      "title": "yellow-lulu-installed-approved-v1.png",
+      "path": "assets/approved/yellow-lulu-installed-approved-v1.png",
+      "x": -390,
+      "y": 3910
+    },
+    {
+      "id": "asset:assets/generated/asset-self-check.md",
+      "kind": "asset",
+      "title": "asset-self-check.md",
+      "path": "assets/generated/asset-self-check.md",
+      "x": -390,
+      "y": 3910
+    },
+    {
+      "id": "asset:assets/source/pink-lulu-user.png",
+      "kind": "asset",
+      "title": "粉裤噜妹｜用户SKU身份图",
+      "path": "assets/source/pink-lulu-user.png",
+      "x": -520,
+      "y": 0
+    },
+    {
+      "id": "asset:assets/source/yellow-lulu-user.png",
+      "kind": "asset",
+      "title": "阳光噜噜｜用户SKU身份图",
+      "path": "assets/source/yellow-lulu-user.png",
+      "x": -520,
+      "y": 230
+    },
+    {
+      "id": "asset:composition/AGENTS.md",
+      "kind": "asset",
+      "title": "AGENTS.md",
+      "path": "composition/AGENTS.md",
+      "x": -390,
+      "y": 4950
+    },
+    {
+      "id": "asset:composition/assets/source-clips/S01.mp4",
+      "kind": "asset",
+      "title": "S01.mp4",
+      "path": "composition/assets/source-clips/S01.mp4",
+      "x": -390,
+      "y": 5210
+    },
+    {
+      "id": "asset:composition/assets/source-clips/S02.mp4",
+      "kind": "asset",
+      "title": "S02.mp4",
+      "path": "composition/assets/source-clips/S02.mp4",
+      "x": -390,
+      "y": 5470
+    },
+    {
+      "id": "asset:composition/assets/source-clips/S03.mp4",
+      "kind": "asset",
+      "title": "S03.mp4",
+      "path": "composition/assets/source-clips/S03.mp4",
+      "x": -390,
+      "y": 5730
+    },
+    {
+      "id": "asset:composition/CLAUDE.md",
+      "kind": "asset",
+      "title": "CLAUDE.md",
+      "path": "composition/CLAUDE.md",
+      "x": -390,
+      "y": 5990
+    },
+    {
+      "id": "asset:composition/hyperframes.json",
+      "kind": "asset",
+      "title": "hyperframes.json",
+      "path": "composition/hyperframes.json",
+      "x": -390,
+      "y": 6250
+    },
+    {
+      "id": "asset:composition/meta.json",
+      "kind": "asset",
+      "title": "meta.json",
+      "path": "composition/meta.json",
+      "x": -390,
+      "y": 6510
+    },
+    {
+      "id": "asset:composition/package.json",
+      "kind": "asset",
+      "title": "package.json",
+      "path": "composition/package.json",
+      "x": -390,
+      "y": 6770
+    },
+    {
+      "id": "shot:S01",
+      "kind": "shot",
+      "shotId": "S01",
+      "title": "S01｜开场双款｜0–4秒",
+      "status": "STORYBOARD_PENDING_REVIEW",
+      "x": 100,
+      "y": 0
+    },
+    {
+      "id": "shot:S02",
+      "kind": "shot",
+      "shotId": "S02",
+      "title": "S02｜名称与对比｜4–10秒",
+      "status": "STORYBOARD_PENDING_REVIEW",
+      "x": 560,
+      "y": 0
+    },
+    {
+      "id": "shot:S03",
+      "kind": "shot",
+      "shotId": "S03",
+      "title": "S03｜细节与选款CTA｜10–14秒",
+      "status": "STORYBOARD_PENDING_REVIEW",
+      "x": 1020,
+      "y": -1.4640776596069338
+    },
+    {
+      "id": "render:renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "kind": "render",
+      "title": "70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "shotId": "S01",
+      "status": "SUCCESS",
+      "path": "renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "x": 0,
+      "y": 230
+    },
+    {
+      "id": "render:renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "kind": "render",
+      "title": "149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "shotId": "S02",
+      "status": "SUCCESS",
+      "path": "renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "x": 460,
+      "y": 230
+    },
+    {
+      "id": "render:renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "kind": "render",
+      "title": "d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "shotId": "S03",
+      "status": "SUCCESS",
+      "path": "renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "x": 920,
+      "y": 230
+    },
+    {
+      "id": "render:final-preview",
+      "kind": "render",
+      "title": "完整视频｜审片版",
+      "status": "WAITING",
+      "x": 1218.6764781913757,
+      "y": 842.5994223403932
+    },
+    {
+      "id": "render:pending:S01",
+      "kind": "render",
+      "title": "S01｜视频生成结果",
+      "shotId": "S01",
+      "status": "AUTHORIZED_NOT_SUBMITTED",
+      "x": 380.48696444511415,
+      "y": 659.9281629486084
+    },
+    {
+      "id": "render:pending:S02",
+      "kind": "render",
+      "title": "S02｜视频生成结果",
+      "shotId": "S02",
+      "status": "AUTHORIZED_NOT_SUBMITTED",
+      "x": 630,
+      "y": 185
+    },
+    {
+      "id": "render:pending:S03",
+      "kind": "render",
+      "title": "S03｜视频生成结果",
+      "shotId": "S03",
+      "status": "AUTHORIZED_NOT_SUBMITTED",
+      "x": 1166.9999694824219,
+      "y": 160
+    },
+    {
+      "id": "render:placeholder:S01",
+      "kind": "render",
+      "title": "S01｜视频结果占位（未生成）",
+      "shotId": "S01",
+      "status": "NOT_STARTED",
+      "x": 102.92821117019653,
+      "y": 494.8896553192139
+    },
+    {
+      "id": "render:placeholder:S02",
+      "kind": "render",
+      "title": "S02｜视频结果占位（未生成）",
+      "shotId": "S02",
+      "status": "NOT_STARTED",
+      "x": 560,
+      "y": 470
+    },
+    {
+      "id": "render:placeholder:S03",
+      "kind": "render",
+      "title": "S03｜视频结果占位（未生成）",
+      "shotId": "S03",
+      "status": "NOT_STARTED",
+      "x": 1374.3121553192138,
+      "y": 408.5077329788208
+    }
+  ],
+  "connections": [
+    {
+      "id": "sequence:S01:S02",
+      "from": "shot:S01",
+      "to": "shot:S02"
+    },
+    {
+      "id": "sequence:S02:S03",
+      "from": "shot:S02",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:pink:S01",
+      "from": "asset:assets/source/pink-lulu-user.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:yellow:S01",
+      "from": "asset:assets/source/yellow-lulu-user.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:pad:S01",
+      "from": "asset:assets/source/black-pad-material-4k.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:S01:S01",
+      "from": "asset:assets/generated/storyboards/S01-v1.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "ref:pink:S02",
+      "from": "asset:assets/source/pink-lulu-user.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "ref:yellow:S02",
+      "from": "asset:assets/source/yellow-lulu-user.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "ref:pad:S02",
+      "from": "asset:assets/source/black-pad-material-4k.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "ref:S02:S02",
+      "from": "asset:assets/generated/storyboards/S02-v1.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "ref:pink:S03",
+      "from": "asset:assets/source/pink-lulu-user.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:yellow:S03",
+      "from": "asset:assets/source/yellow-lulu-user.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:pad:S03",
+      "from": "asset:assets/source/black-pad-material-4k.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "ref:S03:S03",
+      "from": "asset:assets/generated/storyboards/S03-v1.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "result:S01",
+      "from": "shot:S01",
+      "to": "render:placeholder:S01"
+    },
+    {
+      "id": "result:S02",
+      "from": "shot:S02",
+      "to": "render:placeholder:S02"
+    },
+    {
+      "id": "result:S03",
+      "from": "shot:S03",
+      "to": "render:placeholder:S03"
+    },
+    {
+      "id": "ref:asset:assets/approved/S01-storyboard-approved-v1.png:shot:S01",
+      "from": "asset:assets/approved/S01-storyboard-approved-v1.png",
+      "to": "shot:S01"
+    },
+    {
+      "id": "result:shot:S01:render:pending:S01",
+      "from": "shot:S01",
+      "to": "render:pending:S01"
+    },
+    {
+      "id": "final:shot:S01:render:final-preview",
+      "from": "shot:S01",
+      "to": "render:final-preview"
+    },
+    {
+      "id": "ref:asset:assets/approved/S02-storyboard-approved-v1.png:shot:S02",
+      "from": "asset:assets/approved/S02-storyboard-approved-v1.png",
+      "to": "shot:S02"
+    },
+    {
+      "id": "result:shot:S02:render:pending:S02",
+      "from": "shot:S02",
+      "to": "render:pending:S02"
+    },
+    {
+      "id": "final:shot:S02:render:final-preview",
+      "from": "shot:S02",
+      "to": "render:final-preview"
+    },
+    {
+      "id": "ref:asset:assets/approved/S03-storyboard-approved-v1.png:shot:S03",
+      "from": "asset:assets/approved/S03-storyboard-approved-v1.png",
+      "to": "shot:S03"
+    },
+    {
+      "id": "result:shot:S03:render:pending:S03",
+      "from": "shot:S03",
+      "to": "render:pending:S03"
+    },
+    {
+      "id": "final:shot:S03:render:final-preview",
+      "from": "shot:S03",
+      "to": "render:final-preview"
+    },
+    {
+      "id": "result:shot:S01:render:renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4",
+      "from": "shot:S01",
+      "to": "render:renders/runs/S01/70fde0a5-d79e-47fe-90ee-20b8d512c43a.mp4"
+    },
+    {
+      "id": "result:shot:S02:render:renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4",
+      "from": "shot:S02",
+      "to": "render:renders/runs/S02/149ccd5e-a845-4a0b-959a-98cbb572ed1a.mp4"
+    },
+    {
+      "id": "result:shot:S03:render:renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4",
+      "from": "shot:S03",
+      "to": "render:renders/runs/S03/d9c4690c-0668-4a52-936c-dbc7f6cd85c4.mp4"
+    }
+  ]
+}

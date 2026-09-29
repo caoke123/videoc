@@ -48,7 +48,7 @@ New jobs use an external Seed Audio 1.0 workflow: Codex prepares a per-shot brie
 All image generation and DFCine orchestration are separate stages. This applies to text-to-image, storyboard frames, scene images, character images, product images, installed-state composites, and any other raster image asset:
 
 1. Codex calls the built-in Image Gen with the official GPT Image 2 model.
-2. Codex inspects the generated bitmap and keeps the result outside `assets/approved/` until human approval.
+2. Codex inspects the generated bitmap and keeps it as a candidate. Human approval is required before promotion to `assets/approved/` as an authoritative reusable reference, not for every temporary composition guide.
 3. Codex uploads the generated result to the corresponding DFCine upload node with `dfcine_create_upload_node_from_file` or `dfcine_attach_upload_node_asset`.
 4. DFCine handles canvas connections, video workflows, previews, runs, and result tracking.
 
@@ -73,4 +73,4 @@ The prompt must require:
 - Across multiple shots, compare plush width and height relative to pad width and height, and reject any variant where the plush changes size independently.
 - No added text, logo, price, watermark, safety claim, duplicate product, or duplicate person.
 
-Recommended DFCine image parameters are `size: 9:16`, `resolution: 2k`, `quality: high`, and `n: 1` unless the user requests otherwise. Run a dry prompt and parameter validation before execution, then require human review before promotion to approved assets.
+Recommended DFCine image parameters are `size: 9:16`, `resolution: 2k`, `quality: high`, and `n: 1` unless the user requests otherwise. Run a dry prompt and parameter validation before execution; require human review before promotion to authoritative approved assets.

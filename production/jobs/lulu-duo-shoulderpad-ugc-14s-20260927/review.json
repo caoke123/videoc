@@ -1,0 +1,20 @@
+{
+  "default_policy": "human_first",
+  "automatic_ai_review": false,
+  "automatic_retry": false,
+  "shots": {
+    "S01": {
+      "status": "authorized_ready_for_submission",
+      "notes": "用户已明确要求提交全部镜头；S01分镜已确认用于生成。"
+    },
+    "S02": {
+      "status": "authorized_ready_for_submission",
+      "notes": "用户已明确要求提交全部镜头；S02分镜已确认用于生成。"
+    },
+    "S03": {
+      "status": "authorized_ready_for_submission",
+      "notes": "用户已明确要求提交全部镜头；S03分镜已确认用于生成。"
+    }
+  },
+  "generation_gate": "cleared_by_user_approval_of_yellow_sku_installed_state_reference"
+}

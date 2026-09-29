@@ -1,0 +1,53 @@
+{
+  "shots": {
+    "S01": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "cd7acdd2-9d46-4b44-b573-faef9ab2d71a",
+      "submitted_at": "2026-09-28T14:58:49.209Z",
+      "seed": 2026092801,
+      "duration": 3,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 358,
+      "last_polled_at": "2026-09-28T15:04:50.371Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S01/cd7acdd2-9d46-4b44-b573-faef9ab2d71a.mp4",
+      "downloaded_at": "2026-09-28T15:04:50.772Z"
+    },
+    "S02": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "cec61b07-4009-4677-a898-aae4a25a2453",
+      "submitted_at": "2026-09-28T15:05:51.618Z",
+      "seed": 2026092802,
+      "duration": 5,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 466,
+      "last_polled_at": "2026-09-28T15:13:38.875Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S02/cec61b07-4009-4677-a898-aae4a25a2453.mp4",
+      "downloaded_at": "2026-09-28T15:13:39.284Z"
+    },
+    "S03": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "b512dd6f-1260-4ff1-9361-0d60b2663224",
+      "submitted_at": "2026-09-28T15:05:56.434Z",
+      "seed": 2026092803,
+      "duration": 6,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 476,
+      "last_polled_at": "2026-09-28T15:13:54.082Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S03/b512dd6f-1260-4ff1-9361-0d60b2663224.mp4",
+      "downloaded_at": "2026-09-28T15:13:54.433Z"
+    }
+  },
+  "updated_at": "2026-09-28T15:13:54.434Z"
+}

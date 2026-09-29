@@ -1,0 +1,18 @@
+{
+  "job_id": "canvas-integration-smoke-20260927-e436255f",
+  "format_id": "ugc-single-shot",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "duration": 3,
+      "seed": 1790509066,
+      "ref_images": [],
+      "prompt": "",
+      "references": [
+        "assets/source/1790509066893-installed-reference.png",
+        "assets/source/1790509182024-shuiba-tutu-product-identity.png"
+      ],
+      "status": "planned"
+    }
+  ]
+}

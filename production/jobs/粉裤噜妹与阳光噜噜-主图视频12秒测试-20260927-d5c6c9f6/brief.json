@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "job_id": "粉裤噜妹与阳光噜噜-主图视频12秒测试-20260927-d5c6c9f6",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": null,
+  "product_skus": [
+    {
+      "sku_id": "pink-lulu-shoulder-pad-user-reference-20260927",
+      "display_name": "粉裤噜妹",
+      "color": "pink",
+      "source_product_asset": "library:products/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "identity_status": "user_supplied_standalone_source",
+      "approved_installed_asset": null,
+      "physical_specs_status": "unverified"
+    },
+    {
+      "sku_id": "yellow-lulu-shoulder-pad-user-reference-20260927",
+      "display_name": "阳光噜噜",
+      "color": "yellow-orange",
+      "source_product_asset": "library:products/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "identity_status": "user_supplied_standalone_source",
+      "approved_installed_asset": null,
+      "physical_specs_status": "unverified"
+    }
+  ],
+  "mode": "original",
+  "platform": "ecommerce-main-image-video",
+  "format_id": "main-image-hosted-12s",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 12,
+  "target_resolution": "720x1280",
+  "provider_generation_resolution": "768p竖(768*1376)",
+  "frame_rate": 24,
+  "edit_style": "4 hard-cut shots, 3 seconds each",
+  "audience": "喜欢可爱车载小物、关注个性化通勤配件的短视频观众",
+  "creative_concepts": [
+    {
+      "id": "A",
+      "name": "车内双搭子面对镜头介绍",
+      "hook": "两款一起亮相，女主人公直接开口介绍。",
+      "proof": "用正面完整手持展示让颜色和外观清楚可辨。",
+      "cta": "邀请观众选择更喜欢的一款。",
+      "status": "selected"
+    },
+    {
+      "id": "B",
+      "name": "粉色甜妹与黄色元气款对照",
+      "hook": "粉、黄两种颜色快速切换。",
+      "proof": "由主持人逐一举起产品做颜色对比。",
+      "cta": "投票选色。",
+      "status": "not_selected",
+      "reason": "易剪成纯颜色对照，人物介绍感弱于用户指定的面对镜头主图口播。"
+    },
+    {
+      "id": "C",
+      "name": "两款静物细节陈列",
+      "hook": "从黑色织纹与玩偶配饰切入。",
+      "proof": "静态近景展示产品外观。",
+      "cta": "双款并列定格。",
+      "status": "not_selected",
+      "reason": "会舍弃用户明确要求的车内女性出镜与手持表达。"
+    }
+  ],
+  "creative_concept": "粉裤噜妹 × 阳光噜噜｜车内双搭子主图口播",
+  "character_profile": "明确为成年中国女性（约25–30岁），镜头感亲切、自然上镜；深色打理整齐的中长发、轻日常妆、米白针织上衣；四个镜头锁定同一张脸、发型、服装和妆容。没有真人肖像参考，不复刻具体真人。",
+  "scene_plan": "中国左舵轿车停稳、熄火；人物坐前排副驾驶。相机固定在副驾驶前方仪表台区域朝后拍，软件不镜像；车身右侧副驾门/B柱在画面左，车身左侧驾驶区在画面右。安全带收回，不展示佩戴或安装状态。",
+  "action_plan": "所有镜头保持产品正面朝向镜头并完整入画；粉色款始终在画面左手、黄色款始终在画面右手。仅做轻微镜头推近与面部表情变化，不旋转、不拆分、不互换产品。",
+  "spoken_script": "给你看两只水豚噜噜。粉色这只是粉裤噜妹。黄色这只是阳光噜噜。你更喜欢哪一只？",
+  "raw_copy": "给你看两只水豚噜噜。粉色这只是粉裤噜妹。黄色这只是阳光噜噜。你更喜欢哪一只？",
+  "hook": "两只水豚噜噜同时亮相，第一句直接介绍。",
+  "cta": "你更喜欢哪一只？",
+  "verified_claims": [
+    "用户确认粉色款名称为“粉裤噜妹”。",
+    "用户确认黄色款名称为“阳光噜噜”。",
+    "两张参考图可见两件黑色护肩垫分别连接粉色、黄色水豚玩偶；仅确认外观身份，不据此推断材质、尺寸或安全性能。"
+  ],
+  "prohibited_claims": [
+    "未经证实的防撞/减伤/安全保护效果",
+    "舒适度、材质、尺寸、耐久性或认证等未提供证据的宣称",
+    "把手持展示表达为已批准安装效果"
+  ],
+  "reference_video": null,
+  "review_policy": "human_first",
+  "requirements_before_generation": [
+    "This is a handheld presentation only: do not imply an installed state or safety performance. Any later shot showing a product worn on a seat belt requires a separately approved installed-state reference for that exact SKU.",
+    "Review the generated character/product keyframe and each video candidate; keep all renders as draft until human approval.",
+    "Prepare the final voice with the attached Seed Audio 1.0 handoff; the native H3 dialogue is a performance guide and may be replaced in post."
+  ],
+  "notes": "四个分镜均已由 AutoDL 生成并拼接为 12.25 秒审片版（renders/preview/final-12s-review.mp4）。参考图原件保存在 assets/source/，不覆盖。最终画幅按项目默认 9:16；3:4 或 1:1 需另行构图裁切，不在本轮生成。 Character/cabin keyframe and shared pad material reference have been added to the task. The keyframe is a generated candidate, not an approved final image. The video is a handheld concept draft; no product is shown installed on a belt.",
+  "concept_summary": "成年女性坐在熄火停稳的中国左舵车副驾，正对镜头，双手完整展示两款产品；四镜头依次介绍名称并邀请观众选择。",
+  "character_keyframe": {
+    "path": "assets/generated/character-keyframe-candidate-v1.png",
+    "status": "generated_candidate_not_approved",
+    "purpose": "same-character, parked-car, handheld-product composition reference"
+  },
+  "shared_pad_material_reference": {
+    "path": "library:material-references/black-pad-material-4k.png",
+    "purpose": "black raised-loop textile and stitched binding only"
+  }
+}

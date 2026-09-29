@@ -41,7 +41,9 @@ import { CanvasNode } from "@/components/canvas/canvas-node";
 import { CanvasNodePromptPanel, type CanvasNodeGenerationMode } from "@/components/canvas/canvas-node-prompt-panel";
 import { CanvasToolbar } from "@/components/canvas/canvas-toolbar";
 import { AssetPickerModal, type InsertAssetPayload } from "@/components/canvas/asset-picker-modal";
+import { LibraryPickerModal } from "@/components/canvas/library-picker-modal";
 import { CanvasSidePanel } from "@/components/canvas/canvas-side-panel";
+import { libraryFileUrl, type LibraryAssetItem } from "@/services/api/library";
 import { CanvasZoomControls } from "@/components/canvas/canvas-zoom-controls";
 import { useAgentStore } from "@/stores/use-agent-store";
 import { useCanvasStore } from "@/stores/canvas/use-canvas-store";
@@ -2153,6 +2155,49 @@ function InfiniteCanvasPage() {
         imageInputRef.current?.click();
     }, []);
 
+    const [libraryPickerNodeId, setLibraryPickerNodeId] = useState<string | null>(null);
+    const replaceNodeWithLibraryImage = useCallback(
+        async (item: LibraryAssetItem) => {
+            const nodeId = libraryPickerNodeId;
+            if (!nodeId) return;
+            try {
+                const image = await uploadImage(libraryFileUrl(item.path));
+                setNodes((prev) =>
+                    prev.map((node) =>
+                        node.id === nodeId
+                            ? {
+                                  ...node,
+                                  type: CanvasNodeType.Image,
+                                  title: item.name,
+                                  metadata: {
+                                      ...node.metadata,
+                                      ...imageMetadata(image),
+                                      errorDetails: undefined,
+                                      freeResize: false,
+                                      images: undefined,
+                                      generationType: undefined,
+                                      model: undefined,
+                                      size: undefined,
+                                      quality: undefined,
+                                      count: undefined,
+                                      references: undefined,
+                                      primaryImageId: undefined,
+                                  },
+                              }
+                            : node,
+                    ),
+                );
+                setSelectedNodeIds(new Set([nodeId]));
+                setSelectedConnectionId(null);
+            } catch (error) {
+                message.error(error instanceof Error ? error.message : "替换失败，请重试");
+            } finally {
+                setLibraryPickerNodeId(null);
+            }
+        },
+        [libraryPickerNodeId, message],
+    );
+
     const handleImageInputChange = useCallback(
         async (event: ReactChangeEvent<HTMLInputElement>) => {
             const files = Array.from(event.target.files || []).filter(
@@ -2220,7 +2265,6 @@ function InfiniteCanvasPage() {
                     setSelectedConnectionId(null);
                 } else {
                     const image = await uploadImage(first);
-                    const s = fitNodeSize(image.width, image.height);
                     setNodes((prev) =>
                         prev.map((node) =>
                             node.id === target.nodeId
@@ -2228,8 +2272,6 @@ function InfiniteCanvasPage() {
                                       ...node,
                                       type: CanvasNodeType.Image,
                                       title: first.name,
-                                      width: s.width,
-                                      height: s.height,
                                       metadata: {
                                           ...node.metadata,
                                           ...imageMetadata(image),
@@ -3287,6 +3329,7 @@ function InfiniteCanvasPage() {
                     onToggleDialog={(node) => setDialogNodeId((current) => (current === node.id ? null : node.id))}
                     onGenerateImage={generateImageFromTextNode}
                     onUpload={(node) => handleUploadRequest(node.id)}
+                    onPickFromLibrary={(node) => setLibraryPickerNodeId(node.id)}
                     onDownload={downloadNodeImage}
                     onSaveAsset={(node) => void saveNodeAsset(node)}
                     onMaskEdit={(node) => setMaskEditNodeId(node.id)}
@@ -3426,6 +3469,7 @@ function InfiniteCanvasPage() {
                 </Modal>
 
                 <AssetPickerModal open={assetPickerOpen} onInsert={handleAssetInsert} onClose={() => setAssetPickerOpen(false)} />
+                <LibraryPickerModal open={Boolean(libraryPickerNodeId)} onSelect={(item) => void replaceNodeWithLibraryImage(item)} onClose={() => setLibraryPickerNodeId(null)} />
             </section>
         </main>
     );

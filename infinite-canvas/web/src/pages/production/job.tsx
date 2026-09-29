@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { App, Button, Checkbox, Empty, Input, InputNumber, Modal, Select, Spin, Tag } from "antd";
-import { ArrowLeft, Check, CloudUpload, ExternalLink, Film, RefreshCw, Upload, WandSparkles, X } from "lucide-react";
+import { ArrowLeft, Check, CloudUpload, Copy, ExternalLink, Film, LibraryBig, Pencil, RefreshCw, Upload, WandSparkles, X } from "lucide-react";
 
 import { ConnectionPath } from "@/components/canvas/canvas-connections";
 import { InfiniteCanvas } from "@/components/canvas/infinite-canvas";
 import { CanvasNodeType, type CanvasConnection, type CanvasNodeData, type ViewportTransform } from "@/types/canvas";
 import { canvasThemes } from "@/lib/canvas-theme";
+import { useCopyText } from "@/hooks/use-copy-text";
 import { composeTaskCut, fetchBoundTask, openTaskCanvas, syncTaskCanvasFinals } from "@/lib/production-canvas";
+import { LIBRARY_CATEGORY_OPTIONS } from "@/services/api/library";
 import { useThemeStore } from "@/stores/use-theme-store";
-import { getProductionJob, preflightProductionBatch, productionFileUrl, publishProductionAudio, resolveProductionSubmit, resumeProductionPolling, reviewProductionShot, submitProductionBatch, uploadProductionAsset, type ProductionConnection, type ProductionJobDetail, type ProductionLayout, type ProductionNode } from "@/services/api/production";
+import { getProductionJob, preflightProductionBatch, productionFileUrl, promoteProductionAsset, publishProductionAudio, renameProductionJob, resolveProductionSubmit, resumeProductionPolling, reviewProductionShot, submitProductionBatch, uploadProductionAsset, type ProductionConnection, type ProductionJobDetail, type ProductionLayout, type ProductionNode } from "@/services/api/production";
 
 const defaultViewport: ViewportTransform = { x: 260, y: 180, k: 0.65 };
 
@@ -136,6 +138,7 @@ export default function ProductionJobPage() {
     const { jobId = "" } = useParams();
     const { message, modal } = App.useApp();
     const navigate = useNavigate();
+    const copyText = useCopyText();
     const themeName = useThemeStore((state) => state.theme);
     const theme = canvasThemes[themeName];
     const containerRef = useRef<HTMLDivElement>(null);
@@ -188,6 +191,38 @@ export default function ProductionJobPage() {
         return () => clearInterval(timer);
     }, [detail, refresh]);
 
+    const [renaming, setRenaming] = useState(false);
+    const [renameOpen, setRenameOpen] = useState(false);
+    const [renameValue, setRenameValue] = useState("");
+    const submitRename = async () => {
+        const next = renameValue.trim();
+        if (!next) return void message.warning("标题不能为空");
+        setRenaming(true);
+        try {
+            await renameProductionJob(jobId, next);
+            setRenameOpen(false);
+            await refresh();
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : "重命名失败");
+        } finally { setRenaming(false); }
+    };
+
+    const [promoteTarget, setPromoteTarget] = useState<string | null>(null);
+    const [promoteCategory, setPromoteCategory] = useState(LIBRARY_CATEGORY_OPTIONS[0].value);
+    const [promoteGroup, setPromoteGroup] = useState("");
+    const [promoting, setPromoting] = useState(false);
+    const submitPromote = async () => {
+        if (!promoteTarget) return;
+        setPromoting(true);
+        try {
+            const result = await promoteProductionAsset(jobId, { path: promoteTarget, category: promoteCategory, group: promoteGroup.trim() || undefined });
+            message.success(result.duplicate ? "素材库里已有相同图片，未重复收录" : "已收进素材库，可在「素材库」页面查看");
+            setPromoteTarget(null);
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : "收进素材库失败");
+        } finally { setPromoting(false); }
+    };
+
     const [openingCanvas, setOpeningCanvas] = useState(false);
     const openInMyCanvas = async () => {
         if (!detail) return;
@@ -236,10 +271,8 @@ export default function ProductionJobPage() {
             setComposing(false);
         }
     };
-    const pendingBatchCount = shots.filter((shot) => {
-        const run = runStateFor(detail, String(shot.shot_id || "MAIN"));
-        return !run || (!run.task_id && !run.output_file && (["PLANNED", "PREPARING"].includes(normalizeStatus(run.status)) || (normalizeStatus(run.status) === "SUBMIT_FAILED" && run.retry_approved === true)));
-    }).length;
+    const isPendingShot = (run: Record<string, unknown> | null | undefined) => !run || (!run.task_id && !run.output_file && (["PLANNED", "PREPARING"].includes(normalizeStatus(run.status)) || (normalizeStatus(run.status) === "SUBMIT_FAILED" && run.retry_approved === true)));
+    const pendingBatchCount = shots.filter((shot) => isPendingShot(runStateFor(detail, String(shot.shot_id || "MAIN")))).length;
     const unconfirmedShotIds = shots.map((shot) => String(shot.shot_id || "MAIN")).filter((shotId) => {
         const state = runStateFor(detail, shotId);
         return !state?.task_id && (["SUBMITTING", "NEEDS_ATTENTION"].includes(normalizeStatus(state?.status)) || (normalizeStatus(state?.status) === "SUBMIT_FAILED" && state?.retry_approved !== true));
@@ -273,6 +306,21 @@ export default function ProductionJobPage() {
         } catch (error) {
             message.error(error instanceof Error ? error.message : "批量检查失败");
         } finally { setSubmittingBatch(false); }
+    };
+
+    const [submittingShotId, setSubmittingShotId] = useState<string | null>(null);
+    const submitOneShot = async (shotId: string) => {
+        setSubmittingShotId(shotId);
+        try {
+            const plan = await preflightProductionBatch(jobId, [shotId]);
+            if (plan.warnings?.length) message.warning(plan.warnings.join("；"));
+            const result = await submitProductionBatch(jobId, [shotId]);
+            if (result.failed) message.error(`${shotId} 提交失败：${result.failed.error}`);
+            else message.success(`${shotId} 已提交，正在生成`);
+            await refresh();
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : "提交检查失败");
+        } finally { setSubmittingShotId(null); }
     };
 
     const uploadAudio = async (file?: File) => {
@@ -390,7 +438,14 @@ export default function ProductionJobPage() {
                 <div className="flex min-w-0 items-center gap-3">
                     <Button type="text" icon={<ArrowLeft className="size-4" />} onClick={() => navigate("/production")}>任务历史</Button>
                     <span className="text-muted-foreground">/</span>
-                    <div className="min-w-0"><h1 className="truncate text-sm font-semibold">{String(detail.brief?.creative_concept || detail.job_id)}</h1><p className="truncate text-xs text-muted-foreground">{detail.job_id}</p></div>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-1">
+                            <h1 className="truncate text-sm font-semibold">{String(detail.brief?.creative_concept || detail.job_id)}</h1>
+                            <Button type="text" size="small" icon={<Pencil className="size-3.5" />} onClick={() => { setRenameValue(String(detail.brief?.creative_concept || detail.job_id)); setRenameOpen(true); }} />
+                        </div>
+                        <p className="truncate text-xs text-muted-foreground">{detail.job_id}</p>
+                    </div>
+                    <Button type="text" size="small" icon={<Copy className="size-3.5" />} onClick={() => copyText(detail.local_path, "已复制任务根目录")}>复制资产目录</Button>
                     <Tag color={detail.status === "success" ? "green" : detail.status === "failed" ? "red" : detail.status === "running" ? "blue" : "default"}>{normalizeStatus(detail.status)}</Tag>
                     {detail.review_status && detail.review_status.pending > 0 ? <Tag color="orange">待人工审片 {detail.review_status.pending}</Tag> : detail.review_status && detail.review_status.accepted > 0 && detail.review_status.rejected === 0 ? <Tag color="green">审片通过</Tag> : detail.review_status && detail.review_status.rejected > 0 ? <Tag color="red">有驳回 {detail.review_status.rejected}</Tag> : null}
                     {unconfirmedShotIds.length > 0 && <Tag color="orange">提交待核对 {unconfirmedShotIds.length}</Tag>}
@@ -442,7 +497,10 @@ export default function ProductionJobPage() {
                         <div className="flex items-center justify-between"><h2 className="font-semibold">{activeNode.shotId} · {detail.request_plan?.media_type === "image" ? "分镜提示词" : "提示词"}</h2><Tag>{detail.request_plan?.media_type === "image" ? "图像分镜" : `${String(activeShot?.duration || 3)} 秒`}</Tag></div>
                         <p className="mb-2 mt-3 text-xs text-muted-foreground">这里只看和审片。改提示词、换素材、重新生成请在“我的画布”里操作，结果会写回这个任务并记入历史。</p>
                         <div className="max-h-72 overflow-auto whitespace-pre-wrap rounded-lg border border-border p-3 text-xs">{String(activeShot?.prompt || "（尚未填写提示词）")}</div>
-                        <div className="mt-3"><Button icon={<ExternalLink className="size-4" />} loading={openingCanvas} onClick={() => void openInMyCanvas()}>在我的画布中编辑</Button></div>
+                        <div className="mt-3 flex gap-2">
+                            <Button icon={<ExternalLink className="size-4" />} loading={openingCanvas} onClick={() => void openInMyCanvas()}>在我的画布中编辑</Button>
+                            {detail.request_plan?.media_type !== "image" && isPendingShot(run) && !audioPending && activeNode.shotId ? <Button type="primary" icon={<WandSparkles className="size-4" />} loading={submittingShotId === activeNode.shotId} onClick={() => void submitOneShot(activeNode.shotId!)}>单独提交</Button> : null}
+                        </div>
                         {audioPending ? <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">配音文件已入库，但尚未发布为 AutoDL 可访问 URL；发布后会自动映射到 H3 的音频输入。</p> : null}
                         {detail.request_plan?.media_type === "image" ? <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">九宫格已作为图像分镜画布接入；项目暂未登记 AutoDL 图像工作流，因此不会误用视频工作流提交。</p> : null}
                         {run ? <div className="mt-5 rounded-lg border border-border p-3 text-xs"><p>当前生成状态：{normalizeStatus(run.status)}</p><p className="mt-1 break-all text-muted-foreground">任务 ID：{String(run.task_id || "—")}</p>{run.submit_error || run.error ? <p className="mt-2 text-red-500">{String(run.submit_error || run.error)}</p> : null}</div> : null}
@@ -468,6 +526,7 @@ export default function ProductionJobPage() {
                         <h2 className="font-semibold">{activeNode.kind === "asset" ? "素材详情" : "生成版本"}</h2>
                         {activeNode.path ? <p className="mt-2 break-all text-xs text-muted-foreground">{activeNode.path}</p> : null}
                         {activeNode.path && mediaKind(activeNode.path) === "image" ? <img src={productionFileUrl(jobId, activeNode.path)} alt={activeNode.title} className="mt-4 max-h-80 w-full rounded-lg object-contain" /> : activeNode.path && mediaKind(activeNode.path) === "video" ? <video src={productionFileUrl(jobId, activeNode.path)} controls className="mt-4 w-full rounded-lg bg-black" /> : activeNode.path && mediaKind(activeNode.path) === "audio" ? <audio src={productionFileUrl(jobId, activeNode.path)} controls className="mt-4 w-full" /> : activeNode.kind === "render" && !activeNode.path ? <div className="mt-4 rounded-lg border border-border p-4 text-sm text-muted-foreground">{activeNode.shotId ? `镜头 ${activeNode.shotId}：${normalizeStatus(runStateFor(detail, activeNode.shotId)?.status || activeNode.status)}。生成完成后视频会出现在此节点。` : "所有镜头完成后，完整审片版会显示在此节点。"}</div> : activeNode.path ? <a className="mt-4 inline-block text-sm underline" href={productionFileUrl(jobId, activeNode.path)} download>下载文件</a> : null}
+                        {activeNode.path && mediaKind(activeNode.path) === "image" ? <Button className="mt-3" icon={<LibraryBig className="size-4" />} onClick={() => { setPromoteTarget(activeNode.path!); setPromoteGroup(""); }}>收进素材库</Button> : null}
                     </> : <>
                         <h2 className="font-semibold">任务信息</h2>
                         <dl className="mt-4 space-y-3 text-sm"><div><dt className="text-xs text-muted-foreground">创意形式</dt><dd className="mt-1">{detail.format_id || "—"}</dd></div><div><dt className="text-xs text-muted-foreground">产品类目</dt><dd className="mt-1">{String(detail.brief?.category_id || "—")}</dd></div><div><dt className="text-xs text-muted-foreground">工作流</dt><dd className="mt-1">{detail.request_plan?.workflow_id || "—"}</dd></div><div><dt className="text-xs text-muted-foreground">任务文件</dt><dd className="mt-1">{detail.asset_files.filter((path) => !path.startsWith("renders/")).length} 个素材/项目文件 · {layout.nodes.filter((node) => node.kind === "render").length} 个生成版本</dd></div></dl>
@@ -486,6 +545,19 @@ export default function ProductionJobPage() {
                     <div className="flex items-center gap-2">镜头之间：<Select value={composeTransition} onChange={setComposeTransition} className="w-40" options={[{ value: "cut", label: "硬切" }, { value: "fade", label: "短交叉淡化" }]} />{composeTransition === "fade" ? <><InputNumber min={0.05} max={1} step={0.05} value={composeTrim.fade} onChange={(value) => setComposeTrim((current) => ({ ...current, fade: value ?? 0.15 }))} />秒</> : null}</div>
                     <div className="flex items-center gap-2">每个镜头裁掉：开头<InputNumber min={0} max={2} step={0.1} value={composeTrim.head} onChange={(value) => setComposeTrim((current) => ({ ...current, head: value ?? 0 }))} />秒，结尾<InputNumber min={0} max={2} step={0.1} value={composeTrim.tail} onChange={(value) => setComposeTrim((current) => ({ ...current, tail: value ?? 0 }))} />秒</div>
                     <div className="text-xs text-muted-foreground">沿用各镜头自带的音轨；预览保存在任务的 renders/preview 下，旧版本保留，不会改动镜头视频。</div>
+                </div>
+            </Modal>
+
+            <Modal title="重命名任务" open={renameOpen} onCancel={() => setRenameOpen(false)} onOk={() => void submitRename()} confirmLoading={renaming} okText="保存" cancelText="取消">
+                <Input className="mt-2" value={renameValue} onChange={(event) => setRenameValue(event.target.value)} placeholder="任务标题" maxLength={80} onPressEnter={() => void submitRename()} />
+                <p className="mt-2 text-xs text-muted-foreground">只改显示标题，任务文件夹名不变。</p>
+            </Modal>
+
+            <Modal title="收进素材库" open={Boolean(promoteTarget)} onCancel={() => setPromoteTarget(null)} onOk={() => void submitPromote()} confirmLoading={promoting} okText="收录" cancelText="取消">
+                <div className="space-y-3 py-1 text-sm">
+                    <label className="block">分类<Select className="mt-1 w-full" value={promoteCategory} onChange={setPromoteCategory} options={LIBRARY_CATEGORY_OPTIONS} /></label>
+                    <label className="block">分组（可选）<Input className="mt-1" value={promoteGroup} onChange={(event) => setPromoteGroup(event.target.value)} placeholder="例如 seatbelt-shoulder-pad/pink-lulu-v1，留空则直接放在分类下" maxLength={121} /></label>
+                    <p className="text-xs text-muted-foreground">收录后立即出现在"素材库"页面对应分类下，不会自动替换现有的身份/产品定妆照。</p>
                 </div>
             </Modal>
         </main>
