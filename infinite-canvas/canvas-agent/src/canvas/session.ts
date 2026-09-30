@@ -36,6 +36,7 @@ const SITE_TOOLS = new Set<ToolName>([
     "assets_list",
     "assets_add",
     "generation_get_status",
+    "library_search",
 ]);
 
 /** 管理网页画布连接、状态、附件和工具请求。 */
@@ -453,6 +454,10 @@ export class CanvasSession {
             return { nodes: (this.canvasState?.nodes || []).filter((node) => ids.has(node.id)).map(compactNode) };
         }
         if (name === "canvas_create_attachment_nodes") return await this.createAttachmentNodes(input as { attachmentIds: string[]; x?: number; y?: number; gap?: number; direction?: "row" | "column" });
+        if (name === "canvas_insert_image_nodes") {
+            if (!this.clients.size) throw new Error("当前没有已连接画布");
+            return await this.requestCanvasTool(name, input);
+        }
         if (!this.clients.size) throw new Error("当前没有已连接画布");
         const request = buildCanvasToolRequest(name, input, this.canvasState);
         return await this.requestCanvasTool(request.name, request.input);

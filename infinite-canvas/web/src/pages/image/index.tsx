@@ -18,9 +18,10 @@ import { nanoid } from "nanoid";
 import { formatBytes, formatDuration } from "@/lib/image-utils";
 import { requestEdit, requestGeneration } from "@/services/api/image";
 import type { Prompt } from "@/services/api/prompts";
+import { libraryFileUrl } from "@/services/api/library";
 import { deleteStoredImages, ensureImagePreview, getImagePreviewRevision, previewUrlFor, resolveImageUrl, subscribeImagePreviews, uploadImage } from "@/services/image-storage";
 import { useAssetStore } from "@/stores/use-asset-store";
-import { useWorkbenchAgentStore } from "@/stores/use-workbench-agent-store";
+import { useWorkbenchAgentStore, type WorkbenchReferenceSource } from "@/stores/use-workbench-agent-store";
 import type { ReferenceImage } from "@/types/image";
 import i18n from "@/i18n";
 
@@ -69,6 +70,30 @@ const LOG_STORE_KEY = "infinite-canvas:image_generation_logs";
 
 function libraryFileExt(mimeType?: string) {
     return { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" }[mimeType || ""] || "png";
+}
+
+// Resolve an Agent-supplied reference spec (library ref, "我的素材" asset id, or a plain URL) into a
+// usable reference image, reusing whichever image already exists instead of asking the Agent to re-generate it.
+async function resolveAgentReference(source: WorkbenchReferenceSource): Promise<ReferenceImage | null> {
+    try {
+        if (source.type === "library") {
+            const path = source.ref.startsWith("library:") ? source.ref.slice("library:".length) : source.ref;
+            const stored = await uploadImage(libraryFileUrl(path));
+            return { id: nanoid(), name: path.split("/").pop() || "reference", type: stored.mimeType, dataUrl: stored.url, storageKey: stored.storageKey };
+        }
+        if (source.type === "asset") {
+            const asset = useAssetStore.getState().assets.find((item) => item.id === source.assetId);
+            if (!asset || asset.kind !== "image") return null;
+            return { id: nanoid(), name: asset.title, type: asset.data.mimeType, dataUrl: asset.data.dataUrl, storageKey: asset.data.storageKey };
+        }
+        if (source.type === "resolved") {
+            return { id: nanoid(), name: source.name || "reference", type: "", dataUrl: source.dataUrl, storageKey: source.storageKey };
+        }
+        const stored = await uploadImage(source.url);
+        return { id: nanoid(), name: "reference", type: stored.mimeType, dataUrl: stored.url, storageKey: stored.storageKey };
+    } catch {
+        return null;
+    }
 }
 const RESULT_ACTION_BUTTON_CLASS = "min-w-0 px-1.5 [&_.ant-btn-icon]:shrink-0 [&>span:last-child]:min-w-0 [&>span:last-child]:truncate";
 const logStore = localforage.createInstance({ name: "infinite-canvas", storeName: "image_generation_logs" });
@@ -201,10 +226,8 @@ export default function ImagePage() {
         const failCount = generationCount - successCount;
         const failed = result.find((item): item is PromiseRejectedResult => item.status === "rejected");
         const error = failed?.reason instanceof Error ? failed.reason.message : failCount ? t("workbench.generationFailed") : undefined;
-        if (agentTaskId) updateAgentTask(agentTaskId, { status: successCount ? "succeeded" : "failed", successCount, failCount, error: successCount ? undefined : error });
-
         try {
-            saveLog(
+            await saveLog(
                 buildLog({
                     prompt: text,
                     model,
@@ -220,6 +243,7 @@ export default function ImagePage() {
             successCount ? message.success(t("imageWorkbench.generated")) : message.error(failed?.reason instanceof Error ? failed.reason.message : t("workbench.generationFailed"));
         } finally {
             setRunning(false);
+            if (agentTaskId) updateAgentTask(agentTaskId, { status: successCount ? "succeeded" : "failed", successCount, failCount, error: successCount ? undefined : error });
         }
     };
 
@@ -233,9 +257,20 @@ export default function ImagePage() {
             if (imageCommand.taskId) updateAgentTask(imageCommand.taskId, { status: "failed", error: t("imageWorkbench.busy") });
             return;
         }
-        if (imageCommand.run) {
-            agentTaskIdRef.current = imageCommand.taskId;
-            setAutoRunToken((value) => value + 1);
+        const startRun = () => {
+            if (imageCommand.run) {
+                agentTaskIdRef.current = imageCommand.taskId;
+                setAutoRunToken((value) => value + 1);
+            }
+        };
+        if (imageCommand.references?.length) {
+            Promise.all(imageCommand.references.map(resolveAgentReference)).then((resolved) => {
+                const valid = resolved.filter((item): item is ReferenceImage => Boolean(item));
+                if (valid.length) setReferences(valid);
+                startRun();
+            });
+        } else {
+            startRun();
         }
     }, [imageCommand, clearImageCommand, running, updateAgentTask]);
 
@@ -321,8 +356,9 @@ export default function ImagePage() {
         setDeleteConfirmOpen(false);
     };
 
-    const saveLog = (log: GenerationLog) => {
-        void logStore.setItem(log.id, serializeLog(log)).then(refreshLogs);
+    const saveLog = async (log: GenerationLog) => {
+        await logStore.setItem(log.id, serializeLog(log));
+        await refreshLogs();
     };
 
     const refreshLogs = async () => setLogs(await readStoredLogs());

@@ -4,10 +4,21 @@ import { create } from "zustand";
 // The panel writes model, quality, size, count, and other options to use-config-store, which workbench pages read directly.
 // Prompt and run are sent here; pages identify new commands by nonce and call clear after consuming them.
 
+// A reference image the Agent wants pre-filled into the image workbench before generating,
+// pointing at something that already exists (shared library, "我的素材", a canvas node, or a URL)
+// instead of a fresh upload. "resolved" is produced internally when a canvas-node source is looked
+// up eagerly (its dataUrl is only valid in this browser session, so it never leaves the browser).
+export type WorkbenchReferenceSource =
+    | { type: "library"; ref: string }
+    | { type: "asset"; assetId: string }
+    | { type: "url"; url: string }
+    | { type: "resolved"; dataUrl: string; storageKey?: string; name?: string };
+
 export type WorkbenchCommand = {
     nonce: number;
     taskId?: string;
     prompt?: string;
+    references?: WorkbenchReferenceSource[];
     run: boolean;
 };
 

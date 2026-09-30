@@ -14,6 +14,7 @@ import {
   promoteAssetToLibrary
 } from './job-actions.mjs';
 import { importLibraryAsset, listLibraryAssets, resolveAssetRef } from './asset-library.mjs';
+import { createCanvasProject, deleteCanvasProjects, getCanvasProject, getOrCreateCanvasProject, listCanvasProjects, updateCanvasProject, validCanvasId } from './canvas-store.mjs';
 import { composeCut } from './compose.mjs';
 
 const here = resolve(new URL('.', import.meta.url).pathname.replace(/^\/(.:)/, '$1'));
@@ -30,6 +31,33 @@ const MAX_POLL_ERRORS = 12;
 
 const sendJson = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(body)); };
 const safeError = error => error instanceof Error ? error.message.replace(/AUTODL_COMFYUI_TOKEN\S*/g, '[redacted]') : 'Unknown error';
+
+// Live push for canvas edits: every browser tab / Agent watching a canvas gets the new project the
+// moment anyone saves it, so multiple viewers of the same canvas stay in sync without polling.
+const canvasSubscribers = new Map(); // canvas id -> Set<ServerResponse>
+function subscribeCanvas(id, res) {
+  if (!canvasSubscribers.has(id)) canvasSubscribers.set(id, new Set());
+  canvasSubscribers.get(id).add(res);
+}
+function unsubscribeCanvas(id, res) {
+  const set = canvasSubscribers.get(id);
+  if (!set) return;
+  set.delete(res);
+  if (!set.size) canvasSubscribers.delete(id);
+}
+function broadcastCanvas(id, project, sourceClientId) {
+  const set = canvasSubscribers.get(id);
+  if (!set || !set.size) return;
+  const payload = `data: ${JSON.stringify({ project, sourceClientId: sourceClientId || null })}\n\n`;
+  for (const res of set) res.write(payload);
+}
+// Lets a tab that still has this canvas open notice the deletion and leave, instead of its next
+// autosave silently re-creating the file (updateCanvasProject upserts a missing id).
+function broadcastCanvasDeleted(id) {
+  const set = canvasSubscribers.get(id);
+  if (!set || !set.size) return;
+  for (const res of set) res.write('event: canvas_deleted\ndata: {}\n\n');
+}
 
 async function readBodyBuffer(req, limit = MAX_JSON_BODY_BYTES) {
   const chunks = [];
@@ -174,6 +202,48 @@ const server = createServer(async (req, res) => {
       const type = ({ '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' })[extname(target).toLowerCase()] || 'application/octet-stream';
       return serveFile(target, type, res);
     }
+    // Canvas projects: single server-side source of truth (production/canvases/) so every browser
+    // tab and Agent connecting to this runner shares the same canvas instead of per-browser storage.
+    if (req.method === 'GET' && url.pathname === '/api/canvases') return sendJson(res, 200, await listCanvasProjects(allJobsRoot));
+    if (req.method === 'POST' && url.pathname === '/api/canvases') {
+      const body = await readJsonBody(req);
+      return sendJson(res, 201, await createCanvasProject(allJobsRoot, { title: body.title }));
+    }
+    if (req.method === 'DELETE' && url.pathname === '/api/canvases') {
+      const body = await readJsonBody(req);
+      await deleteCanvasProjects(allJobsRoot, body.ids);
+      (Array.isArray(body.ids) ? body.ids : []).forEach(broadcastCanvasDeleted);
+      return sendJson(res, 200, { ok: true });
+    }
+    const canvasEvents = route(req, 'GET', /^\/api\/canvases\/([^/]+)\/events$/, url);
+    if (canvasEvents) {
+      const canvasId = decode(canvasEvents[1]);
+      if (!validCanvasId(canvasId)) return sendJson(res, 400, { error: 'Invalid canvas id' });
+      res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store', Connection: 'keep-alive' });
+      res.write('event: hello\ndata: {}\n\n');
+      const heartbeat = setInterval(() => res.write(': ping\n\n'), 15000);
+      subscribeCanvas(canvasId, res);
+      req.on('close', () => { clearInterval(heartbeat); unsubscribeCanvas(canvasId, res); });
+      return;
+    }
+    const canvasGetOne = route(req, 'GET', /^\/api\/canvases\/([^/]+)$/, url);
+    if (canvasGetOne) {
+      const canvasId = decode(canvasGetOne[1]);
+      if (!validCanvasId(canvasId)) return sendJson(res, 400, { error: 'Invalid canvas id' });
+      const project = url.searchParams.get('create') === '1' ? await getOrCreateCanvasProject(allJobsRoot, canvasId, { title: url.searchParams.get('title') || undefined }) : await getCanvasProject(allJobsRoot, canvasId);
+      return project ? sendJson(res, 200, project) : sendJson(res, 404, { error: 'Canvas not found' });
+    }
+    const canvasUpdate = route(req, 'PATCH', /^\/api\/canvases\/([^/]+)$/, url);
+    if (canvasUpdate) {
+      const canvasId = decode(canvasUpdate[1]);
+      if (!validCanvasId(canvasId)) return sendJson(res, 400, { error: 'Invalid canvas id' });
+      const body = await readJsonBody(req, MAX_CANVAS_BODY_BYTES);
+      const { clientId, ...patch } = body;
+      const project = await updateCanvasProject(allJobsRoot, canvasId, patch);
+      broadcastCanvas(canvasId, project, clientId);
+      return sendJson(res, 200, project);
+    }
+
     const jobFile = route(req, 'GET', /^\/api\/jobs\/([^/]+)\/files\/(.+)$/, url);
     if (jobFile) {
       const jobId = decode(jobFile[1]);

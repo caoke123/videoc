@@ -28,7 +28,7 @@ export function CanvasProjectCard({ project }: { project: CanvasProject }) {
         navigate(`/canvas/${project.id}${searchParams.toString() ? `?${searchParams.toString()}` : ""}${agentHash}`, { replace: Boolean(agentHash) });
     };
     const saveTitle = () => {
-        renameProject(project.id, editingTitle);
+        void renameProject(project.id, editingTitle);
         stopEditing();
     };
 

@@ -1,9 +1,8 @@
 import { create } from "zustand";
-import { persist, type PersistStorage, type StorageValue } from "zustand/middleware";
 
 import { nanoid } from "nanoid";
 import i18n from "@/i18n";
-import { localForageStorage } from "@/lib/localforage-storage";
+import * as canvasApi from "@/services/api/canvas-projects";
 import type { CanvasBackgroundMode } from "@/lib/canvas-theme";
 import type { CanvasAssistantSession, CanvasConnection, CanvasNodeData, ViewportTransform } from "@/types/canvas";
 
@@ -21,126 +20,92 @@ export type CanvasProject = {
     viewport: ViewportTransform;
 };
 
-export type CanvasDeletedProject = {
-    id: string;
-    deletedAt: string;
-};
+// Stable per-tab id (not persisted) used to tell the server which client made a write, so this same
+// tab can ignore the live broadcast echoing its own change instead of re-applying it on top of itself.
+export const CANVAS_CLIENT_ID = nanoid();
 
 type CanvasStore = {
     hydrated: boolean;
+    hydrateError: string | null;
     projects: CanvasProject[];
-    deletedProjects: CanvasDeletedProject[];
-    createProject: (title?: string) => string;
-    importProject: (project: Partial<CanvasProject>) => string;
-    openProject: (id: string) => CanvasProject | null;
-    renameProject: (id: string, title: string) => void;
-    deleteProjects: (ids: string[]) => void;
-    replaceProjects: (projects: CanvasProject[], deletedProjects?: CanvasDeletedProject[]) => void;
-    updateProject: (id: string, patch: Partial<Pick<CanvasProject, "nodes" | "connections" | "chatSessions" | "activeChatId" | "backgroundMode" | "showImageInfo" | "viewport">>) => void;
+    fetchProjects: () => Promise<void>;
+    createProject: (title?: string) => Promise<CanvasProject>;
+    importProject: (project: Partial<CanvasProject>) => Promise<CanvasProject>;
+    openProject: (id: string) => Promise<CanvasProject | null>;
+    renameProject: (id: string, title: string) => Promise<void>;
+    deleteProjects: (ids: string[]) => Promise<void>;
+    updateProject: (id: string, patch: Partial<Pick<CanvasProject, "nodes" | "connections" | "chatSessions" | "activeChatId" | "backgroundMode" | "showImageInfo" | "viewport">>) => Promise<CanvasProject>;
+    mergeRemoteProject: (project: CanvasProject) => void;
 };
 
 const initialViewport: ViewportTransform = { x: 0, y: 0, k: 1 };
-const CANVAS_STORE_KEY = "infinite-canvas:canvas_store";
-type PersistedCanvasState = Pick<CanvasStore, "projects" | "deletedProjects">;
-let saveTimer: ReturnType<typeof setTimeout> | null = null;
-let queuedPersistState: PersistedCanvasState | null = null;
 
-const canvasStorage: PersistStorage<CanvasStore> = {
-    getItem: async (name) => {
-        const value = await localForageStorage.getItem(name);
-        if (!value) return null;
-        const parsed = JSON.parse(value) as StorageValue<CanvasStore>;
-        queuedPersistState = parsed.state as PersistedCanvasState;
-        return parsed;
-    },
-    setItem: (name, value) => {
-        const nextState = value.state as PersistedCanvasState;
-        if (queuedPersistState && queuedPersistState.projects === nextState.projects && queuedPersistState.deletedProjects === nextState.deletedProjects) return;
-        queuedPersistState = nextState;
-        if (saveTimer) clearTimeout(saveTimer);
-        saveTimer = setTimeout(() => {
-            saveTimer = null;
-            void localForageStorage.setItem(name, JSON.stringify(value));
-        }, 400);
-    },
-    removeItem: (name) => localForageStorage.removeItem(name),
-};
+function upsert(projects: CanvasProject[], project: CanvasProject) {
+    return projects.some((item) => item.id === project.id) ? projects.map((item) => (item.id === project.id ? project : item)) : [project, ...projects];
+}
 
-export const useCanvasStore = create<CanvasStore>()(
-    persist(
-        (set, get) => ({
-            hydrated: false,
-            projects: [],
-            deletedProjects: [],
-            createProject: (title = i18n.t("canvas.project.untitled")) => {
-                const now = new Date().toISOString();
-                const id = nanoid();
-                const project: CanvasProject = {
-                    id,
-                    title,
-                    createdAt: now,
-                    updatedAt: now,
-                    nodes: [],
-                    connections: [],
-                    chatSessions: [],
-                    activeChatId: null,
-                    backgroundMode: "lines",
-                    showImageInfo: false,
-                    viewport: initialViewport,
-                };
-                set((state) => ({ projects: [project, ...state.projects] }));
-                return id;
+// Canvas projects live only on the local server (production/canvases/) now; this store is just an
+// in-memory mirror kept fresh by the actions below and by the live SSE subscription in project.tsx.
+// There is no browser-local fallback: if the server is unreachable, `hydrateError` reports it.
+export const useCanvasStore = create<CanvasStore>((set, get) => ({
+    hydrated: false,
+    hydrateError: null,
+    projects: [],
+    fetchProjects: async () => {
+        try {
+            const projects = await canvasApi.listCanvasProjects();
+            set({ projects, hydrated: true, hydrateError: null });
+        } catch (error) {
+            set({ hydrated: true, hydrateError: error instanceof Error ? error.message : i18n.t("canvas.project.serverUnreachable") });
+        }
+    },
+    createProject: async (title = i18n.t("canvas.project.untitled")) => {
+        const project = await canvasApi.createCanvasProject(title);
+        set((state) => ({ projects: [project, ...state.projects] }));
+        return project;
+    },
+    importProject: async (source) => {
+        const created = await canvasApi.createCanvasProject(source.title || i18n.t("canvas.project.imported"));
+        const project = await canvasApi.updateCanvasProject(
+            created.id,
+            {
+                nodes: source.nodes || [],
+                connections: source.connections || [],
+                chatSessions: source.chatSessions || [],
+                activeChatId: source.activeChatId || null,
+                backgroundMode: source.backgroundMode || "lines",
+                showImageInfo: source.showImageInfo ?? false,
+                viewport: source.viewport || initialViewport,
             },
-            importProject: (source) => {
-                const now = new Date().toISOString();
-                const project: CanvasProject = {
-                    id: nanoid(),
-                    title: source.title || i18n.t("canvas.project.imported"),
-                    createdAt: source.createdAt || now,
-                    updatedAt: now,
-                    nodes: source.nodes || [],
-                    connections: source.connections || [],
-                    chatSessions: source.chatSessions || [],
-                    activeChatId: source.activeChatId || null,
-                    backgroundMode: source.backgroundMode || "lines",
-                    showImageInfo: source.showImageInfo || false,
-                    viewport: source.viewport || initialViewport,
-                };
-                set((state) => ({ projects: [project, ...state.projects] }));
-                return project.id;
-            },
-            openProject: (id) => {
-                return get().projects.find((item) => item.id === id) || null;
-            },
-            renameProject: (id, title) =>
-                set((state) => ({
-                    projects: state.projects.map((project) => (project.id === id ? { ...project, title: title.trim() || project.title, updatedAt: new Date().toISOString() } : project)),
-                })),
-            deleteProjects: (ids) =>
-                set((state) => {
-                    const now = new Date().toISOString();
-                    const removing = new Set(ids);
-                    const projects = state.projects.filter((project) => !removing.has(project.id));
-                    const deletedProjects = [...state.deletedProjects.filter((item) => !removing.has(item.id)), ...ids.map((id) => ({ id, deletedAt: now }))];
-                    return { projects, deletedProjects };
-                }),
-            replaceProjects: (projects, deletedProjects = []) => set({ projects, deletedProjects }),
-            updateProject: (id, patch) =>
-                set((state) => ({
-                    projects: state.projects.map((project) => (project.id === id ? { ...project, ...patch, updatedAt: new Date().toISOString() } : project)),
-                })),
-        }),
-        {
-            name: CANVAS_STORE_KEY,
-            storage: canvasStorage,
-            partialize: (state) =>
-                ({
-                    projects: state.projects,
-                    deletedProjects: state.deletedProjects,
-                }) as StorageValue<CanvasStore>["state"],
-            onRehydrateStorage: () => () => {
-                useCanvasStore.setState({ hydrated: true });
-            },
-        },
-    ),
-);
+            CANVAS_CLIENT_ID,
+        );
+        set((state) => ({ projects: upsert(state.projects, project) }));
+        return project;
+    },
+    openProject: async (id) => {
+        try {
+            const project = await canvasApi.fetchCanvasProject(id, { create: id.startsWith("task-") });
+            set((state) => ({ projects: upsert(state.projects, project) }));
+            return project;
+        } catch {
+            return null;
+        }
+    },
+    renameProject: async (id, title) => {
+        const project = await canvasApi.updateCanvasProject(id, { title: title.trim() || undefined }, CANVAS_CLIENT_ID);
+        set((state) => ({ projects: upsert(state.projects, project) }));
+    },
+    deleteProjects: async (ids) => {
+        await canvasApi.deleteCanvasProjects(ids);
+        set((state) => ({ projects: state.projects.filter((project) => !ids.includes(project.id)) }));
+    },
+    updateProject: async (id, patch) => {
+        const project = await canvasApi.updateCanvasProject(id, patch, CANVAS_CLIENT_ID);
+        set((state) => ({ projects: upsert(state.projects, project) }));
+        return project;
+    },
+    mergeRemoteProject: (project) => set((state) => ({ projects: upsert(state.projects, project) })),
+}));
+
+// One-time initial fetch so pages relying on `hydrated` (e.g. site tools, the canvas list) get real data.
+void useCanvasStore.getState().fetchProjects();

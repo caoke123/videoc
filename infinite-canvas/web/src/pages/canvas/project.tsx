@@ -46,7 +46,8 @@ import { CanvasSidePanel } from "@/components/canvas/canvas-side-panel";
 import { libraryFileUrl, type LibraryAssetItem } from "@/services/api/library";
 import { CanvasZoomControls } from "@/components/canvas/canvas-zoom-controls";
 import { useAgentStore } from "@/stores/use-agent-store";
-import { useCanvasStore } from "@/stores/canvas/use-canvas-store";
+import { CANVAS_CLIENT_ID, useCanvasStore } from "@/stores/canvas/use-canvas-store";
+import { subscribeCanvasProject } from "@/services/api/canvas-projects";
 import { useAgentBridge } from "@/pages/canvas/hooks/use-agent-bridge";
 import { usePluginHost } from "@/pages/canvas/hooks/use-plugin-host";
 import { buildNodeMentionReferences, getGroupResourceNodes, isCanvasReferenceNode, type CanvasResourceReference } from "@/lib/canvas/canvas-resource-references";
@@ -182,6 +183,7 @@ function InfiniteCanvasPage() {
     const lastHistoryRef = useRef<CanvasHistoryEntry | null>(null);
     const historyCommitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const viewportSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const projectSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const applyingHistoryRef = useRef(false);
     const historyPausedRef = useRef(false);
     const didInitialCenterRef = useRef(false);
@@ -211,11 +213,13 @@ function InfiniteCanvasPage() {
     const addAsset = useAssetStore((state) => state.addAsset);
     const cleanupAssetImages = useAssetStore((state) => state.cleanupImages);
     const hydrated = useCanvasStore((state) => state.hydrated);
+    const hydrateError = useCanvasStore((state) => state.hydrateError);
     const createProject = useCanvasStore((state) => state.createProject);
     const openProject = useCanvasStore((state) => state.openProject);
     const updateProject = useCanvasStore((state) => state.updateProject);
     const renameProject = useCanvasStore((state) => state.renameProject);
     const deleteProjects = useCanvasStore((state) => state.deleteProjects);
+    const mergeRemoteProject = useCanvasStore((state) => state.mergeRemoteProject);
     const currentProject = useCanvasStore((state) => state.projects.find((project) => project.id === projectId));
     const theme = canvasThemes[useThemeStore((state) => state.theme)];
     const [nodes, setNodes] = useState<CanvasNodeData[]>([]);
@@ -448,15 +452,17 @@ function InfiniteCanvasPage() {
     );
 
     useEffect(() => {
-        if (!hydrated) return;
+        if (!hydrated || hydrateError) return;
         setProjectLoaded(false);
-        const project = openProject(projectId);
-        if (!project) {
-            navigate("/canvas", { replace: true });
-            return;
-        }
+        let cancelled = false;
 
         const restore = async () => {
+            const project = await openProject(projectId);
+            if (cancelled) return;
+            if (!project) {
+                navigate("/canvas", { replace: true });
+                return;
+            }
             const restoredNodes = await hydrateCanvasImages(resetInterruptedGeneration(project.nodes));
             const restoredSessions = await hydrateAssistantImages(project.chatSessions || []);
             setNodes(restoredNodes);
@@ -483,7 +489,34 @@ function InfiniteCanvasPage() {
             setProjectLoaded(true);
         };
         void restore();
-    }, [hydrated, navigate, openProject, projectId]);
+        return () => {
+            cancelled = true;
+        };
+    }, [hydrated, hydrateError, navigate, openProject, projectId]);
+
+    // Live updates from other tabs/Agents editing this same canvas; our own writes are filtered out
+    // server-side by clientId, so this only ever applies changes made elsewhere.
+    useEffect(() => {
+        if (!projectLoaded) return;
+        return subscribeCanvasProject(
+            projectId,
+            CANVAS_CLIENT_ID,
+            (project) => {
+                mergeRemoteProject(project);
+                setNodes(project.nodes);
+                setConnections(project.connections);
+                setChatSessions(project.chatSessions || []);
+                setActiveChatId(project.activeChatId || null);
+                setBackgroundMode(project.backgroundMode);
+                setShowImageInfo(project.showImageInfo || false);
+            },
+            () => {
+                message.warning(t("canvas.project.deletedElsewhere"));
+                void deleteProjects([projectId]);
+                navigate("/canvas", { replace: true });
+            },
+        );
+    }, [deleteProjects, mergeRemoteProject, message, navigate, projectId, projectLoaded, t]);
 
     useEffect(() => {
         if (!projectLoaded) return;
@@ -533,8 +566,15 @@ function InfiniteCanvasPage() {
 
     useEffect(() => {
         if (!projectLoaded || historyPausedRef.current) return;
-        updateProject(projectId, { nodes, connections, chatSessions, activeChatId, backgroundMode, showImageInfo });
-    }, [activeChatId, backgroundMode, chatSessions, connections, nodes, projectId, projectLoaded, showImageInfo, updateProject]);
+        if (projectSaveTimerRef.current) clearTimeout(projectSaveTimerRef.current);
+        projectSaveTimerRef.current = setTimeout(() => {
+            projectSaveTimerRef.current = null;
+            void updateProject(projectId, { nodes, connections, chatSessions, activeChatId, backgroundMode, showImageInfo }).catch(() => message.error(t("canvas.project.saveFailed")));
+        }, 400);
+        return () => {
+            if (projectSaveTimerRef.current) clearTimeout(projectSaveTimerRef.current);
+        };
+    }, [activeChatId, backgroundMode, chatSessions, connections, message, nodes, projectId, projectLoaded, showImageInfo, t, updateProject]);
 
     useEffect(() => {
         if (!dialogNodeId) setNodeImageSettingsOpen(false);
@@ -544,8 +584,8 @@ function InfiniteCanvasPage() {
         if (!projectLoaded) return;
         if (viewportSaveTimerRef.current) clearTimeout(viewportSaveTimerRef.current);
         viewportSaveTimerRef.current = setTimeout(() => {
-            updateProject(projectId, { viewport: viewportRef.current });
             viewportSaveTimerRef.current = null;
+            void updateProject(projectId, { viewport: viewportRef.current }).catch(() => {});
         }, 500);
         return () => {
             if (viewportSaveTimerRef.current) clearTimeout(viewportSaveTimerRef.current);
@@ -1195,13 +1235,13 @@ function InfiniteCanvasPage() {
         applyHistory(next);
     }, [applyHistory]);
 
-    const createAndOpenProject = useCallback(() => {
-        const id = createProject(t("canvas.defaultTitle", { count: useCanvasStore.getState().projects.length + 1 }));
-        navigate(`/canvas/${id}`);
+    const createAndOpenProject = useCallback(async () => {
+        const project = await createProject(t("canvas.defaultTitle", { count: useCanvasStore.getState().projects.length + 1 }));
+        navigate(`/canvas/${project.id}`);
     }, [createProject, navigate, t]);
 
-    const deleteCurrentProject = useCallback(() => {
-        deleteProjects([projectId]);
+    const deleteCurrentProject = useCallback(async () => {
+        await deleteProjects([projectId]);
         cleanupAssetImages();
         navigate("/canvas");
     }, [cleanupAssetImages, deleteProjects, navigate, projectId]);
@@ -2359,7 +2399,7 @@ function InfiniteCanvasPage() {
 
     const finishTitleEditing = useCallback(() => {
         const nextTitle = titleDraft.trim();
-        if (nextTitle) renameProject(projectId, nextTitle);
+        if (nextTitle) void renameProject(projectId, nextTitle);
         setTitleEditing(false);
     }, [projectId, renameProject, titleDraft]);
 
@@ -3171,6 +3211,14 @@ function InfiniteCanvasPage() {
         [configInputsById, confirmStopGeneration, handleConfigNodeChange, handleGenerateNode, runningNodeId],
     );
 
+    if (hydrateError) {
+        return (
+            <main className="flex h-full min-h-0 flex-col items-center justify-center gap-2 bg-background text-center text-foreground">
+                <p className="text-base font-medium">{hydrateError}</p>
+                <p className="text-sm text-muted-foreground">{t("canvas.project.serverUnreachableHint")}</p>
+            </main>
+        );
+    }
     if (!projectLoaded) return <CanvasRefreshShell />;
 
     return (

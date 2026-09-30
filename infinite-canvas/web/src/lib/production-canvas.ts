@@ -1,6 +1,15 @@
 import { CanvasNodeType, type CanvasConnection, type CanvasNodeData } from "@/types/canvas";
-import { useCanvasStore, type CanvasProject } from "@/stores/canvas/use-canvas-store";
+import { CANVAS_CLIENT_ID, useCanvasStore, type CanvasProject } from "@/stores/canvas/use-canvas-store";
+import { fetchCanvasProject, updateCanvasProject } from "@/services/api/canvas-projects";
 import { getProductionJob, productionFileUrl, type ProductionJobDetail } from "@/services/api/production";
+
+async function fetchCanvasProjectSafe(id: string): Promise<CanvasProject | null> {
+    try {
+        return await fetchCanvasProject(id);
+    } catch {
+        return null;
+    }
+}
 
 const IMAGE_MIME: Record<string, string> = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif" };
 const isImage = (path: string) => /\.(png|jpe?g|webp|gif)$/i.test(path);
@@ -31,17 +40,6 @@ async function fetchCanvasId(jobId: string): Promise<string> {
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.canvas_id) throw new Error(data.error || `本机执行器返回 HTTP ${response.status}`);
     return data.canvas_id as string;
-}
-
-function waitForHydration() {
-    return new Promise<void>((resolve) => {
-        if (useCanvasStore.getState().hydrated) return resolve();
-        const unsubscribe = useCanvasStore.subscribe((state) => {
-            if (!state.hydrated) return;
-            unsubscribe();
-            resolve();
-        });
-    });
 }
 
 function latestRender(detail: ProductionJobDetail, shotId: string) {
@@ -218,15 +216,14 @@ export function taskAdditions(existing: CanvasNodeData[], existingConnections: C
     return { nodes, connections };
 }
 
-/** Same, applied straight to a stored canvas that is not currently open. */
-export function syncTaskCanvasFinals(canvasId: string, detail: ProductionJobDetail) {
-    useCanvasStore.setState((state) => {
-        const project = state.projects.find((item) => item.id === canvasId);
-        if (!project) return state;
-        const added = taskAdditions(project.nodes, project.connections, detail);
-        if (!added.nodes.length && !added.connections.length) return state;
-        return { projects: state.projects.map((item) => (item.id === canvasId ? { ...item, nodes: [...item.nodes, ...added.nodes], connections: [...item.connections, ...added.connections], updatedAt: new Date().toISOString() } : item)) };
-    });
+/** Same, applied straight to the server-stored canvas whether or not it's currently open in a tab. */
+export async function syncTaskCanvasFinals(canvasId: string, detail: ProductionJobDetail) {
+    const project = await fetchCanvasProjectSafe(canvasId);
+    if (!project) return;
+    const added = taskAdditions(project.nodes, project.connections, detail);
+    if (!added.nodes.length && !added.connections.length) return;
+    const updated = await updateCanvasProject(canvasId, { nodes: [...project.nodes, ...added.nodes], connections: [...project.connections, ...added.connections] }, CANVAS_CLIENT_ID);
+    useCanvasStore.getState().mergeRemoteProject(updated);
 }
 
 export type ComposeOptions = { shots: Array<{ shot_id: string; trim_head: number; trim_tail: number }>; transition: "cut" | "fade"; fade_seconds: number };
@@ -242,17 +239,15 @@ export async function composeTaskCut(detail: ProductionJobDetail, options: Compo
 /** One task <-> exactly one canvas: opens the bound canvas, creating it the first time only. */
 export async function openTaskCanvas(detail: ProductionJobDetail): Promise<{ canvasId: string; created: boolean }> {
     const canvasId = await fetchCanvasId(detail.job_id);
-    await waitForHydration();
-    if (useCanvasStore.getState().projects.some((project) => project.id === canvasId)) {
-        syncTaskCanvasFinals(canvasId, (await fetchBoundTask(canvasId).catch(() => null)) || detail);
+    const existing = await fetchCanvasProjectSafe(canvasId);
+    if (existing) {
+        await syncTaskCanvasFinals(canvasId, (await fetchBoundTask(canvasId).catch(() => null)) || detail);
         return { canvasId, created: false };
     }
     const project = await buildProject(canvasId, detail);
-    useCanvasStore.setState((state) => ({
-        projects: [project, ...state.projects.filter((item) => item.id !== canvasId)],
-        deletedProjects: state.deletedProjects.filter((item) => item.id !== canvasId),
-    }));
-    syncTaskCanvasFinals(canvasId, detail);
+    const created = await updateCanvasProject(canvasId, project, CANVAS_CLIENT_ID);
+    useCanvasStore.getState().mergeRemoteProject(created);
+    await syncTaskCanvasFinals(canvasId, detail);
     return { canvasId, created: true };
 }
 

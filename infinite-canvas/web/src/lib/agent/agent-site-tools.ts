@@ -2,6 +2,7 @@ import type { NavigateFunction } from "react-router-dom";
 
 import i18n from "@/i18n";
 import { fetchPrompts } from "@/services/api/prompts";
+import { listLibrary } from "@/services/api/library";
 import { uploadImage } from "@/services/image-storage";
 import { imageAspectOptions, imageQualityOptions, imageScaleOptions } from "@/components/image-settings-panel";
 import { videoResolutionOptions, videoSecondsRange, videoSizeOptions } from "@/components/video-settings-panel";
@@ -10,7 +11,7 @@ import { clampVideoSeconds } from "@/lib/media-size";
 import { useCanvasStore } from "@/stores/canvas/use-canvas-store";
 import { useAssetStore } from "@/stores/use-asset-store";
 import { modelOptionLabel, modelOptionName, normalizeModelOptionValue, selectableModelsByCapability, useConfigStore } from "@/stores/use-config-store";
-import { useWorkbenchAgentStore } from "@/stores/use-workbench-agent-store";
+import { useWorkbenchAgentStore, type WorkbenchReferenceSource } from "@/stores/use-workbench-agent-store";
 
 // Execute site-level Agent tools in the browser, including canvas lists, workbench generation, prompt search, and asset operations.
 // Their data lives locally in the browser through localforage and Zustand, so this module accesses the relevant stores directly.
@@ -25,6 +26,7 @@ export const SITE_TOOL_NAMES = [
     "prompts_search",
     "assets_list",
     "assets_add",
+    "library_search",
 ] as const;
 
 export type SiteToolName = (typeof SITE_TOOL_NAMES)[number];
@@ -47,6 +49,7 @@ export const SITE_TOOL_LABELS: Record<SiteToolName, string> = {
     get prompts_search() { return siteText("promptSearch"); },
     get assets_list() { return siteText("assetList"); },
     get assets_add() { return siteText("assetAdd"); },
+    get library_search() { return siteText("librarySearch"); },
 };
 
 type SiteToolInput = Record<string, unknown>;
@@ -63,7 +66,7 @@ export async function runSiteTool(name: SiteToolName, input: SiteToolInput, navi
         case "workbench_image_get_config":
             return getImageConfig();
         case "workbench_image_generate":
-            return runImageWorkbench(input, navigate);
+            return runImageWorkbench(input, navigate, context.canvasSnapshot);
         case "workbench_video_get_config":
             return getVideoConfig();
         case "workbench_video_generate":
@@ -74,6 +77,8 @@ export async function runSiteTool(name: SiteToolName, input: SiteToolInput, navi
             return listAssets(input);
         case "assets_add":
             return addAsset(input);
+        case "library_search":
+            return searchLibrary(input);
         default:
             throw new Error(siteText("unknownTool", { name }));
     }
@@ -130,8 +135,9 @@ function compactPrompt(prompt: unknown) {
 }
 
 function listCanvasProjects(input: SiteToolInput) {
-    const { projects, hydrated } = useCanvasStore.getState();
+    const { projects, hydrated, hydrateError } = useCanvasStore.getState();
     if (!hydrated) throw new Error(siteText("canvasLoading"));
+    if (hydrateError) throw new Error(hydrateError);
     const keyword = String(input.keyword || "").trim().toLowerCase();
     const filtered = keyword ? projects.filter((project) => project.title.toLowerCase().includes(keyword)) : projects;
     const { page, pageSize, start, end } = paginate(input, filtered.length, 20);
@@ -159,7 +165,7 @@ function getImageConfig() {
     };
 }
 
-function runImageWorkbench(input: SiteToolInput, navigate: NavigateFunction) {
+function runImageWorkbench(input: SiteToolInput, navigate: NavigateFunction, canvasSnapshot?: CanvasAgentSnapshot | null) {
     const configStore = useConfigStore.getState();
     const applied: Record<string, unknown> = {};
     if (typeof input.model === "string" && input.model.trim()) {
@@ -181,10 +187,30 @@ function runImageWorkbench(input: SiteToolInput, navigate: NavigateFunction) {
         applied.count = count;
     }
     const prompt = typeof input.prompt === "string" ? input.prompt : undefined;
+    const references = Array.isArray(input.references)
+        ? input.references.map((item) => resolveReferenceSpec(item, canvasSnapshot)).filter((item): item is WorkbenchReferenceSource => Boolean(item))
+        : undefined;
     const run = input.run !== false;
     navigate("/image");
-    const taskId = useWorkbenchAgentStore.getState().dispatchImage({ prompt, run });
-    return { ok: true, navigated: "/image", prompt, run, taskId, applied, note: siteText(run ? "imageGenerationStarted" : "imageConfigApplied") };
+    const taskId = useWorkbenchAgentStore.getState().dispatchImage({ prompt, references, run });
+    return { ok: true, navigated: "/image", prompt, references, run, taskId, applied, note: siteText(run ? "imageGenerationStarted" : "imageConfigApplied") };
+}
+
+// "node" sources point at a canvas node not yet saved to the library or "我的素材"; they can only be
+// resolved here, while the current canvasSnapshot (with the node's real dataUrl/storageKey) is at hand.
+function resolveReferenceSpec(value: unknown, canvasSnapshot?: CanvasAgentSnapshot | null): WorkbenchReferenceSource | null {
+    if (!value || typeof value !== "object") return null;
+    const spec = value as { type?: unknown; ref?: unknown; assetId?: unknown; url?: unknown; nodeId?: unknown };
+    if (spec.type === "library" && typeof spec.ref === "string" && spec.ref) return { type: "library", ref: spec.ref };
+    if (spec.type === "asset" && typeof spec.assetId === "string" && spec.assetId) return { type: "asset", assetId: spec.assetId };
+    if (spec.type === "url" && typeof spec.url === "string" && spec.url) return { type: "url", url: spec.url };
+    if (spec.type === "node" && typeof spec.nodeId === "string" && spec.nodeId) {
+        const node = canvasSnapshot?.nodes.find((item) => item.id === spec.nodeId);
+        const dataUrl = node && node.type === "image" && typeof node.metadata?.content === "string" ? node.metadata.content : "";
+        if (!dataUrl) return null;
+        return { type: "resolved", dataUrl, storageKey: typeof node?.metadata?.storageKey === "string" ? node.metadata.storageKey : undefined, name: node?.title };
+    }
+    return null;
 }
 
 function getVideoConfig() {
@@ -320,6 +346,24 @@ async function addAsset(input: SiteToolInput) {
         return { ok: true, id, kind: "image" };
     }
     throw new Error(siteText("assetKindUnsupported"));
+}
+
+async function searchLibrary(input: SiteToolInput) {
+    const categories = await listLibrary();
+    const categoryId = typeof input.category === "string" ? input.category : "";
+    const keyword = String(input.keyword || "").trim().toLowerCase();
+    const items = categories
+        .filter((category) => !categoryId || category.id === categoryId)
+        .flatMap((category) => category.items.map((item) => ({ ref: item.ref, path: item.path, name: item.name, category: category.id, categoryLabel: category.label, group: item.group, bytes: item.bytes, updatedAt: item.updated_at })))
+        .filter((item) => !keyword || item.path.toLowerCase().includes(keyword) || (item.group || "").toLowerCase().includes(keyword));
+    const { page, pageSize, start, end } = paginate(input, items.length, 20);
+    return {
+        total: items.length,
+        page,
+        pageSize,
+        categories: categories.map((category) => ({ id: category.id, label: category.label, count: category.items.length })),
+        items: items.slice(start, end),
+    };
 }
 
 function paginate(input: SiteToolInput, total: number, defaultSize: number) {

@@ -593,6 +593,7 @@ function toolInputRows(tool: string, input: unknown) {
     if (tool === "canvas_create_text_node") return [textRow("文本内容", field(input, "text"))].filter(Boolean);
     if (tool === "canvas_apply_ops") return [textRow("操作内容", summarizeCanvasOps(arrayValue(field(input, "ops"))))].filter(Boolean);
     if (tool === "canvas_create_attachment_nodes") return [textRow("图片数量", arrayValue(field(input, "attachmentIds")).length)].filter(Boolean);
+    if (tool === "canvas_insert_image_nodes") return [textRow("图片数量", arrayValue(field(input, "nodes")).length)].filter(Boolean);
     return [];
 }
 
@@ -710,6 +711,7 @@ function toolName(name: string) {
     if (name === "canvas_export_snapshot") return "导出快照";
     if (name === "canvas_create_node") return "创建节点";
     if (name === "canvas_create_attachment_nodes") return "添加附件图片";
+    if (name === "canvas_insert_image_nodes") return "插入素材图片";
     if (name === "canvas_create_text_node") return "创建文本";
     if (name === "canvas_create_text_nodes") return "批量创建文本";
     if (name === "canvas_create_config_node") return "创建生成配置";
@@ -736,5 +738,6 @@ function toolName(name: string) {
     if (name === "assets_list") return "资产列表";
     if (name === "assets_add") return "添加资产";
     if (name === "generation_get_status") return "生成任务状态";
+    if (name === "library_search") return "搜索素材库";
     return name ? `调用工具：${name}` : "工具操作";
 }

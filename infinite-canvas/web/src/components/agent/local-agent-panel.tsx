@@ -14,9 +14,11 @@ import { fitNodeSize } from "@/lib/canvas/canvas-node-size";
 import { resolveCanvasReferenceImages } from "@/lib/canvas/canvas-resource-references";
 import { readImageMeta } from "@/lib/image-utils";
 import { randomId } from "@/lib/utils";
-import { uploadImage } from "@/services/image-storage";
+import { getImageBlob, uploadImage } from "@/services/image-storage";
+import { libraryFileUrl } from "@/services/api/library";
 import { useThemeStore } from "@/stores/use-theme-store";
 import { useAgentSkillStore } from "@/stores/use-agent-skill-store";
+import { useAssetStore } from "@/stores/use-asset-store";
 import { useShallow } from "zustand/react/shallow";
 import { useAgentStore, type AgentAttachment, type AgentBootstrapStatus, type AgentCanvasContext, type AgentCanvasReference, type AgentChatItem, type AgentConversationState, type AgentModel, type AgentPendingApproval, type AgentPendingToolCall, type AgentPermissionMode, type AgentReasoningEffort, type AgentThreadSummary } from "@/stores/use-agent-store";
 import { type CanvasAgentOp, type CanvasAgentSnapshot } from "@/lib/canvas/canvas-agent-ops";
@@ -837,6 +839,12 @@ export function LocalAgentPanel({ embedded, headless, autoConnect }: { embedded?
                 appliedOps = await attachmentNodeOps(endpoint, token, clientIdRef.current, payload.input?.nodes);
                 result = context.applyOps(appliedOps);
                 await postState(endpoint, token, clientIdRef.current, result as CanvasAgentSnapshot);
+            } else if (payload.name === "canvas_insert_image_nodes") {
+                const context = canvasContextRef.current;
+                if (!context) throw new Error(rt("openCanvasFirst"));
+                appliedOps = await insertImageNodeOps(payload.input?.nodes);
+                result = context.applyOps(appliedOps);
+                await postState(endpoint, token, clientIdRef.current, result as CanvasAgentSnapshot);
             } else {
                 const snapshot = canvasContextRef.current?.snapshot;
                 if (!snapshot) throw new Error(rt("openCanvasFirst"));
@@ -1545,6 +1553,51 @@ async function attachmentNodeOps(endpoint: string, token: string, clientId: stri
             };
         }),
     );
+}
+
+// Insert an existing library or asset image (not a chat attachment) as a real canvas image node,
+// so the Agent can reuse images already prepared in the shared library or "我的素材" without re-generating them.
+async function insertImageNodeOps(value: unknown): Promise<CanvasAgentOp[]> {
+    const nodes = Array.isArray(value) ? value : [];
+    if (!nodes.length) throw new Error(rt("noImageAttachments"));
+    return await Promise.all(
+        nodes.map(async (value) => {
+            const item = value as { id?: unknown; title?: unknown; position?: unknown; source?: unknown };
+            const id = String(item.id || "");
+            if (!id) throw new Error(rt("invalidAttachmentNode"));
+            const image = await resolveCanvasImageSource(item.source);
+            const size = fitNodeSize(image.width, image.height);
+            const position = item.position && typeof item.position === "object" ? (item.position as { x?: unknown; y?: unknown }) : {};
+            return {
+                type: "add_node" as const,
+                id,
+                nodeType: "image" as const,
+                title: String(item.title || rt("referenceImage")),
+                position: { x: Number(position.x) || 0, y: Number(position.y) || 0 },
+                width: size.width,
+                height: size.height,
+                metadata: imageMetadata(image),
+            };
+        }),
+    );
+}
+
+async function resolveCanvasImageSource(source: unknown) {
+    const spec = (source && typeof source === "object" ? source : {}) as { type?: unknown; ref?: unknown; assetId?: unknown };
+    if (spec.type === "library" && typeof spec.ref === "string") {
+        const path = spec.ref.startsWith("library:") ? spec.ref.slice("library:".length) : spec.ref;
+        return uploadImage(libraryFileUrl(path));
+    }
+    if (spec.type === "asset" && typeof spec.assetId === "string") {
+        const asset = useAssetStore.getState().assets.find((item) => item.id === spec.assetId);
+        if (!asset || asset.kind !== "image") throw new Error("素材不存在或不是图片");
+        if (asset.data.storageKey) {
+            const blob = await getImageBlob(asset.data.storageKey);
+            if (blob) return uploadImage(blob);
+        }
+        return uploadImage(asset.data.dataUrl);
+    }
+    throw new Error("不支持的图片来源，source.type 必须是 library 或 asset");
 }
 
 function createId() {
