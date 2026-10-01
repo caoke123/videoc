@@ -16,7 +16,7 @@ Codex 从商品资料出发，原创策划脚本、人物、场景、动作和�
 - `.agents/skills/seatbelt-video-studio/`：安全带护肩套的 SKU、车辆空间、佩戴和 DFCine/H3 细则。
 - `.agents/skills/ecommerce-video-edit/`：后期统筹；ClipSkills 决定粗剪节奏、镜头、声音和字幕，主要交付为可编辑剪映专业版草稿。用户在剪映人工精剪并手动导出；HyperFrames 仅作可选预览/旧项目路径。
 - `production/config/categories.json` 与 `production/categories/`：类目清单及各自约束。新增类目先建立独立配置。
-- `production/config/products.json`：已知 SKU 与批准的产品资产。
+- `production/assets/products/<类目>/<sku>/sku.json`：每个已登记 SKU 的身份、佩戴比例与批准资产（随图片同目录，登记流程见 `.agents/skills/ecommerce-video-studio/references/sku-registration.md`）。
 - `production/jobs/<批次名>/`：每条或每组视频的 brief、脚本、分镜、素材、运行记录和成片。
 - `production/integrations/dfcine-mcp-capabilities.md`：DFCine MCP 工具清单及其在生产链路中的调用顺序。
 - `production/integrations/seed-audio-1.0/brief-contract.md`：新项目外部配音交接与导入检查规则。

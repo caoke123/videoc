@@ -1,0 +1,28 @@
+{
+  "job_id": "canvas-0671e649-6feb-4040-97ae-66e502028f62",
+  "derived_from": "shot-plan",
+  "media_type": "video",
+  "workflow_id": "minimax_h3_z0903",
+  "resolution": "768p竖(768*1376)",
+  "audio_reference": "https://codewithgpu.ks3-cn-beijing.ksyuncs.com/comfyui_api/blank/blank.wav",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "seed": 14091272,
+      "prompt": "Photorealistic vertical 9:16 Chinese UGC product video inside a parked car in daylight. Use image 1 as the approved starting composition. Image 2 locks the left white-hat SKU; image 3 locks the right headphones-and-denim SKU. The left hand holds the white-hat product, while the right product remains on the unoccupied hanging belt beside the door. A stable close-up with one very subtle camera push-in; keep both complete assemblies visible and stationary. Do not install, pull, fasten, detach, or exchange either product. Finish the spoken hook within the first three seconds and hold the final pose for the remaining second. Preserve exact SKU proportions, attached accessories, matte black-pad fine irregular textile loops, sewn binding, continuous visible webbing, natural contact shadows and anatomical hand grip. The visible hanging metal latch plate is movable hardware, not a fixed red-button buckle receiver. No face, torso, second hand, third product, mixed SKU accessories, detached parts, warped plush, extra belt segments, prices, subtitles, watermark, invented logo, or unverified safety claims. Native audio is required: a natural young adult female Mandarin off-screen voice, light friendly conversational delivery, says exactly: “就这两个安全带小搭子，我选不出来了！” No added words, no music, no conflicting speech. Keep subtle cabin ambience beneath the voice. Duration 4 seconds.",
+      "client_request_id": "fdb5e8bf-0356-4088-a352-4344d95c2c36",
+      "source": "infinite-canvas",
+      "duration": 4,
+      "ref_images": [
+        "assets/source/b1292cda1f2f.jpg",
+        "library:products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+        "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png"
+      ],
+      "reference_roles": [
+        "画布选择",
+        "画布选择",
+        "画布选择"
+      ]
+    }
+  ]
+}

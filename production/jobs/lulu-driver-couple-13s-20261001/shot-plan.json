@@ -1,0 +1,140 @@
+{
+  "schema_version": 2,
+  "job_id": "lulu-driver-couple-13s-20261001",
+  "category_id": "seatbelt-shoulder-pad",
+  "format_id": "ugc-multi-shot",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "duration": 3,
+      "purpose": "主驾开场，建立人物与车厢空间，带出第一句钩子台词。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "诶，今天开车突然发现好可爱。",
+      "audio_direction": "女主本人对镜自然说普通话，语气带一点意外的惊喜，尾音上扬；车内低沉引擎怠速声，安全带织带轻微摩擦声；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:characters/capibara-couple-female-20260929/01-user-selected-front.png",
+          "role": "女主身份与造型主参考：只继承脸型、五官、肤色、发型发色、体型与当前造型；不继承该图自身背景、姿势、构图与原始光线"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "电玩款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "电玩款主驾安装关系参考：只取护肩套与安全带的位置、比例、穿入穿出关系，不取图中人物身份"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+          "role": "黑色垫体材质真值"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "全片统一的左舵白色座椅、深色中控与蓝色氛围灯车厢参考"
+        }
+      ],
+      "primary_action": "0–1.5s：女主刚系好安全带坐稳，视线自然下移到自己左肩的护肩套；1.5–3s：嘴角上扬看向镜头说出台词，不触碰产品。",
+      "camera": "主驾前方仪表台/挡风玻璃区域朝车尾，未镜像；主驾、左门、左B柱和方向盘在画面右，中控在画面左，肩带右上至左下。",
+      "end_state": "女主自然微笑看镜头，电玩款护肩套完整清楚、安全带连续平整不扭曲，同一张脸在整段说话过程中不漂。",
+      "status": "draft_for_user_review"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 3,
+      "end_seconds": 7,
+      "duration": 4,
+      "purpose": "主观体感种草台词，镜头轻微推近产品但仍带人物。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "这个垫子摸着软软的，戴着也不硌肩。",
+      "audio_direction": "同一女主对镜说话，语速比 S01 略慢、更生活化；环境音同 S01 的引擎怠速与织带摩擦声，音量随镜头推近略微降低。",
+      "references": [
+        {
+          "path": "library:characters/capibara-couple-female-20260929/01-user-selected-front.png",
+          "role": "女主身份与造型主参考：只继承脸型、五官、肤色、发型发色、体型与当前造型；不继承该图自身背景、姿势、构图与原始光线"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "电玩款主驾安装关系参考：只取护肩套与安全带的位置、比例、穿入穿出关系"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+          "role": "黑色垫体材质真值"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/driver-b-pillar-belt-v1.png",
+          "role": "主驾安全带路径与B柱空间连续性参考"
+        }
+      ],
+      "primary_action": "0–2s：延续 S01 的坐姿和视线，说台词前半句；2–4s：镜头随台词轻微推近护肩套所在的肩带区域，女主表情不变，双手仍自然放在腿上，不做触碰或调整动作。",
+      "camera": "延续 S01 机位小幅推近，未镜像，主驾仍在画面右侧；推近后护肩套占画面比例增加但人物脸部仍在画面内。",
+      "end_state": "护肩套材质纹理清晰可辨（密集不规则凸起圈纹、哑光、缝制包边），比例保持局部带宽的 1.35–1.50 倍，人物身份与 S01 保持同一张脸。",
+      "status": "draft_for_user_review"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 7,
+      "end_seconds": 10,
+      "duration": 3,
+      "purpose": "纯产品材质近景，强化商品身份真值，不依赖人物出镜。",
+      "generation_mode": "standalone_product_reference",
+      "audio_mode": "native",
+      "dialogue": "",
+      "audio_direction": "画外延续 S02 的车内环境音（引擎怠速声、轻微织带摩擦声），无对白，尾部 0.5 秒轻音乐淡入为 S04 做铺垫。",
+      "references": [
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "电玩款 SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "护肩套与安全带的位置、比例、穿入穿出关系参考"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+          "role": "黑色垫体材质真值"
+        }
+      ],
+      "primary_action": "固定近景，安全带连续穿过护肩套中心，垫体材质在自然光下清晰可见，无人物入镜，无安装或调整动作。",
+      "camera": "护肩套与局部安全带特写，浅景深，车内背景虚化。",
+      "end_state": "玩偶与黑色护肩套作为同一刚性整体，比例、材质与穿入穿出关系均与批准参考一致，不出现文字、水印或未核实的安全宣称。",
+      "status": "draft_for_user_review"
+    },
+    {
+      "shot_id": "S04",
+      "start_seconds": 10,
+      "end_seconds": 13,
+      "duration": 3,
+      "purpose": "收尾转回人物正面，带出情侣款关系，自然收尾不接硬广话术。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "一样的款给男朋友那台车也配了一个。",
+      "audio_direction": "女主对镜自然说普通话，语气轻松带笑意，收尾略微上扬；环境音同前，尾部音乐延续 S03 的淡入并自然收束。",
+      "references": [
+        {
+          "path": "library:characters/capibara-couple-female-20260929/01-user-selected-front.png",
+          "role": "女主身份与造型主参考：只继承脸型、五官、肤色、发型发色、体型与当前造型；不继承该图自身背景、姿势、构图与原始光线"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+          "role": "电玩款主驾安装关系参考"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+          "role": "黑色垫体材质真值"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "车厢连续性参考，与 S01 保持同一车厢"
+        }
+      ],
+      "primary_action": "镜头由 S03 的产品特写切回人物中近景，女主转头看向镜头说出收尾台词，笑意自然，不做手部动作。",
+      "camera": "回到 S01 的主驾机位，未镜像，构图与光线延续 S01。",
+      "end_state": "人物身份与 S01/S02 保持同一张脸，电玩款护肩套完整可辨，作为全片收尾帧。",
+      "status": "draft_for_user_review"
+    }
+  ]
+}

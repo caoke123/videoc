@@ -11,3 +11,5 @@
 安装几何源：`production/assets/products/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png`，仅用于佩戴关系，不用于商品身份。
 
 这两张图片已通过用户人工审阅。粉色商品尚未登记在 `production/config/products.json`；图片批准不等于将它登记为现有水豚 SKU。
+
+2026-10-01 整理：`pink-plush-driver-summer-v2.png` 与 `../../pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png` 字节完全相同，已作为重复副本移出素材库（备份在 `production/backups/library-cleanup-20261001/`）；v1 现作为粉裤噜妹 SKU 的另一张批准佩戴图登记在其 `sku.json`。

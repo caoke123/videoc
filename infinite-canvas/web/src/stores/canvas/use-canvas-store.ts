@@ -109,3 +109,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
 
 // One-time initial fetch so pages relying on `hydrated` (e.g. site tools, the canvas list) get real data.
 void useCanvasStore.getState().fetchProjects();
+void import("@/services/browser-file-recovery").then(({ recoverBrowserFiles }) => recoverBrowserFiles()).catch(error => {
+    console.error("本机文件补存失败", error);
+    void import("antd").then(({ message }) => message.error("本机旧文件补存失败，请检查本地服务后刷新；原文件仍保留在此浏览器"));
+});

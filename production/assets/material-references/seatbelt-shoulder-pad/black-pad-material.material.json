@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "black-pad-material",
+  "name": "黑色护肩垫材质",
+  "status": "approved",
+  "category": "seatbelt-shoulder-pad",
+  "images": [{ "path": "black-pad-material-4k.png", "role": "材质真值（3840×5760，AI 增强 4K）" }],
+  "notes": "密集不规则凸起圈纹、哑光质感、上下缝制包边。涉及黑色护肩垫的画面都引用此图；禁止生成为平绒面、规整花纹或灰色补片。类目级共享，各 SKU 的黑垫材质相同。"
+}

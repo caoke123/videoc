@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "job_id": "lulu-driver-couple-13s-20261001",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": "shuiba-lulu-brown-black-pad-v1",
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 13,
+  "audience": "有车、常通勤或接送的年轻女性车主",
+  "use_occasion": "独自开车通勤/日常出行，随口分享车上小物",
+  "creative_concept": "女主自己坐在主驾，系好安全带后随口分享安全带上已经装好的水豚噜噜护肩套，第一人称种草语气，不做安装动作，镜头只做自然的对镜分享和一次产品细节推近。",
+  "character_profile": "延续 capibara-couple-female-20260929 候选身份：年轻女性车主，造型与该候选正面图一致；本条为她独自出镜，不出现男主。",
+  "scene_plan": "停稳的中国左舵轿车主驾位，白色座椅、深色中控、蓝色氛围灯车厢（与 structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan 保持一致）。",
+  "action_plan": "系好安全带、护肩套已稳定佩戴在肩带上；女主对镜自然说话，中段镜头轻微推近护肩套细节，不触碰或调整产品。",
+  "spoken_script": "S01：诶，今天开车突然发现好可爱。S02：这个垫子摸着软软的，戴着也不硌肩。S03：一样的款给男朋友那台车也配了一个。",
+  "raw_copy": "",
+  "hook": "上车第一眼看见安全带上的小玩偶，引发好奇。",
+  "cta": "一样的款给男朋友那台车也配了一个——情侣款的自然收尾，不做强推销话术。",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system",
+    "unverified comfort/material performance claims beyond what the product README states"
+  ],
+  "reference_video": null,
+  "notes": "‘摸着软软的/不硌肩’是主观体感描述，非功效宣称；材质卖点目前未核实具体数据，若后续要写成事实性宣称需先补证据。本任务只有女主一人出镜，男主/副驾款留给 capibara-couple-13s-20260929 或后续任务处理，不在本条重复。"
+}

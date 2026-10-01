@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "sku_id": "shuiba-lulu-brown-black-pad-v1",
+  "category_id": "seatbelt-shoulder-pad",
+  "name": "水豚噜噜棕色飞行员黑色安全带护肩套",
+  "display_name": "水豚噜噜安全带肩套",
+  "aliases": [
+    "电玩款",
+    "电玩小子"
+  ],
+  "status": "approved",
+  "approved_on": "2026-08-15",
+  "approval_note": "User confirmed the generated driver composite looks very good.",
+  "assets": {
+    "identity_source": "source/product-front.png",
+    "installed_reference": "approved/installed-driver-v1.png",
+    "material_reference": "library:material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+    "extra_references": [
+      {
+        "path": "source/wearing-reference-driver-v1.png",
+        "role": "用户提供的主驾佩戴参考"
+      },
+      {
+        "path": "source/wearing-reference-front-passenger-v1.png",
+        "role": "用户提供的副驾佩戴参考（带向与座位标注存在歧义，见 workflows/seatbelt-image-presets.md，未作为副驾权威）"
+      }
+    ]
+  },
+  "assembly_policy": "rigid_locked_from_source_image",
+  "identity_locked_parts": [
+    "black_pad",
+    "yellow_orange_plush_face",
+    "transparent_goggles",
+    "brown_headphones",
+    "orange_green_top_detail",
+    "blue_star_outfit",
+    "cream_star_accessory",
+    "toy_limbs",
+    "attachment_point",
+    "complete_silhouette"
+  ],
+  "pad": {
+    "length_cm": 23.5,
+    "width_cm": 6.5,
+    "aspect_ratio": 3.6154,
+    "color": "black"
+  },
+  "plush_geometry": {
+    "plush_width_cm": 8,
+    "plush_height_cm": 11,
+    "plush_width_to_pad_width": 1.231,
+    "plush_height_to_pad_length": 0.468,
+    "basis": "用户 2026-10-01 提供的玩偶实物尺寸 8×11 cm（宽×高）；比例由该尺寸与垫体 6.5×23.5 cm 计算"
+  },
+  "installed_reference_scale": {
+    "priority": "authoritative_for_screen_scale",
+    "pad_width_to_local_vehicle_belt_width": {
+      "nominal": 1.42,
+      "min": 1.35,
+      "max": 1.5,
+      "hard_reject_above": 1.55,
+      "measurement": "perpendicular_to_shared_centerline_at_same_projected_depth"
+    },
+    "top_anchor": "shoulder_belt_contact_zone",
+    "lower_edge_limit": "upper_chest"
+  },
+  "installation": {
+    "vehicle_belt_passes_inside_pad": true,
+    "centerlines_aligned": true,
+    "placement_zone": "shoulder_to_upper_chest",
+    "installation_action_visible": false
+  },
+  "measurement_status": "玩偶宽高来自用户提供的实物尺寸；玩偶在垫体上的中心位置与容差未测量，不写入提示词。",
+  "approved_composite_traits": [
+    "identity_preserved",
+    "realistic_driver_pose",
+    "realistic_vehicle_and_exterior",
+    "continuous_three_point_belt",
+    "correct_pad_to_belt_width_ratio",
+    "natural_long_hair_occlusion",
+    "product_and_pad_transformed_as_one_assembly"
+  ]
+}

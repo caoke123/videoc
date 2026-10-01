@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "shots": [
+    {
+      "shot_id": "S1",
+      "purpose": "人物对镜头轻笑，商品A已佩戴，单一自然开场口播",
+      "start_seconds": 0,
+      "end_seconds": 4,
+      "duration": 4,
+      "dialogue": "谁懂啊，安全带上多了个小可爱！",
+      "action": "人物对镜头轻笑，商品A已佩戴，单一自然开场口播",
+      "references": [
+        {
+          "path": "assets/generated/S1.jpg",
+          "role": "本镜头场景首帧"
+        },
+        {
+          "path": "assets/generated/portrait.jpg",
+          "role": "人物与车内身份"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "对应商品身份"
+        }
+      ],
+      "status": "planned"
+    },
+    {
+      "shot_id": "S2",
+      "purpose": "两款完整商品并排静置在副驾座垫，镜头缓慢推近，画外旁白",
+      "start_seconds": 4,
+      "end_seconds": 8,
+      "duration": 4,
+      "dialogue": "电玩小子酷酷的，白色这只又软萌。",
+      "action": "两款完整商品并排静置在副驾座垫，镜头缓慢推近，画外旁白",
+      "references": [
+        {
+          "path": "assets/generated/S2.jpg",
+          "role": "本镜头场景首帧"
+        },
+        {
+          "path": "assets/generated/portrait.jpg",
+          "role": "人物与车内身份"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "商品A身份"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "role": "商品B身份"
+        }
+      ],
+      "status": "planned"
+    },
+    {
+      "shot_id": "S3",
+      "purpose": "人物佩戴商品B，看向商品后抬眼微笑；画外旁白",
+      "start_seconds": 8,
+      "end_seconds": 12,
+      "duration": 4,
+      "dialogue": "坐进车里，心情都跟着可爱起来了。",
+      "action": "人物佩戴商品B，看向商品后抬眼微笑；画外旁白",
+      "references": [
+        {
+          "path": "assets/generated/S3.jpg",
+          "role": "本镜头场景首帧"
+        },
+        {
+          "path": "assets/generated/portrait.jpg",
+          "role": "人物与车内身份"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "role": "对应商品身份"
+        }
+      ],
+      "status": "planned"
+    },
+    {
+      "shot_id": "S4",
+      "purpose": "沿用S3白色款已佩戴状态，人物看镜头轻微歪头，口播互动",
+      "start_seconds": 12,
+      "end_seconds": 16,
+      "duration": 4,
+      "dialogue": "你选哪只？我真的选不出来！",
+      "action": "沿用S3白色款已佩戴状态，人物看镜头轻微歪头，口播互动",
+      "references": [
+        {
+          "path": "assets/generated/S4.jpg",
+          "role": "本镜头场景首帧"
+        },
+        {
+          "path": "assets/generated/portrait.jpg",
+          "role": "人物与车内身份"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "role": "对应商品身份"
+        }
+      ],
+      "status": "planned"
+    }
+  ]
+}

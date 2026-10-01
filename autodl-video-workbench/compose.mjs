@@ -14,7 +14,7 @@ const SHOT_ID = /^[\p{L}\p{N}_-]+$/u;
 const MAX_FADE = 1;
 const composing = new Set();
 
-function run(command, args, { timeoutMs = 600000 } = {}) {
+export function run(command, args, { timeoutMs = 600000 } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { windowsHide: true });
     let stdout = '';
@@ -28,12 +28,12 @@ function run(command, args, { timeoutMs = 600000 } = {}) {
 }
 
 // Jobs name the run-state file differently (<job>-run-state.json, autodl-run-state.json…); job-store finds it by suffix.
-async function readRunState(jobDir) {
+export async function readRunState(jobDir) {
   const name = (await readdir(jobDir).catch(() => [])).find(file => file.endsWith('run-state.json'));
   return name ? readFile(join(jobDir, name), 'utf8').then(JSON.parse).catch(() => null) : null;
 }
 
-async function probe(file) {
+export async function probe(file) {
   const data = JSON.parse(await run(FFPROBE, ['-v', 'error', '-show_entries', 'stream=codec_type,width,height,r_frame_rate,duration', '-show_entries', 'format=duration', '-of', 'json', file], { timeoutMs: 60000 }));
   const video = data.streams?.find(stream => stream.codec_type === 'video');
   if (!video) throw new Error(`${file} 没有视频流`);

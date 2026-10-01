@@ -6,7 +6,9 @@ import { normalizePluginImages, runModelPlugin } from "./model-plugin";
 import { nanoid } from "nanoid";
 import { dataUrlToFile } from "@/lib/image-utils";
 import { buildImageReferencePromptText } from "@/lib/image-reference-prompt";
-import { imageToDataUrl } from "@/services/image-storage";
+import { imageToDataUrl, uploadImage } from "@/services/image-storage";
+import { persistMediaReferences } from "@/services/persistent-media";
+import { saveImageHistory } from "@/services/api/image-history";
 import { imageSizePresets, inferMediaScale } from "@/lib/media-size";
 import type { ReferenceImage } from "@/types/image";
 
@@ -723,7 +725,37 @@ function parseGeminiImagePayload(payload: GeminiPayload) {
     return images;
 }
 
-export async function requestGeneration(config: AiConfig, prompt: string, options?: RequestOptions) {
+type ImageOutput = { id: string; dataUrl: string };
+async function recordedCanvasImageRequest(config: AiConfig, prompt: string, references: ReferenceImage[], run: () => Promise<ImageOutput[]>) {
+    if (!location.pathname.startsWith("/canvas/")) return run();
+    const createdAt = Date.now();
+    const id = nanoid();
+    const historyConfig = Object.fromEntries(["model", "imageModel", "quality", "size", "count", "background", "systemPrompt", "apiFormat", "baseUrl"].map(key => [key, config[key as keyof AiConfig]]));
+    const log = {
+        id, createdAt, title: "画布生图", prompt, time: new Date(createdAt).toLocaleString("zh-CN", { hour12: false }),
+        model: config.model || config.imageModel, config: historyConfig, references: await persistMediaReferences(references),
+        size: config.size, quality: config.quality, imageCount: 0, successCount: 0, failCount: 0, durationMs: 0,
+        status: "pending", images: [] as unknown[],
+    };
+    // Record the request before spending; a failed server save must not produce an untracked image.
+    await saveImageHistory(log);
+    try {
+        const results = await run();
+        const images = await Promise.all(results.map(async image => {
+            const stored = await uploadImage(image.dataUrl);
+            return { ...image, dataUrl: stored.url, storageKey: stored.storageKey, width: stored.width, height: stored.height, bytes: stored.bytes, type: stored.mimeType, status: "success", name: "画布生成图片" };
+        }));
+        await saveImageHistory({ ...log, status: "success", imageCount: images.length, successCount: images.length, durationMs: Date.now() - createdAt, images });
+        return images;
+    } catch (error) {
+        await saveImageHistory({ ...log, status: "failed", failCount: Number(config.count) || 1, durationMs: Date.now() - createdAt, error: error instanceof Error ? error.message : "生成或保存失败" }).catch(() => undefined);
+        throw error;
+    }
+}
+export function requestGeneration(config: AiConfig, prompt: string, options?: RequestOptions) {
+    return recordedCanvasImageRequest(config, prompt, [], () => generateImages(config, prompt, options));
+}
+async function generateImages(config: AiConfig, prompt: string, options?: RequestOptions) {
     const requestConfig = resolveModelRequestConfig(config, config.model || config.imageModel);
     const n = Math.max(1, Math.min(15, Math.floor(Math.abs(Number(config.count)) || 1)));
     const script = resolveModelScript(config, config.model || config.imageModel);
@@ -783,7 +815,10 @@ export async function requestGeneration(config: AiConfig, prompt: string, option
     }
 }
 
-export async function requestEdit(config: AiConfig, prompt: string, references: ReferenceImage[], options?: RequestOptions) {
+export function requestEdit(config: AiConfig, prompt: string, references: ReferenceImage[], options?: RequestOptions) {
+    return recordedCanvasImageRequest(config, prompt, references, () => editImages(config, prompt, references, options));
+}
+async function editImages(config: AiConfig, prompt: string, references: ReferenceImage[], options?: RequestOptions) {
     const requestConfig = resolveModelRequestConfig(config, config.model || config.imageModel);
     const n = Math.max(1, Math.min(15, Math.floor(Math.abs(Number(config.count)) || 1)));
     const requestPrompt = buildImageReferencePromptText(prompt, references);

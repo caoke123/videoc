@@ -1,3 +1,4 @@
+import { generatedImageUrl } from "@/services/api/generated-images";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { App, Button, Tooltip } from "antd";
@@ -1583,7 +1584,11 @@ async function insertImageNodeOps(value: unknown): Promise<CanvasAgentOp[]> {
 }
 
 async function resolveCanvasImageSource(source: unknown) {
-    const spec = (source && typeof source === "object" ? source : {}) as { type?: unknown; ref?: unknown; assetId?: unknown };
+    const spec = (source && typeof source === "object" ? source : {}) as { type?: unknown; ref?: unknown; assetId?: unknown; imageId?: unknown };
+    if (spec.type === "generated" && typeof spec.imageId === "string") {
+        const image = await uploadImage(generatedImageUrl(spec.imageId));
+        return { ...image, url: generatedImageUrl(spec.imageId), storageKey: undefined };
+    }
     if (spec.type === "library" && typeof spec.ref === "string") {
         const path = spec.ref.startsWith("library:") ? spec.ref.slice("library:".length) : spec.ref;
         return uploadImage(libraryFileUrl(path));

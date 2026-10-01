@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "china-lhd-mercedes-sedan",
+  "name": "中国左舵奔驰轿车内饰（白色座椅·蓝色氛围灯）",
+  "status": "approved",
+  "category": "seatbelt-shoulder-pad",
+  "images": [
+    { "path": "source/cabin-driver-centered-v1.png", "role": "主驾居中全景" },
+    { "path": "source/front-row-driver-to-passenger-v1.png", "role": "前排主驾至副驾" },
+    { "path": "source/driver-b-pillar-belt-v1.png", "role": "主驾 B 柱与安全带路径" },
+    { "path": "source/driver-b-pillar-closeup-v1.png", "role": "主驾 B 柱特写" },
+    { "path": "source/passenger-seat-and-b-pillar-v1.png", "role": "副驾座椅与 B 柱" },
+    { "path": "source/front-seat-inboard-buckle-closeup-v1.png", "role": "前排内侧锁扣特写" }
+  ],
+  "notes": "全片统一的左舵车厢参考：白色座椅、深色中控、蓝色氛围灯。画面左右与肩带方向按各图机位核对，车辆空间规则见 seatbelt-video-studio 的 vehicle-spatial-rules。"
+}

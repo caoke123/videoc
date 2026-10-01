@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "job_id": "lulu-ugc-20260930",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": "shuiba-lulu-brown-black-pad-v1",
+  "product_sku_ids": [
+    "shuiba-lulu-brown-black-pad-v1",
+    "shuiba-tutu-black-pad-v1"
+  ],
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 16,
+  "creative_concept": "A版反差种草",
+  "character_profile": "用户图1同一成年女性，深色盘发、白色露肩上衣",
+  "scene_plan": "白天停稳中国左舵车主驾，非镜像UGC",
+  "spoken_script": "谁懂啊，安全带上多了个小可爱！\n电玩小子酷酷的，白色这只又软萌。\n坐进车里，心情都跟着可爱起来了。\n你选哪只？我真的选不出来！",
+  "verified_claims": [
+    "用户原图中的两款外观与配件"
+  ],
+  "prohibited_claims": [
+    "未经证实的安全保护、舒适度、认证、价格优惠"
+  ],
+  "notes": "用户已选A，明确要求仅先生成视频S1，审查通过再提交S2-S4。原生对白音轨用于审查；最终配音仍按项目外部Seed Audio政策。画布项目0cd9d6bc-adc3-4f19-800d-629af3066256。",
+  "title": "水豚噜噜UGC｜A版16秒｜先审S1"
+}

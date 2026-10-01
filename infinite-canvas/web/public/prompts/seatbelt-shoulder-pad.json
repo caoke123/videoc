@@ -1,64 +1,293 @@
 [
   {
     "id": "seatbelt-driver-installed-front",
-    "title": "主驾驶位安装佩戴（第三人称正面）",
-    "tags": ["安全带护肩套", "主驾", "已安装", "中国左舵车"],
-    "description": "中国左舵车主驾第三人称正面机位，已安装佩戴状态的中近景模板，整合安全带路径、产品比例、发丝遮挡规则。选中后会自动按 Reference 1/2/3 顺序填入：角色定妆照、产品佩戴参考图、产品原图。",
+    "title": "1｜主驾驶位安装佩戴（第三人称正面）",
+    "tags": [
+      "安全带护肩套",
+      "主驾",
+      "已安装",
+      "中国左舵车"
+    ],
+    "description": "主驾已佩戴完整模板，默认融合预设3的结构与比例、预设4的材质及预设5的适用禁止项。图1人物、图2同SKU主驾佩戴、图3完整商品、图4材质。换款须同时替换图2和图3，无需另选3、4、5。",
     "referenceImageUrls": [
       "/api/library/files/characters/approved/urban-woman-a-20260925-v1.png",
       "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
-      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png"
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
     ],
-    "prompt": "Photorealistic vertical 9:16 Chinese UGC shot inside a stationary Chinese left-hand-drive car, daylight. Reference 1 is the exact adult woman identity (face, hair, outfit). Reference 2 is authoritative for the already-installed shoulder-pad product on the driver's belt: exact belt routing, pad placement, scale and occlusion. Reference 3 is the exact product SKU identity (plush toy, pad, colorway, stitching). Camera is fixed near the front-passenger dashboard, angled toward the driver, non-mirrored (camera_origin = front dashboard/windshield area facing the driver; camera_facing = toward rear; software_mirror = no). The woman is seated in the vehicle-left driver seat, already buckled in, product already installed at frame one on the shoulder belt. Driver-side door and left B-pillar on image-right, steering wheel in the right foreground, center console and inboard buckle toward image-left; the shoulder belt runs from the left B-pillar over her left shoulder, diagonally across the chest, down to the inboard buckle near the center console at her right hip — belt line reads upper-right to lower-left on screen. The shoulder pad sits centered on the belt at the shoulder-to-upper-chest zone, its centerline aligned with the belt centerline; belt is continuous, flat, untwisted, unobstructed at the buckle/latch/retractor. Hair falls naturally behind the belt and product; only genuinely foreground loose strands may overlap the product edge. No installation, opening, fastening, adjustment, removal, or pulling of the belt/product; the car remains parked. One primary action only (look, speak, small gesture). No visible price, logo, watermark, subtitles, or safety/certification claims."
+    "prompt": "生成9:16真实手机UGC车内中近景照片，白天，中国左舵轿车停稳。图1只锁定成年人物的脸、发型、妆容和衣着；图2只锁定同SKU主驾已佩戴关系、比例与接触，不复制其人物；图3唯一锁定完整商品外观；图4只锁定黑垫材质。相机位于主驾前方仪表台或挡风玻璃区域，朝车尾拍摄，不镜像。人物坐在车身左侧主驾，主驾左门、左B柱及左肩位于画面右，中控与右髋锁扣位于画面左，方向盘在主驾正前方的右侧前景；肩带呈右上到左下，人物已系好三点式安全带。人物自然看向镜头，真实手机拍摄质感，光照与接触阴影一致，皮肤与面料保持适量自然细节，不刻意增加瑕疵。\n玩偶与黑垫是完整预装的一件商品，外观、配饰、轮廓、内部比例及附着位置以商品原图为准，整体统一透视，不拆分、独立缩放、折叠、扭曲或移位。仅在已佩戴镜头中：商品位于肩部接触区至上胸，长轴与肩带一致，下缘不伸至腹部；按同SKU已确认佩戴图控制比例，黑垫宽约同深度相邻织带的1.42倍，沿共同中心线的垂直方向比较。织带从垫顶中心进入、垫底中心穿出，垫体包覆织带，不是粘贴在带体上；带体连续、平整、不扭转，不遮挡锁扣、导向点或卷收器。保留足够结构证据，不强行补出画外部件。手持或独立展示只保持完整商品内部比例与实际持握，不套用带宽比例、肩胸位置或已佩戴要求。\n黑垫材质以黑垫材质参考图为准：细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，随景别自然变化，不放大成泡泡、圆点或蜂窝，不生成平绒面、规则花纹、灰色补片；材质参考只决定表面，不改变商品外观、形状或比例。\n按画面实际状态检查禁止项。已佩戴镜头只表现静态已佩戴状态，手自然停在腿上，不碰商品，不生成安装、扣合、调整、拉扯或拆卸动作。主驾肩带由车身左B柱经左肩到右髋中控侧锁扣，副驾由右B柱经右肩到左髋中控侧锁扣；腰带平贴骨盆接回外侧锚点。织带在身上必须符合真实物理：肩带从上导向点到内侧锁扣是一条绷紧的近似直线，贴合胸腹，不出现松弛、鼓包、S形弯折、折角、扭转、打褶或悬空离体；护肩套上方和下方的织带与垫体共线、宽度一致，穿过垫体时不弯折；腰带短而直，平贴骨盆，水平接入外侧锚点；全程只有一条肩带和一条腰带，不重叠、不分叉。锁扣为内侧固定接收壳体，不悬浮、不变成活动锁舌；可见带体不能断裂、复制或穿模，副驾正前方无方向盘，不生成第二套驾驶仪表。手持或独立展示不要求佩戴结构，不凭空添加织带或安装动作。所有镜头保持自然手脸、光照、透视和接触阴影；发丝按实际局部深度遮挡，不清除、截断或强制全部移到商品同一侧。保留商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全、舒适与功效宣称。",
+    "applyMode": "replace",
+    "referenceImageNames": [
+      "人物身份与造型",
+      "同SKU主驾佩戴｜位置比例与接触",
+      "商品身份｜完整原图",
+      "材质｜黑垫细小织物圈纹"
+    ],
+    "coverUrl": "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png"
   },
   {
     "id": "seatbelt-passenger-installed-front",
-    "title": "副驾驶位安装佩戴（第三人称正面）",
-    "tags": ["安全带护肩套", "副驾", "已安装", "中国左舵车"],
-    "description": "中国左舵车副驾第三人称正面机位，与主驾模板呈镜像关系：车门/B柱/肩带方向左右互换，前方不出现方向盘。选中后会自动按 Reference 1/2/3 顺序填入：角色定妆照、产品佩戴参考图、产品原图。",
+    "title": "2｜副驾驶位安装佩戴（第三人称正面）",
+    "tags": [
+      "安全带护肩套",
+      "副驾",
+      "已安装",
+      "中国左舵车"
+    ],
+    "description": "副驾已佩戴完整模板，默认融合结构、比例、材质与禁止项。图1人物、图2真实副驾结构、图3同SKU佩戴比例、图4完整商品、图5材质。图3主驾参考不决定副驾肩带方向；换款须同时替换图3和图4，无需另选3、4、5。",
     "referenceImageUrls": [
       "/api/library/files/characters/approved/urban-woman-b-20260925-v1.png",
+      "/api/library/files/structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/passenger-seat-and-b-pillar-v1.png",
       "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png",
-      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png"
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
     ],
-    "prompt": "Photorealistic vertical 9:16 Chinese UGC shot inside a stationary Chinese left-hand-drive car, daylight. Reference 1 is the exact adult identity (face, hair, outfit) seated in the front passenger seat. Reference 2 is authoritative for the already-installed shoulder-pad product on the passenger's belt: exact belt routing, pad placement, scale and occlusion. Reference 3 is the exact product SKU identity (plush toy, pad, colorway, stitching). Camera is fixed near the driver-side dashboard, angled toward the passenger, non-mirrored (camera_origin = front dashboard/windshield area facing the passenger; camera_facing = toward rear; software_mirror = no). The passenger is seated in the vehicle-right seat, already buckled in, product already installed at frame one on the shoulder belt. Passenger-side door and right B-pillar on image-left, no steering wheel or second set of instruments in frame, center console and inboard buckle toward image-right; the shoulder belt runs from the right B-pillar over the passenger's right shoulder, diagonally across the chest, down to the inboard buckle near the center console at their left hip — belt line reads upper-left to lower-right on screen. The shoulder pad sits centered on the belt at the shoulder-to-upper-chest zone, its centerline aligned with the belt centerline; belt is continuous, flat, untwisted, unobstructed at the buckle/latch/retractor. Hair falls naturally behind the belt and product; only genuinely foreground loose strands may overlap the product edge. The plush toy and its black shoulder pad are a single rigid, pre-assembled product — never treat them as separate or independently movable elements. The toy's attachment point, orientation, and position on the pad must exactly match reference 3; do not bend, twist, warp, stretch, or shift the toy relative to the pad, and do not let the pad itself twist or fold out of a flat plane. The whole assembly moves and rests as one rigid unit along the belt. No installation, opening, fastening, adjustment, removal, or pulling of the belt/product; the car remains parked. One primary action only. No visible price, logo, watermark, subtitles, or safety/certification claims."
+    "prompt": "生成9:16真实手机UGC车内中近景照片，白天，中国左舵轿车停稳。图1只锁定成年人物身份与造型；图2只参考真实副驾座椅、外侧B柱与内侧中控结构，不照搬其第一人称机位或画面左右；图3只借同SKU已佩戴比例、包覆与接触，不复制主驾位置、人物或肩带方向；图4唯一锁定完整商品外观；图5只锁定黑垫材质。相机位于副驾前方仪表台或挡风玻璃区域，朝车尾拍摄，不镜像。人物坐在车身右侧副驾，副驾右门、右B柱及右肩位于画面左，中控与左髋锁扣在画面右，人物正前方无方向盘；肩带呈左上到右下，人物已系好三点式安全带。人物自然看向镜头，真实手机拍摄质感，光照与接触阴影一致，皮肤与面料保持适量自然细节，不刻意增加瑕疵。\n玩偶与黑垫是完整预装的一件商品，外观、配饰、轮廓、内部比例及附着位置以商品原图为准，整体统一透视，不拆分、独立缩放、折叠、扭曲或移位。仅在已佩戴镜头中：商品位于肩部接触区至上胸，长轴与肩带一致，下缘不伸至腹部；按同SKU已确认佩戴图控制比例，黑垫宽约同深度相邻织带的1.42倍，沿共同中心线的垂直方向比较。织带从垫顶中心进入、垫底中心穿出，垫体包覆织带，不是粘贴在带体上；带体连续、平整、不扭转，不遮挡锁扣、导向点或卷收器。保留足够结构证据，不强行补出画外部件。手持或独立展示只保持完整商品内部比例与实际持握，不套用带宽比例、肩胸位置或已佩戴要求。\n黑垫材质以黑垫材质参考图为准：细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，随景别自然变化，不放大成泡泡、圆点或蜂窝，不生成平绒面、规则花纹、灰色补片；材质参考只决定表面，不改变商品外观、形状或比例。\n按画面实际状态检查禁止项。已佩戴镜头只表现静态已佩戴状态，手自然停在腿上，不碰商品，不生成安装、扣合、调整、拉扯或拆卸动作。主驾肩带由车身左B柱经左肩到右髋中控侧锁扣，副驾由右B柱经右肩到左髋中控侧锁扣；腰带平贴骨盆接回外侧锚点。织带在身上必须符合真实物理：肩带从上导向点到内侧锁扣是一条绷紧的近似直线，贴合胸腹，不出现松弛、鼓包、S形弯折、折角、扭转、打褶或悬空离体；护肩套上方和下方的织带与垫体共线、宽度一致，穿过垫体时不弯折；腰带短而直，平贴骨盆，水平接入外侧锚点；全程只有一条肩带和一条腰带，不重叠、不分叉。锁扣为内侧固定接收壳体，不悬浮、不变成活动锁舌；可见带体不能断裂、复制或穿模，副驾正前方无方向盘，不生成第二套驾驶仪表。手持或独立展示不要求佩戴结构，不凭空添加织带或安装动作。所有镜头保持自然手脸、光照、透视和接触阴影；发丝按实际局部深度遮挡，不清除、截断或强制全部移到商品同一侧。保留商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全、舒适与功效宣称。",
+    "applyMode": "replace",
+    "referenceImageNames": [
+      "人物身份与造型",
+      "车辆结构｜真实副驾座椅与外侧B柱",
+      "同SKU佩戴｜仅比例包覆与接触，不复制主驾方向",
+      "商品身份｜完整原图",
+      "材质｜黑垫细小织物圈纹"
+    ],
+    "coverUrl": "/api/library/files/products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/wearing-reference-passenger-20261001.png"
   },
   {
     "id": "seatbelt-product-detail-closeup",
-    "title": "产品佩戴特写与比例锚点",
-    "tags": ["安全带护肩套", "产品特写", "比例", "已安装"],
-    "description": "商品近景特写，锁定护肩垫宽度相对同深度安全带宽度约 1.4 倍的比例锚点，以及产品在肩带上的合理区间。选中后会自动按 Reference 1/2 顺序填入：产品原图、产品佩戴参考图。",
-    "referenceImageUrls": [
-      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png",
-      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/approved/installed-driver-v1.png"
+    "title": "3｜佩戴结构与比例（已融入预设1、2）",
+    "tags": [
+      "安全带护肩套",
+      "产品特写",
+      "比例",
+      "已安装"
     ],
-    "prompt": "Photorealistic close-up product-detail shot inside the same stationary Chinese left-hand-drive car, continuous with the wide shot. Reference 1 is the exact product SKU identity (plush toy, pad, colorway, all attachments). Reference 2 is authoritative for the already-installed state, belt route, and scale. Tight, stable crop centered on the shoulder pad and toy; shallow depth of field, car interior softly blurred behind. The vehicle belt passes through the center of the shoulder pad and wraps around it — the pad is not pasted on top of the belt. Match the on-screen pad width to about 1.4x the local belt width measured at the same depth (never use a distant belt segment or the full frame width as reference). The product's top anchor begins at the shoulder-belt contact zone and the lower end stays in the upper-chest area, never extending into the abdomen. Belt continuous, flat, untwisted, unobstructed at the buckle. No installation, adjustment, or removal action; product already installed at frame one. Preserve natural hair-over-belt occlusion order from the source scene. No visible price, logo, watermark, or safety/certification claims."
+    "description": "已默认融入主副驾模板；仅需额外强调结构、比例或细节构图时追加，不改变已有参考图顺序。独立手持不套用佩戴比例。",
+    "referenceImageUrls": [],
+    "prompt": "玩偶与黑垫是完整预装的一件商品，外观、配饰、轮廓、内部比例及附着位置以商品原图为准，整体统一透视，不拆分、独立缩放、折叠、扭曲或移位。仅在已佩戴镜头中：商品位于肩部接触区至上胸，长轴与肩带一致，下缘不伸至腹部；按同SKU已确认佩戴图控制比例，黑垫宽约同深度相邻织带的1.42倍，沿共同中心线的垂直方向比较。织带从垫顶中心进入、垫底中心穿出，垫体包覆织带，不是粘贴在带体上；带体连续、平整、不扭转，不遮挡锁扣、导向点或卷收器。保留足够结构证据，不强行补出画外部件。手持或独立展示只保持完整商品内部比例与实际持握，不套用带宽比例、肩胸位置或已佩戴要求。",
+    "applyMode": "append"
   },
   {
     "id": "seatbelt-black-pad-material",
-    "title": "黑色护肩垫材质保真",
-    "tags": ["安全带护肩套", "材质", "黑色护肩垫"],
-    "description": "类目级共享材质约束：黑色护肩垫的凸起圈纹、哑光质感与包边缝制，防止被生成成平绒面或规整花纹。选中后会自动填入材质参考图。",
+    "title": "4｜黑垫材质（已融入预设1、2、6）",
+    "tags": [
+      "安全带护肩套",
+      "材质",
+      "黑色护肩垫"
+    ],
+    "description": "已默认融入三个场景模板并自带材质参考；其他模板需要强调材质时追加，不替换人物或商品参考。",
     "referenceImageUrls": [
       "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
     ],
-    "prompt": "When generating or compositing any shot showing the black shoulder pad, use the material reference image as the ground truth for its surface: dense irregular bump-ring texture across the whole pad, matte (non-glossy) finish, with visible stitched binding along the top and bottom edges. Check texture continuity frame to frame; never render the pad as smooth velvet, a regular repeating pattern, or a flat grey patch. Keep this material contract identical across every shot that shows the pad, regardless of camera distance or lighting."
+    "prompt": "黑垫材质以黑垫材质参考图为准：细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，随景别自然变化，不放大成泡泡、圆点或蜂窝，不生成平绒面、规则花纹、灰色补片；材质参考只决定表面，不改变商品外观、形状或比例。",
+    "applyMode": "append",
+    "referenceImageNames": [
+      "材质｜黑垫细小织物圈纹"
+    ]
   },
   {
     "id": "seatbelt-hard-constraints",
-    "title": "通用禁止项（附加到任意提示词末尾）",
-    "tags": ["安全带护肩套", "负面约束", "判退红线"],
-    "description": "把这段拼接到任意安全带护肩套镜头提示词末尾，覆盖直接判退的硬性红线：安装动作、方向盘位置、安全带路径、锁扣锁舌、产品位置、安全宣称。",
-    "prompt": "Hard constraints — do not violate: the plush toy and its black shoulder pad are a single rigid, pre-assembled product, never separable or independently movable elements; the toy's attachment point, orientation, and position on the pad must always match the approved product photo, with no bending, twisting, warping, stretching, or shifting of the toy relative to the pad, and no twisting or folding of the pad out of a flat plane. Do not show opening, wrapping, fastening, sliding, repositioning, pulling, or removal of the belt or product; the product is already installed at the first frame. Never show a steering wheel in front of the passenger seat or two steering wheels in one frame. Never start the shoulder belt from the inboard/console side or buckle it to the outboard/door side. Never let the driver's belt start from the right shoulder or the passenger's belt start from the left shoulder without an explicit vehicle exception. The belt must read as one continuous three-point path (B-pillar anchor -> shoulder -> chest -> buckle -> lap -> outboard anchor); never a disconnected or duplicated segment. The buckle receiver is a fixed black housing on the inboard seat side near the console with its red release button reachable by the occupant — never floating, duplicated, mounted on the door side, hanging loose on the webbing, or drawn as the moving latch plate. Never place the product below the buckle, on the lap belt, over the abdomen, on outboard slack webbing, or at an angle that breaks from the belt centerline. No crash-protection, injury-reduction, certification, or vehicle-restraint-replacement claims unless explicitly verified and approved. No price, logo, watermark, or subtitle text rendered by the model."
+    "title": "5｜场景禁止项（已融入预设1、2、6）",
+    "tags": [
+      "安全带护肩套",
+      "负面约束",
+      "判退红线"
+    ],
+    "description": "按已佩戴或手持状态适用，已融入三个场景模板；用于其他模板时可追加，不添加参考图，不要求独立展示已安装。",
+    "prompt": "按画面实际状态检查禁止项。已佩戴镜头只表现静态已佩戴状态，手自然停在腿上，不碰商品，不生成安装、扣合、调整、拉扯或拆卸动作。主驾肩带由车身左B柱经左肩到右髋中控侧锁扣，副驾由右B柱经右肩到左髋中控侧锁扣；腰带平贴骨盆接回外侧锚点。锁扣为内侧固定接收壳体，不悬浮、不变成活动锁舌；可见带体不能断裂、复制或穿模，副驾正前方无方向盘，不生成第二套驾驶仪表。手持或独立展示不要求佩戴结构，不凭空添加织带或安装动作。所有镜头保持自然手脸、光照、透视和接触阴影；发丝按实际局部深度遮挡，不清除、截断或强制全部移到商品同一侧。保留商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全、舒适与功效宣称。",
+    "applyMode": "append"
   },
   {
     "id": "seatbelt-standalone-handheld",
-    "title": "非佩戴独立/手持展示",
-    "tags": ["安全带护肩套", "非佩戴", "产品展示"],
-    "description": "商品单独出现、手持或桌面/展示场景，不涉及安全带佩戴关系，不需要已批准的佩戴参考图，只需产品身份原图。选中后会自动填入产品原图。",
-    "referenceImageUrls": [
-      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png"
+    "title": "6｜车内单手举起商品（非佩戴近景）",
+    "tags": [
+      "安全带护肩套",
+      "非佩戴",
+      "手持展示",
+      "副驾视角"
     ],
-    "prompt": "Photorealistic product shot of the exact SKU (plush toy, shoulder pad, colorway, all attachments matching the approved product photo) shown standalone or handheld, not installed on any seatbelt. Describe the actual scene explicitly (car interior on a seat/console, desk, showroom, gift box, hand holding it, etc.) and avoid implying it is currently worn or installed. Preserve exact product identity, proportions, and colors from the reference; natural realistic lighting and shadow. No price, logo, watermark, or unverified safety/comfort claims."
+    "applyMode": "replace",
+    "description": "按用户示例制作车内单手举起完整商品的近景：商品竖直居中，手从左下方托握，右侧车门与后视镜、左侧仪表台自然虚化。自动载入商品原图、手持构图示例和黑垫材质图。换款只替换图1，图2只控制构图与持握，不覆盖商品身份。不叠加主副驾佩戴模板。 已默认融合完整商品结构、黑垫材质和非佩戴场景禁止项，无需另选3、4、5。",
+    "referenceImageUrls": [
+      "/api/library/files/products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+      "/prompts/references/seatbelt-handheld-car.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
+    ],
+    "referenceImageNames": [
+      "商品身份｜完整原图",
+      "构图与持握｜车内单手展示示例",
+      "材质｜黑色护肩垫细小织物圈纹"
+    ],
+    "prompt": "生成真实手机随手拍的车内商品近景，按工作台所选画幅比例构图。图1是完整商品外观的唯一依据，锁定玩偶、服装、配饰、颜色、黑垫轮廓及玩偶相对垫体的大小与位置；图2只控制取景、持握方式、商品在画面中的占比和车内环境，不覆盖图1的商品身份；图3只控制黑垫材质。\n白天，中国左舵轿车停稳。相机位于副驾驶乘员视角，朝前方偏右取景；画面右侧是副驾车门、侧窗与车外后视镜，左侧背景是副驾前方仪表台和前挡风玻璃。窗外树木与街景自然虚化，不复制背景中的包装袋、杂物或标识，不在副驾正前方增加方向盘。\n一只自然成年左手从画面左下方伸入，拇指轻压黑垫正面下部，其余手指从后方托握垫体下部与侧缘，接触关系以图2为准；不抓拉玩偶、帽子、眼镜或配饰，不遮挡玩偶正脸和主要细节。仅出现这只手与局部前臂，不出现人物脸、第二只手或身体。\n整件商品竖直居中举起，正面朝镜头，完整保留黑垫上下边缘及玩偶附件，四周留出自然余量，商品占画面高度的比例接近图2。玩偶与黑垫是完整预装的一件商品，整体统一透视，保持图1内部比例与附着位置，不拆分、独立缩放、扭曲、折叠、悬浮或穿模。此时商品未安装在安全带上，不穿入织带、不生成佩戴、安装或扣合动作，不套用佩戴状态的垫宽与带宽比例。\n商品清晰、背景柔和虚化；自然窗光、真实接触阴影、适量手机拍摄细节，无夸张棚拍光效。黑垫保持图3中细小、密集、不规则的织物凸起圈纹、哑光质感及缝制包边，纹理尺度随取景自然变化，不放大成泡泡、圆点或蜂窝。手指数量与关节自然，不畸形。保留图1已有的真实商品细节，不新增文案、价格、水印、虚构标识或未经核实的安全与功效宣称。",
+    "coverUrl": "/prompts/references/seatbelt-handheld-car.png"
+  },
+  {
+    "id": "seatbelt-duo-handheld-hanging",
+    "title": "7｜双款同框：各自安装在独立安全带上",
+    "tags": [
+      "安全带护肩套",
+      "双款对比",
+      "已安装",
+      "后排头枕视角",
+      "产品展示"
+    ],
+    "applyMode": "replace",
+    "description": "按用户双款示例构图：两款各自套在自己独立、绷直的安全带织带上，织带从上方头枕间隙进入、贯穿垫体、继续向下出画，不是手持也不是松垮垂落；左侧垫体下缘有一只手轻扶但不做安装动作。自动载入两张独立完整商品原图、构图与展示状态示例、黑垫材质图；默认内含商品结构、材质与本场景禁止项。换款分别替换图1或图2，图3只控制构图与展示关系。",
+    "referenceImageUrls": [
+      "/api/library/files/products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+      "/prompts/references/seatbelt-duo-handheld-hanging.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
+    ],
+    "referenceImageNames": [
+      "左侧商品身份｜白帽款完整原图",
+      "右侧商品身份｜电玩小子完整原图",
+      "构图与展示状态｜两款各自安装在独立安全带上",
+      "材质｜黑垫细小织物圈纹"
+    ],
+    "prompt": "生成真实手机拍摄的车内双款商品对比近景，按工作台所选画幅比例构图。图1唯一决定画面左侧商品的完整外观，图2唯一决定画面右侧商品的完整外观；两张是独立商品参考，不交换、混合或拼接玩偶、服装、帽子、眼镜、耳机、配饰与垫体。图3只控制车内构图、两件商品的展示状态、相对位置和取景占比，不覆盖图1与图2的商品身份。图4只控制黑色护肩垫材质。\n白天，轿车停稳。近距离朝后排两个头枕之间的缝隙及座椅靠背上沿取景，画面顶部是两个头枕的内侧边缘，中间露出窗外自然虚化的绿植与光斑，画面主体是从头枕缝隙间垂直向下延伸的两条独立安全带织带；不出现人物脸、胸口、方向盘或无关商品。\n仅两件完整商品，各自套在自己的一条安全带织带上，左右各一条，互不共用同一条带体。左侧使用图1，右侧使用图2：两条织带都从垫体顶端中心进入、底端中心穿出，垫体包覆带体而非粘在表面；带体在垫体上方从头枕缝隙绷直向下进入垫体，在垫体下方继续绷直向下出画，全程连续、平整、不打绺、不松弛、不出现明显弧度或多余余量，不是手持姿态，也不是松垮垂挂在车门或B柱旁的无人佩戴状态。两条织带顶部与底部都保留清晰连续证据，不在中途断开或凭空消失。一只自然成年左手从画面左下角伸入，仅轻轻托扶左侧垫体的下缘与侧边，拇指与手指贴合垫体外表面，不深入垫体内部、不拉扯或牵动织带、不做任何安装、扣合、调整、拉伸或拆卸动作；右侧垫体全程无手部接触。\n两件商品左右并列、各自完整可辨，垂直方向大致平齐，左右间距、相对高度与画面占比接近图3；顶部与底部包边、玩偶及配饰不被裁切，手指不遮挡玩偶正脸，两件商品之间不交叉、不重叠遮住关键细节，不生成第三件商品、第二只手或额外的织带、锁扣与锁舌。两件商品分别保持各自原图的垫体长宽比、玩偶相对垫体的大小、附着位置及前后层次；整体统一透视，不拆分、独立缩放、折叠、扭曲、悬浮或穿模，不把毛绒玩偶画成硬塑料。\n两个黑垫都保持图4中细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，不放大成泡泡、圆点或蜂窝，不生成平绒、灰色补片。商品清晰，背景柔和虚化，窗光与接触阴影自然，手指数量、关节与持握合理。仅呈现静态已安装展示，不生成安装、扣合、拉扯、调整或拆卸动作。保留各商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全与功效宣称。",
+    "coverUrl": "/prompts/references/seatbelt-duo-handheld-hanging.png"
+  },
+  {
+    "id": "seatbelt-duo-driver-handheld-two",
+    "title": "8｜司机双手各持一款（非佩戴）｜默认粉裤噜妹+阳光噜噜",
+    "tags": [
+      "安全带护肩套",
+      "非佩戴",
+      "手持展示",
+      "主驾",
+      "双款对比",
+      "构图参考"
+    ],
+    "applyMode": "replace",
+    "description": "司机坐主驾，两手各拿一款完整商品并排举在身前，粉左黄右。默认粉裤噜妹（图1）和阳光噜噜（图2），换款分别替换图1或图2；图3只控制构图，不复制其商品与人物。商品未装在安全带上。 图5为人物参考（默认都市女性 A），只锁定司机的脸、发型和衣着，可替换成其他人物。",
+    "referenceImageUrls": [
+      "/api/library/files/products/seatbelt-shoulder-pad/pink-lulu-shoulder-pad-v1/source/product-front.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/yellow-lulu-shoulder-pad-v1/source/product-front.png",
+      "/api/library/files/characters/approved/car-handheld-duo-composition-v1.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+      "/api/library/files/characters/approved/urban-woman-a-20260925-v1.png"
+    ],
+    "referenceImageNames": [
+      "左手商品身份｜粉裤噜妹完整原图",
+      "右手商品身份｜阳光噜噜完整原图",
+      "构图参考｜司机双手各持一款",
+      "材质｜黑垫细小织物圈纹",
+      "人物参考｜出镜司机的脸、发型、妆容与衣着"
+    ],
+    "prompt": "生成9:16竖版真实手机随手拍照片，作为UGC带货视频的构图参考，白天，中国左舵轿车停稳。图1唯一锁定画面左侧商品（粉裤噜妹）的完整外观，图2唯一锁定画面右侧商品（阳光噜噜）的完整外观；两张是独立商品参考，不交换、混合或拼接玩偶、配饰与垫体。图3只控制构图：相机位置、人物与双手持握方式、两件商品的左右位置与占比；不覆盖图1和图2的商品身份，不复制其人物长相。图4只锁定黑色护肩垫材质。图5只锁定出镜司机（成年女性）的脸、发型、妆容和衣着，不影响两件商品的外观。\n相机固定在副驾驶一侧，朝向坐在主驾驶位的、明显是成年人的中国女性；她坐在车身左侧主驾位，表情自然亲切，休闲着装，皮肤自然。普通真实的车内环境；她没有在开车，不握方向盘，也不做驾驶动作。\n她一只手拿一件完整商品，另一只手拿另一件，竖直并排举在身前：粉裤噜妹在画面左侧，阳光噜噜在画面右侧。两件商品各自完整的黑色长条凸起圈纹垫体和玩偶都在画内，不被裁切。\n每件商品是不可拆分的玩偶加黑垫整体，保持各自原图的形状、比例、五官、配饰、接缝和黑垫的密集凸起圈纹：粉色玩偶戴粉色椭圆墨镜，头顶橙色水果和绿叶，系深蓝加红格围巾；黄橙色玩偶戴玳瑁色墨镜，头顶水果和绿叶，系深蓝加蓝格围巾。手只托握垫体下缘，不遮挡玩偶和商品轮廓，每只手五指自然。\n商品没有装在安全带上，没有安装、佩戴或扣合动作，也不套用带宽比例和肩胸位置。\n真实手机拍摄的轻微瑕疵，温暖自然的UGC感，不是光鲜的商业棚拍。不要多余商品、重复肢体、文字、字幕、Logo、价格、水印或虚构包装。保留图1和图2已有的真实细节。",
+    "coverUrl": "/api/library/files/characters/approved/car-handheld-duo-composition-v1.png"
+  },
+  {
+    "id": "pachagou-bib-driver-first-ref",
+    "title": "9｜帕恰狗（粉格围兜款）｜首张主驾佩戴参考图",
+    "tags": [
+      "安全带护肩套",
+      "帕恰狗",
+      "主驾",
+      "首张佩戴参考",
+      "爱心黑垫",
+      "中国左舵车"
+    ],
+    "description": "为帕恰狗（粉格围兜款）生成第一张主驾佩戴参考图。图1人物、图2已批准的另一款同尺寸护肩套主驾佩戴图（只借佩戴位置与比例）、图3帕恰狗商品原图、图4爱心黑护肩垫（含爱心贴标）。生成并经人工确认后，才登记为该款的佩戴参考。",
+    "referenceImageUrls": [
+      "/api/library/files/characters/approved/urban-woman-a-20260925-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/heart-black-pad.png"
+    ],
+    "prompt": "生成9:16真实手机UGC车内中近景照片，白天，中国左舵轿车停稳。图1只锁定成年人物的脸、发型、妆容和衣着；图2是已批准的另一款同尺寸护肩套的主驾佩戴图，只借其佩戴位置、比例、穿入穿出与接触关系，不复制其商品外观和人物；图3唯一锁定帕恰狗（粉格围兜款）完整商品外观；图4只锁定爱心黑护肩垫的材质与爱心贴标。相机位于主驾前方仪表台或挡风玻璃区域，朝车尾拍摄，不镜像。人物坐在车身左侧主驾，主驾左门、左B柱及左肩位于画面右，中控与右髋锁扣位于画面左，方向盘在主驾正前方的右侧前景；肩带呈右上到左下，人物已系好三点式安全带。人物自然看向镜头，真实手机拍摄质感，光照与接触阴影一致，皮肤与面料保持适量自然细节，不刻意增加瑕疵。\n玩偶与黑垫是完整预装的一件商品，外观、配饰、轮廓、内部比例及附着位置以商品原图为准，整体统一透视，不拆分、独立缩放、折叠、扭曲或移位。仅在已佩戴镜头中：商品位于肩部接触区至上胸，长轴与肩带一致，下缘不伸至腹部；按已批准的同尺寸护肩套佩戴图控制比例，黑垫宽约同深度相邻织带的1.42倍，沿共同中心线的垂直方向比较。玩偶实物约8×11cm（宽×高），宽约为垫宽的1.231倍，高约为垫长的0.468，耳朵与配饰超出垫体两侧属于商品原有形态，以商品原图为准。织带从垫顶中心进入、垫底中心穿出，垫体包覆织带，不是粘贴在带体上；带体连续、平整、不扭转，不遮挡锁扣、导向点或卷收器。保留足够结构证据，不强行补出画外部件。手持或独立展示只保持完整商品内部比例与实际持握，不套用带宽比例、肩胸位置或已佩戴要求。\n黑垫材质以爱心黑护肩垫参考图为准：细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，随景别自然变化，不放大成泡泡、圆点或蜂窝，不生成平绒面、规则花纹、灰色补片；垫体上部的粉色爱心 mua 贴标，位置、大小和朝向与爱心黑护肩垫参考图一致，不移位、不放大、不漏画、不改字；材质参考只决定表面与贴标，不改变商品外观、形状或比例。\n按画面实际状态检查禁止项。已佩戴镜头只表现静态已佩戴状态，手自然停在腿上，不碰商品，不生成安装、扣合、调整、拉扯或拆卸动作。主驾肩带由车身左B柱经左肩到右髋中控侧锁扣，副驾由右B柱经右肩到左髋中控侧锁扣；腰带平贴骨盆接回外侧锚点。织带在身上必须符合真实物理：肩带从上导向点到内侧锁扣是一条绷紧的近似直线，贴合胸腹，不出现松弛、鼓包、S形弯折、折角、扭转、打褶或悬空离体；护肩套上方和下方的织带与垫体共线、宽度一致，穿过垫体时不弯折；腰带短而直，平贴骨盆，水平接入外侧锚点；全程只有一条肩带和一条腰带，不重叠、不分叉。锁扣为内侧固定接收壳体，不悬浮、不变成活动锁舌；可见带体不能断裂、复制或穿模，副驾正前方无方向盘，不生成第二套驾驶仪表。手持或独立展示不要求佩戴结构，不凭空添加织带或安装动作。所有镜头保持自然手脸、光照、透视和接触阴影；发丝按实际局部深度遮挡，不清除、截断或强制全部移到商品同一侧。保留商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全、舒适与功效宣称。",
+    "applyMode": "replace",
+    "referenceImageNames": [
+      "人物身份与造型",
+      "佩戴几何｜已批准的同尺寸护肩套（只借位置、比例、穿入穿出，不取其商品与人物）",
+      "商品身份｜帕恰狗（粉格围兜款）完整原图",
+      "材质｜爱心黑护肩垫（含爱心贴标）"
+    ],
+    "coverUrl": "/api/library/files/products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg"
+  },
+  {
+    "id": "pachagou-bib-passenger-first-ref",
+    "title": "10｜帕恰狗（粉格围兜款）｜首张副驾佩戴参考图",
+    "tags": [
+      "安全带护肩套",
+      "帕恰狗",
+      "副驾",
+      "首张佩戴参考",
+      "爱心黑垫",
+      "中国左舵车"
+    ],
+    "description": "为帕恰狗（粉格围兜款）生成副驾佩戴参考图。图1人物、图2帕恰狗粉格围兜款已批准的副驾驶位佩戴图（只借机位、座椅与身后后排座椅的空间结构、安全带走向、护肩套位置与比例）、图3帕恰狗（粉格围兜款）商品原图、图4爱心黑护肩垫（含爱心贴标）。人物身后只能是后排座椅，不会出现仪表台。",
+    "referenceImageUrls": [
+      "/api/library/files/characters/approved/urban-woman-b-20260925-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-passenger-0656fac9.webp",
+      "/api/library/files/products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/heart-black-pad.png"
+    ],
+    "prompt": "生成9:16真实手机UGC车内中近景照片，白天，中国左舵轿车停稳。图1只锁定成年人物身份与造型；图2是帕恰狗（粉格围兜款）已批准的副驾驶位佩戴图，借其机位、座椅与身后后排座椅的空间结构、安全带走向、护肩套位置、比例与包覆关系，不复制其人物、服装和背景杂物；图3唯一锁定帕恰狗（粉格围兜款）完整商品外观；图4只锁定爱心黑护肩垫的材质与爱心贴标。相机位于副驾前方朝车尾拍摄，不镜像。人物坐在车身右侧副驾，副驾右门、右B柱及右肩位于画面左，座椅间的中央扶手与左髋锁扣在画面右下，人物正前方无方向盘；人物身后的背景只能是后排座椅、后排头枕、后挡风玻璃和侧窗外的车外景物；画面中不得出现仪表台、方向盘、中控屏、前挡风玻璃或任何车头方向的结构，相机本身也不入画。肩带呈左上到右下，人物已系好三点式安全带。人物自然看向镜头，真实手机拍摄质感，光照与接触阴影一致，皮肤与面料保持适量自然细节，不刻意增加瑕疵。\n玩偶与黑垫是完整预装的一件商品，外观、配饰、轮廓、内部比例及附着位置以商品原图为准，整体统一透视，不拆分、独立缩放、折叠、扭曲或移位。仅在已佩戴镜头中：商品位于肩部接触区至上胸，长轴与肩带一致，下缘不伸至腹部；按图2的佩戴关系控制比例，黑垫宽约同深度相邻织带的1.42倍，沿共同中心线的垂直方向比较。玩偶实物约8×11cm（宽×高），宽约为垫宽的1.231倍，高约为垫长的0.468，耳朵与配饰超出垫体两侧属于商品原有形态，以商品原图为准。织带从垫顶中心进入、垫底中心穿出，垫体包覆织带，不是粘贴在带体上；带体连续、平整、不扭转，不遮挡锁扣、导向点或卷收器。保留足够结构证据，不强行补出画外部件。手持或独立展示只保持完整商品内部比例与实际持握，不套用带宽比例、肩胸位置或已佩戴要求。\n黑垫材质以图4爱心黑护肩垫参考图为准：细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，随景别自然变化，不放大成泡泡、圆点或蜂窝，不生成平绒面、规则花纹、灰色补片；垫体上部的粉色爱心 mua 贴标，位置、大小和朝向与爱心黑护肩垫参考图一致，不移位、不放大、不漏画、不改字；材质参考只决定表面与贴标，不改变商品外观、形状或比例。\n按画面实际状态检查禁止项。已佩戴镜头只表现静态已佩戴状态，手自然停在腿上，不碰商品，不生成安装、扣合、调整、拉扯或拆卸动作。主驾肩带由车身左B柱经左肩到右髋中控侧锁扣，副驾由右B柱经右肩到左髋中控侧锁扣；腰带平贴骨盆接回外侧锚点。织带在身上必须符合真实物理：肩带从上导向点到内侧锁扣是一条绷紧的近似直线，贴合胸腹，不出现松弛、鼓包、S形弯折、折角、扭转、打褶或悬空离体；护肩套上方和下方的织带与垫体共线、宽度一致，穿过垫体时不弯折；腰带短而直，平贴骨盆，水平接入外侧锚点；全程只有一条肩带和一条腰带，不重叠、不分叉。锁扣为内侧固定接收壳体，不悬浮、不变成活动锁舌；可见带体不能断裂、复制或穿模，副驾正前方无方向盘，不生成第二套驾驶仪表。手持或独立展示不要求佩戴结构，不凭空添加织带或安装动作。所有镜头保持自然手脸、光照、透视和接触阴影；发丝按实际局部深度遮挡，不清除、截断或强制全部移到商品同一侧。保留商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全、舒适与功效宣称。",
+    "applyMode": "replace",
+    "referenceImageNames": [
+      "人物身份与造型",
+      "结构参考｜副驾驶位佩戴图（只借机位、后排背景、安全带走向、护肩套位置与比例）",
+      "商品身份｜帕恰狗（粉格围兜款）完整原图",
+      "材质｜爱心黑护肩垫（含爱心贴标）"
+    ],
+    "coverUrl": "/api/library/files/products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-passenger-0656fac9.webp"
+  },
+  {
+    "id": "pachagou-goggles-driver-first-ref",
+    "title": "11｜帕恰狗（护目镜围巾款）｜首张主驾佩戴参考图",
+    "tags": [
+      "安全带护肩套",
+      "帕恰狗",
+      "主驾",
+      "首张佩戴参考",
+      "爱心黑垫",
+      "中国左舵车"
+    ],
+    "description": "为帕恰狗（护目镜围巾款）生成第一张主驾佩戴参考图。图1人物、图2已批准的另一款同尺寸护肩套主驾佩戴图（只借佩戴位置与比例）、图3帕恰狗商品原图、图4爱心黑护肩垫（含爱心贴标）。生成并经人工确认后，才登记为该款的佩戴参考。",
+    "referenceImageUrls": [
+      "/api/library/files/characters/approved/urban-woman-a-20260925-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/approved/installed-driver-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pachagou-goggles-heart-pad-v1/source/product-front.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/heart-black-pad.png"
+    ],
+    "prompt": "生成9:16真实手机UGC车内中近景照片，白天，中国左舵轿车停稳。图1只锁定成年人物的脸、发型、妆容和衣着；图2是已批准的另一款同尺寸护肩套的主驾佩戴图，只借其佩戴位置、比例、穿入穿出与接触关系，不复制其商品外观和人物；图3唯一锁定帕恰狗（护目镜围巾款）完整商品外观；图4只锁定爱心黑护肩垫的材质与爱心贴标。相机位于主驾前方仪表台或挡风玻璃区域，朝车尾拍摄，不镜像。人物坐在车身左侧主驾，主驾左门、左B柱及左肩位于画面右，中控与右髋锁扣位于画面左，方向盘在主驾正前方的右侧前景；肩带呈右上到左下，人物已系好三点式安全带。人物自然看向镜头，真实手机拍摄质感，光照与接触阴影一致，皮肤与面料保持适量自然细节，不刻意增加瑕疵。\n玩偶与黑垫是完整预装的一件商品，外观、配饰、轮廓、内部比例及附着位置以商品原图为准，整体统一透视，不拆分、独立缩放、折叠、扭曲或移位。仅在已佩戴镜头中：商品位于肩部接触区至上胸，长轴与肩带一致，下缘不伸至腹部；按已批准的同尺寸护肩套佩戴图控制比例，黑垫宽约同深度相邻织带的1.42倍，沿共同中心线的垂直方向比较。玩偶实物约8×11cm（宽×高），宽约为垫宽的1.231倍，高约为垫长的0.468，耳朵与配饰超出垫体两侧属于商品原有形态，以商品原图为准。织带从垫顶中心进入、垫底中心穿出，垫体包覆织带，不是粘贴在带体上；带体连续、平整、不扭转，不遮挡锁扣、导向点或卷收器。保留足够结构证据，不强行补出画外部件。手持或独立展示只保持完整商品内部比例与实际持握，不套用带宽比例、肩胸位置或已佩戴要求。\n黑垫材质以爱心黑护肩垫参考图为准：细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，随景别自然变化，不放大成泡泡、圆点或蜂窝，不生成平绒面、规则花纹、灰色补片；垫体上部的粉色爱心 mua 贴标，位置、大小和朝向与爱心黑护肩垫参考图一致，不移位、不放大、不漏画、不改字；材质参考只决定表面与贴标，不改变商品外观、形状或比例。\n按画面实际状态检查禁止项。已佩戴镜头只表现静态已佩戴状态，手自然停在腿上，不碰商品，不生成安装、扣合、调整、拉扯或拆卸动作。主驾肩带由车身左B柱经左肩到右髋中控侧锁扣，副驾由右B柱经右肩到左髋中控侧锁扣；腰带平贴骨盆接回外侧锚点。织带在身上必须符合真实物理：肩带从上导向点到内侧锁扣是一条绷紧的近似直线，贴合胸腹，不出现松弛、鼓包、S形弯折、折角、扭转、打褶或悬空离体；护肩套上方和下方的织带与垫体共线、宽度一致，穿过垫体时不弯折；腰带短而直，平贴骨盆，水平接入外侧锚点；全程只有一条肩带和一条腰带，不重叠、不分叉。锁扣为内侧固定接收壳体，不悬浮、不变成活动锁舌；可见带体不能断裂、复制或穿模，副驾正前方无方向盘，不生成第二套驾驶仪表。手持或独立展示不要求佩戴结构，不凭空添加织带或安装动作。所有镜头保持自然手脸、光照、透视和接触阴影；发丝按实际局部深度遮挡，不清除、截断或强制全部移到商品同一侧。保留商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全、舒适与功效宣称。",
+    "applyMode": "replace",
+    "referenceImageNames": [
+      "人物身份与造型",
+      "佩戴几何｜已批准的同尺寸护肩套（只借位置、比例、穿入穿出，不取其商品与人物）",
+      "商品身份｜帕恰狗（护目镜围巾款）完整原图",
+      "材质｜爱心黑护肩垫（含爱心贴标）"
+    ],
+    "coverUrl": "/api/library/files/products/seatbelt-shoulder-pad/pachagou-goggles-heart-pad-v1/source/product-front.png"
+  },
+  {
+    "id": "pachagou-goggles-passenger-first-ref",
+    "title": "12｜帕恰狗（护目镜围巾款）｜首张副驾佩戴参考图",
+    "tags": [
+      "安全带护肩套",
+      "帕恰狗",
+      "副驾",
+      "首张佩戴参考",
+      "爱心黑垫",
+      "中国左舵车"
+    ],
+    "description": "为帕恰狗（护目镜围巾款）生成副驾佩戴参考图。图1人物、图2帕恰狗粉格围兜款已批准的副驾驶位佩戴图（只借机位、座椅与身后后排座椅的空间结构、安全带走向、护肩套位置与比例）、图3帕恰狗（护目镜围巾款）商品原图、图4爱心黑护肩垫（含爱心贴标）。人物身后只能是后排座椅，不会出现仪表台。",
+    "referenceImageUrls": [
+      "/api/library/files/characters/approved/urban-woman-b-20260925-v1.png",
+      "/api/library/files/products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-passenger-0656fac9.webp",
+      "/api/library/files/products/seatbelt-shoulder-pad/pachagou-goggles-heart-pad-v1/source/product-front.png",
+      "/api/library/files/material-references/seatbelt-shoulder-pad/heart-black-pad.png"
+    ],
+    "prompt": "生成9:16真实手机UGC车内中近景照片，白天，中国左舵轿车停稳。图1只锁定成年人物身份与造型；图2是帕恰狗另一款（粉格围兜款）的副驾驶位佩戴图，只借其机位、座椅与身后后排座椅的空间结构、安全带走向、护肩套位置、比例与包覆关系，不复制其玩偶款式、人物、服装和背景杂物；图3唯一锁定帕恰狗（护目镜围巾款）完整商品外观；图4只锁定爱心黑护肩垫的材质与爱心贴标。相机位于副驾前方朝车尾拍摄，不镜像。人物坐在车身右侧副驾，副驾右门、右B柱及右肩位于画面左，座椅间的中央扶手与左髋锁扣在画面右下，人物正前方无方向盘；人物身后的背景只能是后排座椅、后排头枕、后挡风玻璃和侧窗外的车外景物；画面中不得出现仪表台、方向盘、中控屏、前挡风玻璃或任何车头方向的结构，相机本身也不入画。肩带呈左上到右下，人物已系好三点式安全带。人物自然看向镜头，真实手机拍摄质感，光照与接触阴影一致，皮肤与面料保持适量自然细节，不刻意增加瑕疵。\n玩偶与黑垫是完整预装的一件商品，外观、配饰、轮廓、内部比例及附着位置以商品原图为准，整体统一透视，不拆分、独立缩放、折叠、扭曲或移位。仅在已佩戴镜头中：商品位于肩部接触区至上胸，长轴与肩带一致，下缘不伸至腹部；按图2的佩戴关系控制比例，黑垫宽约同深度相邻织带的1.42倍，沿共同中心线的垂直方向比较。玩偶实物约8×11cm（宽×高），宽约为垫宽的1.231倍，高约为垫长的0.468，耳朵与配饰超出垫体两侧属于商品原有形态，以商品原图为准。织带从垫顶中心进入、垫底中心穿出，垫体包覆织带，不是粘贴在带体上；带体连续、平整、不扭转，不遮挡锁扣、导向点或卷收器。保留足够结构证据，不强行补出画外部件。手持或独立展示只保持完整商品内部比例与实际持握，不套用带宽比例、肩胸位置或已佩戴要求。\n黑垫材质以图4爱心黑护肩垫参考图为准：细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，随景别自然变化，不放大成泡泡、圆点或蜂窝，不生成平绒面、规则花纹、灰色补片；垫体上部的粉色爱心 mua 贴标，位置、大小和朝向与爱心黑护肩垫参考图一致，不移位、不放大、不漏画、不改字；材质参考只决定表面与贴标，不改变商品外观、形状或比例。\n按画面实际状态检查禁止项。已佩戴镜头只表现静态已佩戴状态，手自然停在腿上，不碰商品，不生成安装、扣合、调整、拉扯或拆卸动作。主驾肩带由车身左B柱经左肩到右髋中控侧锁扣，副驾由右B柱经右肩到左髋中控侧锁扣；腰带平贴骨盆接回外侧锚点。织带在身上必须符合真实物理：肩带从上导向点到内侧锁扣是一条绷紧的近似直线，贴合胸腹，不出现松弛、鼓包、S形弯折、折角、扭转、打褶或悬空离体；护肩套上方和下方的织带与垫体共线、宽度一致，穿过垫体时不弯折；腰带短而直，平贴骨盆，水平接入外侧锚点；全程只有一条肩带和一条腰带，不重叠、不分叉。锁扣为内侧固定接收壳体，不悬浮、不变成活动锁舌；可见带体不能断裂、复制或穿模，副驾正前方无方向盘，不生成第二套驾驶仪表。手持或独立展示不要求佩戴结构，不凭空添加织带或安装动作。所有镜头保持自然手脸、光照、透视和接触阴影；发丝按实际局部深度遮挡，不清除、截断或强制全部移到商品同一侧。保留商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全、舒适与功效宣称。",
+    "applyMode": "replace",
+    "referenceImageNames": [
+      "人物身份与造型",
+      "结构参考｜副驾驶位佩戴图（只借机位、后排背景、安全带走向、护肩套位置与比例）",
+      "商品身份｜帕恰狗（护目镜围巾款）完整原图",
+      "材质｜爱心黑护肩垫（含爱心贴标）"
+    ],
+    "coverUrl": "/api/library/files/products/seatbelt-shoulder-pad/pachagou-goggles-heart-pad-v1/source/product-front.png"
   }
 ]

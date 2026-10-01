@@ -4,6 +4,10 @@
 /production/config/autodl-runtime.json
 /production/config/autodl-watchdog.log
 /production/config/elevenlabs.env
+# 无限画布渠道配置备份，含各渠道 API Key
+/production/config/channels.json
+# 无限画布自定义提示词来源备份
+/production/config/prompt-sources.json
 
 # 每个批次目录下的生成/预览/验证二进制素材：不进版本控制，
 # brief/shot-plan/review 等 JSON 与 prompts/*.md 仍然跟踪
@@ -50,3 +54,17 @@ infinite-canvas-config*.json
 # 素材迁移隔离区：本地回滚用，确认无误后用 --purge --yes 删除
 production/jobs/_migrated-duplicates/
 autodl-video-workbench/runner.*.log
+
+# 工作台生成图片及其索引是本地业务数据
+/production/generated-images/
+
+# 完整生图记录和参考图快照属于本地业务数据
+/production/image-history/
+
+# 跨浏览器共享文件、资产与历史，以及迁移前的业务数据备份
+/production/canvas-storage/
+/production/backups/
+/production/config/channels*.json
+
+# 剪映草稿导出组件：第三方仓库克隆和 venv，由 setup-jianying-exporter.mjs 安装
+/tools/jianying-exporter/

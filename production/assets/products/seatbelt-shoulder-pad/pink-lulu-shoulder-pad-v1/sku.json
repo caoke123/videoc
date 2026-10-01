@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "sku_id": "pink-lulu-shoulder-pad-user-reference-20260927",
+  "category_id": "seatbelt-shoulder-pad",
+  "name": "粉裤噜妹安全带护肩套",
+  "aliases": [
+    "粉裤噜妹"
+  ],
+  "status": "approved",
+  "approved_on": "2026-09-26",
+  "approval_note": "User approved the installed-state reference on 2026-09-26; current standalone source SHA-256 matches the user image supplied 2026-09-27.",
+  "assets": {
+    "identity_source": "source/product-front.png",
+    "installed_reference": "approved/installed-driver-v1.png",
+    "material_reference": "library:material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+    "extra_references": [
+      {
+        "path": "../pink-plush-driver-summer-v1/approved/pink-plush-driver-summer-v1.png",
+        "role": "另一张已批准的主驾夏装佩戴图"
+      }
+    ]
+  },
+  "assembly_policy": "rigid_locked",
+  "identity_locked_parts": [
+    "black_pad",
+    "pink plush body",
+    "pale-pink oval glasses",
+    "orange head decoration",
+    "green leaf",
+    "navy scarf",
+    "red-white checked panel",
+    "red striped button",
+    "limbs",
+    "complete silhouette"
+  ],
+  "pad": {
+    "length_cm": 23.5,
+    "width_cm": 6.5,
+    "aspect_ratio": 3.6154,
+    "color": "black",
+    "basis": "用户 2026-10-01 确认所有黑色护肩垫尺寸相同，沿用 shuiba 登记值"
+  },
+  "plush_geometry": {
+    "plush_width_cm": 8,
+    "plush_height_cm": 11,
+    "plush_width_to_pad_width": 1.231,
+    "plush_height_to_pad_length": 0.468,
+    "basis": "用户 2026-10-01 提供的玩偶实物尺寸 8×11 cm（宽×高）；比例由该尺寸与垫体 6.5×23.5 cm 计算"
+  },
+  "installed_reference_scale": {
+    "priority": "authoritative_for_screen_scale",
+    "pad_width_to_local_vehicle_belt_width": {
+      "nominal": 1.42,
+      "min": 1.35,
+      "max": 1.5,
+      "hard_reject_above": 1.55,
+      "measurement": "perpendicular_to_shared_centerline_at_same_projected_depth"
+    },
+    "top_anchor": "shoulder_belt_contact_zone",
+    "lower_edge_limit": "upper_chest",
+    "basis": "用户 2026-10-01 确认所有黑色护肩垫尺寸相同，沿用 shuiba 登记值"
+  },
+  "installation": {
+    "vehicle_belt_passes_inside_pad": true,
+    "centerlines_aligned": true,
+    "placement_zone": "shoulder_to_upper_chest",
+    "installation_action_visible": false
+  },
+  "measurement_status": "玩偶宽高来自用户提供的实物尺寸；玩偶在垫体上的中心位置与容差未测量，不写入提示词。"
+}

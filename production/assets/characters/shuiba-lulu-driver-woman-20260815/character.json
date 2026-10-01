@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "shuiba-lulu-driver-woman-20260815",
+  "name": "电玩款首张佩戴图人物（长发·绿色针织衫）",
+  "status": "approved",
+  "approved_on": "2026-08-15",
+  "images": [
+    {
+      "path": "woman-reference.jpg",
+      "role": "身份参考照（长发，绿色针织衫）"
+    }
+  ],
+  "notes": "用户提供的人物身份参考照，用于生成电玩款首张美女司机佩戴合成图（该合成图 2026-08-15 经用户确认通过）。照片来源与肖像使用授权未记录，商业发布前需确认。"
+}

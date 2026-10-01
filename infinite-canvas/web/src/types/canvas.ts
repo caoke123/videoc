@@ -45,6 +45,9 @@ export type CanvasNodeText = {
 };
 
 export type CanvasNodeMetadata = {
+    generatedImageId?: string;
+    workbenchTaskId?: string;
+    workbenchSourceContent?: string;
     content?: string;
     composerContent?: string;
     prompt?: string;

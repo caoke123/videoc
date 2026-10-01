@@ -1,6 +1,9 @@
 import type { NavigateFunction } from "react-router-dom";
 
 import i18n from "@/i18n";
+import { nanoid } from "nanoid";
+import { buildNodeGenerationContext, hydrateNodeGenerationContext } from "@/components/canvas/canvas-node-generation";
+import { generatedImageUrl, listGeneratedImages } from "@/services/api/generated-images";
 import { fetchPrompts } from "@/services/api/prompts";
 import { listLibrary } from "@/services/api/library";
 import { uploadImage } from "@/services/image-storage";
@@ -8,7 +11,8 @@ import { imageAspectOptions, imageQualityOptions, imageScaleOptions } from "@/co
 import { videoResolutionOptions, videoSecondsRange, videoSizeOptions } from "@/components/video-settings-panel";
 import type { CanvasAgentSnapshot } from "@/lib/canvas/canvas-agent-ops";
 import { clampVideoSeconds } from "@/lib/media-size";
-import { useCanvasStore } from "@/stores/canvas/use-canvas-store";
+import { useCanvasStore, CANVAS_CLIENT_ID } from "@/stores/canvas/use-canvas-store";
+import { fetchCanvasProject, updateCanvasProject } from "@/services/api/canvas-projects";
 import { useAssetStore } from "@/stores/use-asset-store";
 import { modelOptionLabel, modelOptionName, normalizeModelOptionValue, selectableModelsByCapability, useConfigStore } from "@/stores/use-config-store";
 import { useWorkbenchAgentStore, type WorkbenchReferenceSource } from "@/stores/use-workbench-agent-store";
@@ -27,6 +31,7 @@ export const SITE_TOOL_NAMES = [
     "assets_list",
     "assets_add",
     "library_search",
+    "workbench_image_results",
 ] as const;
 
 export type SiteToolName = (typeof SITE_TOOL_NAMES)[number];
@@ -40,6 +45,7 @@ function siteText(key: string, options?: Record<string, unknown>) {
 }
 
 export const SITE_TOOL_LABELS: Record<SiteToolName, string> = {
+    workbench_image_results: "查询生成图片",
     get canvas_list_projects() { return siteText("canvasList"); },
     get generation_get_status() { return siteText("generationStatus"); },
     get workbench_image_get_config() { return siteText("imageConfig"); },
@@ -77,6 +83,12 @@ export async function runSiteTool(name: SiteToolName, input: SiteToolInput, navi
             return listAssets(input);
         case "assets_add":
             return addAsset(input);
+        case "workbench_image_results": {
+            const keyword = String(input.keyword || "").toLowerCase();
+            const items = (await listGeneratedImages()).filter(image => (!input.imageId || image.id === input.imageId) && (!input.taskId || image.taskId === input.taskId) && (!keyword || `${image.id} ${image.name}`.toLowerCase().includes(keyword)));
+            const { page, pageSize, start, end } = paginate(input, items.length, 20);
+            return { total: items.length, page, pageSize, items: items.slice(start, end).map(image => ({ ...image, ref: `generated:${image.id}`, url: generatedImageUrl(image.id) })) };
+        }
         case "library_search":
             return searchLibrary(input);
         default:
@@ -165,7 +177,8 @@ function getImageConfig() {
     };
 }
 
-function runImageWorkbench(input: SiteToolInput, navigate: NavigateFunction, canvasSnapshot?: CanvasAgentSnapshot | null) {
+async function runImageWorkbench(input: SiteToolInput, navigate: NavigateFunction, canvasSnapshot?: CanvasAgentSnapshot | null) {
+    if (useWorkbenchAgentStore.getState().tasks.some(task => task.kind === "image" && (task.status === "queued" || task.status === "running"))) throw new Error("生图工作台正在处理任务，请完成后再提交下一镜头");
     const configStore = useConfigStore.getState();
     const applied: Record<string, unknown> = {};
     if (typeof input.model === "string" && input.model.trim()) {
@@ -186,21 +199,35 @@ function runImageWorkbench(input: SiteToolInput, navigate: NavigateFunction, can
         configStore.updateConfig("count", count);
         applied.count = count;
     }
-    const prompt = typeof input.prompt === "string" ? input.prompt : undefined;
-    const references = Array.isArray(input.references)
+    let prompt = typeof input.prompt === "string" ? input.prompt : undefined;
+    let references = Array.isArray(input.references)
         ? input.references.map((item) => resolveReferenceSpec(item, canvasSnapshot)).filter((item): item is WorkbenchReferenceSource => Boolean(item))
         : undefined;
+    if (Array.isArray(input.references) && references?.length !== input.references.length) throw new Error("参考节点或图片来源无效，未启动生成");
     const run = input.run !== false;
+    const taskId = run ? `image-${nanoid()}` : undefined;
+    const target = input.target && typeof input.target === "object" ? input.target as { canvasId: string; nodeId: string } : undefined;
+    if (target) {
+        if (canvasSnapshot?.projectId === target.canvasId) await updateCanvasProject(target.canvasId, { nodes: canvasSnapshot.nodes, connections: canvasSnapshot.connections }, CANVAS_CLIENT_ID);
+        const project = await fetchCanvasProject(target.canvasId);
+        if (!project.nodes.some(node => node.id === target.nodeId && node.type === "image")) throw new Error("目标图片节点不存在");
+        if (!Array.isArray(input.references)) {
+            const context = await hydrateNodeGenerationContext(buildNodeGenerationContext(target.nodeId, project.nodes, project.connections, prompt || ""));
+            prompt = context.prompt;
+            references = context.referenceImages.map(image => ({ type: "resolved", dataUrl: image.dataUrl, storageKey: image.storageKey, name: image.name }));
+        }
+    }
     navigate("/image");
-    const taskId = useWorkbenchAgentStore.getState().dispatchImage({ prompt, references, run });
-    return { ok: true, navigated: "/image", prompt, references, run, taskId, applied, note: siteText(run ? "imageGenerationStarted" : "imageConfigApplied") };
+    useWorkbenchAgentStore.getState().dispatchImage({ prompt, references: references || [], run, taskId, target, name: typeof input.name === "string" ? input.name : undefined });
+    return { ok: true, navigated: "/image", prompt, references, run, taskId, target, applied, note: siteText(run ? "imageGenerationStarted" : "imageConfigApplied") };
 }
 
 // "node" sources point at a canvas node not yet saved to the library or "我的素材"; they can only be
 // resolved here, while the current canvasSnapshot (with the node's real dataUrl/storageKey) is at hand.
 function resolveReferenceSpec(value: unknown, canvasSnapshot?: CanvasAgentSnapshot | null): WorkbenchReferenceSource | null {
     if (!value || typeof value !== "object") return null;
-    const spec = value as { type?: unknown; ref?: unknown; assetId?: unknown; url?: unknown; nodeId?: unknown };
+    const spec = value as { type?: unknown; ref?: unknown; assetId?: unknown; url?: unknown; nodeId?: unknown; imageId?: unknown };
+    if (spec.type === "generated" && typeof spec.imageId === "string" && spec.imageId) return { type: "generated", imageId: spec.imageId };
     if (spec.type === "library" && typeof spec.ref === "string" && spec.ref) return { type: "library", ref: spec.ref };
     if (spec.type === "asset" && typeof spec.assetId === "string" && spec.assetId) return { type: "asset", assetId: spec.assetId };
     if (spec.type === "url" && typeof spec.url === "string" && spec.url) return { type: "url", url: spec.url };
@@ -314,6 +341,7 @@ function listAssets(input: SiteToolInput) {
         createdAt: asset.createdAt,
         updatedAt: asset.updatedAt,
         coverUrl: asset.coverUrl || undefined,
+        generatedImageId: asset.metadata?.generatedImageId,
         content: asset.kind === "text" ? asset.data.content : undefined,
     }));
     return { total: filtered.length, page, pageSize, items };

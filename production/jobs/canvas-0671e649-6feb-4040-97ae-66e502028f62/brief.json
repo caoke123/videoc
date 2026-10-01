@@ -1,0 +1,12 @@
+{
+  "schema_version": 2,
+  "job_id": "canvas-0671e649-6feb-4040-97ae-66e502028f62",
+  "creative_concept": "无限画布手动任务（画布 0671e649-6feb-4040-97ae-66e502028f62）",
+  "category_id": null,
+  "format_id": "ugc-multi-shot",
+  "pipeline_id": "standard-video-v2",
+  "created_at": "2026-09-30T15:19:26.414Z",
+  "review_policy": "human_first",
+  "source": "infinite-canvas",
+  "canvas_id": "0671e649-6feb-4040-97ae-66e502028f62"
+}

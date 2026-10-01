@@ -66,14 +66,16 @@ def main() -> int:
         sku_id = brief.get("product_sku_id")
         if sku_id:
             try:
-                product_catalog = load(project_root / "production" / "config" / "products.json")
-                products = {item["sku_id"]: item for item in product_catalog["products"]}
+                products = {}
+                for sku_file in (project_root / "production" / "assets" / "products").glob("*/*/sku.json"):
+                    item = load(sku_file)
+                    products[item["sku_id"]] = item
                 if sku_id not in products:
                     errors.append(f"unknown brief.product_sku_id: {sku_id}")
                 elif products[sku_id].get("category_id") != category_id:
                     errors.append("brief.product_sku_id does not belong to brief.category_id")
             except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
-                errors.append(f"invalid product catalog: {exc}")
+                errors.append(f"invalid sku.json: {exc}")
     if review.get("automatic_ai_review") is not False:
         errors.append("review.automatic_ai_review must default to false")
     if review.get("automatic_retry") is not False:

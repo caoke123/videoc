@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "urban-woman-a-v1",
+  "name": "都市女性 A（咖啡馆）",
+  "status": "approved",
+  "approved_on": "2026-09-25",
+  "images": [{ "path": "urban-woman-a-20260925-v1.png", "role": "身份主图" }],
+  "notes": "根据用户提供的五张照片总结审美方向生成的原创人物。以此图锁定脸、发型与气质，再做场景测试；不等于车内机位、商品安装图或成片获准。"
+}

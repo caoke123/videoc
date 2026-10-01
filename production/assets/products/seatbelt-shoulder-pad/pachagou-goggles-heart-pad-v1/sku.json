@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "sku_id": "pachagou-goggles-heart-pad-v1",
+  "category_id": "seatbelt-shoulder-pad",
+  "name": "帕恰狗（护目镜围巾款）",
+  "aliases": [
+    "帕恰狗",
+    "护目镜围巾款",
+    "护目镜款"
+  ],
+  "status": "approved",
+  "approved_on": "2026-10-01",
+  "approval_note": "用户 2026-10-01 提供并登记的实拍图作为该 SKU 的身份真值；尚无已批准的佩戴参考图。",
+  "assets": {
+    "identity_source": "source/product-front.png",
+    "material_reference": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+    "extra_references": [
+      {
+        "path": "../pachagou-bib-heart-pad-v1/source/pair-reference.png",
+        "role": "两款帕恰狗同框实拍图（左：粉格围兜款，右：护目镜围巾款）"
+      },
+      {
+        "path": "approved/installed-passenger-62aad1d9.jpg",
+        "role": "副驾驶位佩戴参考",
+        "seat": "passenger"
+      }
+    ],
+    "installed_reference": "approved/installed-driver-9e2b9efe.jpg"
+  },
+  "assembly_policy": "rigid_locked",
+  "identity_locked_parts": [
+    "black_pad_with_heart_label",
+    "white_fluffy_body",
+    "black_upright_ears",
+    "black_bead_eyes_and_nose",
+    "pink_cheeks",
+    "clear_goggles_with_black_frame",
+    "black_white_striped_knit_scarf",
+    "white_pom_hands",
+    "complete_silhouette"
+  ],
+  "pad": {
+    "length_cm": 23.5,
+    "width_cm": 6.5,
+    "aspect_ratio": 3.6154,
+    "color": "black",
+    "feature": "垫体上部带粉色爱心 mua 贴标",
+    "basis": "用户 2026-10-01 确认黑色护肩垫尺寸相同（本款垫体多一个爱心贴标，尺寸与材质不变）"
+  },
+  "plush_geometry": {
+    "plush_width_cm": 8,
+    "plush_height_cm": 11,
+    "plush_width_to_pad_width": 1.231,
+    "plush_height_to_pad_length": 0.468,
+    "basis": "用户 2026-10-01 提供的玩偶实物尺寸 8×11 cm（宽×高）；比例由该尺寸与垫体 6.5×23.5 cm 计算"
+  },
+  "installed_reference_scale": {
+    "priority": "authoritative_for_screen_scale",
+    "pad_width_to_local_vehicle_belt_width": {
+      "nominal": 1.42,
+      "min": 1.35,
+      "max": 1.5,
+      "hard_reject_above": 1.55,
+      "measurement": "perpendicular_to_shared_centerline_at_same_projected_depth"
+    },
+    "top_anchor": "shoulder_belt_contact_zone",
+    "lower_edge_limit": "upper_chest",
+    "basis": "同尺寸黑垫，沿用已登记的垫宽/带宽比例；本款尚无自己的已批准佩戴参考"
+  },
+  "installation": {
+    "vehicle_belt_passes_inside_pad": true,
+    "centerlines_aligned": true,
+    "placement_zone": "shoulder_to_upper_chest",
+    "installation_action_visible": false
+  },
+  "measurement_status": "玩偶宽高来自用户提供的实物尺寸；玩偶在垫体上的中心位置与容差未测量，不写入提示词。"
+}

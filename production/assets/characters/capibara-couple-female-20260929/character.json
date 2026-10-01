@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "id": "capibara-couple-female-20260929",
+  "name": "水豚情侣款女主",
+  "status": "pending",
+  "images": [
+    { "path": "01-user-selected-front.png", "role": "用户指定正面身份图" },
+    { "path": "01-front.png", "role": "正面（生成版）" }
+  ],
+  "notes": "用户指定并用于 capibara-couple-13s-20260929 任务；该任务简报仍把它记作候选，没有单独的批准记录。"
+}

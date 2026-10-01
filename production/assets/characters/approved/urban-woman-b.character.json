@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "urban-woman-b-v1",
+  "name": "都市女性 B（灰色针织上衣）",
+  "status": "approved",
+  "approved_on": "2026-09-25",
+  "images": [{ "path": "urban-woman-b-20260925-v1.png", "role": "身份主图" }],
+  "notes": "以用户指定的单张人物照片为身份参考生成，锁定脸、长发与气质。商业发布前需确认该人物肖像及原图的使用授权；“通过”只表示用户认可生成图的视觉结果。与 A 是不同角色，不可混作同一人。"
+}

@@ -280,6 +280,44 @@ export const useConfigStore = create<ConfigStore>()(
     ),
 );
 
+// Synchronize shared channels; send only local edits so another browser's channels are preserved.
+function looksUntouched(channels: ModelChannel[]) {
+    return channels.length === 1 && channels[0].id === "default" && !channels[0].apiKey.trim();
+}
+let applyingChannelSnapshot = false;
+async function syncChannels() {
+    const { fetchChannelBackup, saveChannelBackup } = await import("@/services/api/channel-backup");
+    const snapshot = await fetchChannelBackup();
+    const local = useConfigStore.getState().config.channels;
+    const missing = looksUntouched(local) ? [] : local.filter(channel =>
+        !snapshot?.channels.some(saved => saved.id === channel.id) && !snapshot?.deletedIds?.includes(channel.id));
+    const shared = missing.length ? await saveChannelBackup(missing) : snapshot;
+    if (!shared) return;
+    applyingChannelSnapshot = true;
+    try {
+        useConfigStore.getState().updateConfig("channels", shared.channels);
+        useConfigStore.getState().updateConfig("models", modelOptionsFromChannels(shared.channels));
+    } finally { applyingChannelSnapshot = false; }
+}
+function reportChannelSyncError(error: unknown) {
+    console.error("渠道同步失败", error);
+    void import("antd").then(({ message }) => message.error("渠道同步失败，请检查本地服务后重新保存或刷新页面"));
+}
+let channelSync = syncChannels().catch(reportChannelSyncError);
+useConfigStore.subscribe((state, previous) => {
+    if (applyingChannelSnapshot || state.config.channels === previous.config.channels) return;
+    const changed = state.config.channels.filter(channel =>
+        JSON.stringify(channel) !== JSON.stringify(previous.config.channels.find(old => old.id === channel.id)));
+    const deleted = previous.config.channels.filter(channel => !state.config.channels.some(next => next.id === channel.id)).map(channel => channel.id);
+    channelSync = channelSync.then(async () => {
+        const { saveChannelBackup } = await import("@/services/api/channel-backup");
+        await saveChannelBackup(changed, deleted);
+    }).catch(reportChannelSyncError);
+});
+window.addEventListener("focus", () => {
+    channelSync = channelSync.then(syncChannels).catch(reportChannelSyncError);
+});
+
 export function useEffectiveConfig() {
     const config = useConfigStore((state) => state.config);
     return useMemo(() => ({ ...config, channelMode: "local" as const }), [config]);

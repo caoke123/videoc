@@ -1,0 +1,176 @@
+{
+  "job_id": "canvas-85113607-8e34-4fce-9571-3fd928f49412",
+  "format_id": "ugc-multi-shot",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "purpose": "画布手动生成",
+      "duration": 4,
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "画布选择"
+        }
+      ],
+      "status": "planned",
+      "source": "infinite-canvas"
+    },
+    {
+      "shot_id": "S02",
+      "purpose": "画布手动生成",
+      "duration": 4,
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "画布选择"
+        }
+      ],
+      "status": "planned",
+      "source": "infinite-canvas"
+    },
+    {
+      "shot_id": "S03",
+      "purpose": "画布手动生成",
+      "duration": 4,
+      "references": [
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "画布选择"
+        }
+      ],
+      "status": "planned",
+      "source": "infinite-canvas"
+    },
+    {
+      "shot_id": "S04",
+      "purpose": "画布手动生成",
+      "duration": 4,
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "画布选择"
+        }
+      ],
+      "status": "planned",
+      "source": "infinite-canvas"
+    },
+    {
+      "shot_id": "S05",
+      "purpose": "画布手动生成",
+      "duration": 4,
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-crop-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "画布选择"
+        }
+      ],
+      "status": "planned",
+      "source": "infinite-canvas"
+    },
+    {
+      "shot_id": "S06",
+      "purpose": "画布手动生成",
+      "duration": 4,
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "画布选择"
+        }
+      ],
+      "status": "planned",
+      "source": "infinite-canvas"
+    }
+  ]
+}

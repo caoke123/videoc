@@ -37,14 +37,14 @@ The shoulder pad and the attached Shuiba Tutu plush are one rigid product assemb
 
 ### Current Shuiba Tutu SKU measurements
 
-- black pad physical size: 24 cm × 6.5 cm;
+- black pad physical size: 23.5 cm × 6.5 cm;
 - undeformed pad aspect ratio: 3.6923;
 - from the approved front product reference, the plush is visibly wider than the black pad and occupies the upper-middle portion of the pad;
 - reference-derived normalized targets: plush maximum width ≈ 1.6 × pad width, plush height ≈ 0.62 × pad length, plush center ≈ 0.42 of the pad length measured from the top;
 - allowed generation tolerance for these normalized targets: ±5%; outside this range requires regeneration;
 - preserve the complete product silhouette, including ears, hanging cords, feet, glasses, hat, clothing, and exposed black-pad areas above and below the plush.
 
-Physical dimensions are identity checks, not pixel-scale instructions. Never ask the model to make the product appear 24 cm long in isolation. Determine its projected size from the approved installed reference, local belt width, head width, shoulder width, and camera distance.
+Physical dimensions are identity checks, not pixel-scale instructions. Never ask the model to make the product appear 23.5 cm long in isolation. Determine its projected size from the approved installed reference, local belt width, head width, shoulder width, and camera distance.
 
 ### Approved installed-reference scale targets
 
@@ -71,7 +71,7 @@ Do not ask the model to recreate the plush from a verbal description. Use the ap
 - The black pad wraps around the belt and must show plausible thickness, edge roll, fabric contact, and a small contact shadow.
 - Vehicle belt must be visible entering the top center of the pad and exiting the bottom center.
 - Align pad, plush attachment, and belt centerlines in the same projected direction.
-- Place the 24 cm pad around the shoulder contact zone, extending toward the upper chest; do not anchor it at the center of the torso.
+- Place the 23.5 cm pad around the shoulder contact zone, extending toward the upper chest; do not anchor it at the center of the torso.
 - Match the approved installed reference's projected size and placement relative to head, shoulders, and belt; physical centimeters are only a plausibility check.
 - Preserve continuous belt geometry from upper guide through the product to the buckle.
 

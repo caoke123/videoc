@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "heart-black-pad",
+  "name": "爱心黑护肩垫图",
+  "status": "approved",
+  "category": "seatbelt-shoulder-pad",
+  "images": [
+    {
+      "path": "heart-black-pad.png",
+      "role": "爱心黑护肩垫实物图（带粉色爱心 mua 贴标）"
+    }
+  ],
+  "notes": "尺寸和材质外观与「黑色护肩垫材质」一致，只是多了一个爱心贴标（粉色爱心加白字 mua，位于垫体上部）。凡出现带爱心贴标的黑垫，以此图为准；贴标位置与大小须与此图一致，不得移位、放大或漏画。"
+}

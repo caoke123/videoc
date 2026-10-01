@@ -1,0 +1,58 @@
+{
+  "title": "安全带上的小搭子，选哪只？｜16秒UGC双款对比",
+  "duration": 16,
+  "aspect_ratio": "9:16",
+  "status": "script_approved_assets_prepared",
+  "shots": [
+    {
+      "id": "S1",
+      "start": 0,
+      "end": 3,
+      "seconds": 4,
+      "line": "就这两个安全带小搭子，我选不出来了！",
+      "scene": "scene-S1",
+      "products": [
+        "white",
+        "brown"
+      ],
+      "action": "Use image 1 as the approved starting composition. Image 2 locks the left white-hat SKU; image 3 locks the right headphones-and-denim SKU. The left hand holds the white-hat product, while the right product remains on the unoccupied hanging belt beside the door. A stable close-up with one very subtle camera push-in; keep both complete assemblies visible and stationary. Do not install, pull, fasten, detach, or exchange either product. Finish the spoken hook within the first three seconds and hold the final pose for the remaining second."
+    },
+    {
+      "id": "S2",
+      "start": 3,
+      "end": 7,
+      "seconds": 4,
+      "line": "白帽这只，戴着小眼镜，乖乖的。",
+      "scene": "scene-S2",
+      "products": [
+        "white"
+      ],
+      "action": "Image 1 is the starting handheld composition; image 2 is the exact white-hat product identity. Only this single SKU appears. One slow, small camera push-in emphasizes the white hat, white glasses and clothing without cropping the complete pad or accessories. Keep the hand grip stable; no toy manipulation, installation or additional hands."
+    },
+    {
+      "id": "S3",
+      "start": 7,
+      "end": 11,
+      "seconds": 4,
+      "line": "这只戴耳机穿背带裤，又酷又可爱。",
+      "scene": "scene-S3",
+      "products": [
+        "brown"
+      ],
+      "action": "Image 1 is the starting handheld composition; image 2 is the exact headphones-and-denim product identity. Only this single SKU appears. One slow, small camera push-in emphasizes the brown headphones, goggles and star-pattern denim overalls without cropping the complete pad or accessories. Keep the hand grip stable; no toy manipulation, installation or additional hands."
+    },
+    {
+      "id": "S4",
+      "start": 11,
+      "end": 16,
+      "seconds": 5,
+      "line": "你选可爱派还是酷酷派？喜欢的去下面挑！",
+      "scene": "scene-S1",
+      "products": [
+        "white",
+        "brown"
+      ],
+      "action": "Reuse the same image 1 starting composition as S1, maintaining the same car, lighting, left-hand grip and left/right SKU positions. Image 2 locks the left white-hat SKU; image 3 locks the right headphones-and-denim SKU. A stable shot with a very subtle pull-back lets viewers compare both complete products. Hold the two products steady throughout; do not add installation, tugging or switching actions. No model-rendered CTA or captions; those are added during editing."
+    }
+  ]
+}

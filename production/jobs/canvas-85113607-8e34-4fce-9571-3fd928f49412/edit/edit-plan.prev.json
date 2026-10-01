@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "job_id": "canvas-85113607-8e34-4fce-9571-3fd928f49412",
+  "note": "v2：S06 顶替 S02（S02 因出镜人物串人已驳回）。粗剪草稿：保留 H3 完整镜头时长（实际 4.46 秒/镜，总长超过计划的 13 秒），由用户在剪映里精剪。",
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24
+  },
+  "duration_seconds": 17.833332,
+  "shots": [
+    {
+      "id": "S01",
+      "path": "renders/runs/S01/ddfa2347-f602-4aa0-bdb7-50fbc18635ad.mp4",
+      "source_in": 0,
+      "start": 0.0,
+      "duration": 4.458333,
+      "task_id": "ddfa2347-f602-4aa0-bdb7-50fbc18635ad"
+    },
+    {
+      "id": "S06",
+      "path": "renders/runs/S06/b4ff8f36-5299-4c5c-a6f2-d6bfc0293dd0.mp4",
+      "source_in": 0,
+      "start": 4.458333,
+      "duration": 4.458333,
+      "task_id": "b4ff8f36-5299-4c5c-a6f2-d6bfc0293dd0"
+    },
+    {
+      "id": "S03",
+      "path": "renders/runs/S03/e76f9526-9c0f-4d94-a42d-11d678494f9f.mp4",
+      "source_in": 0,
+      "start": 8.916666,
+      "duration": 4.458333,
+      "task_id": "e76f9526-9c0f-4d94-a42d-11d678494f9f"
+    },
+    {
+      "id": "S04",
+      "path": "renders/runs/S04/9a98c53f-4a97-4406-8793-4ca562f7eb2c.mp4",
+      "source_in": 0,
+      "start": 13.374999,
+      "duration": 4.458333,
+      "task_id": "9a98c53f-4a97-4406-8793-4ca562f7eb2c"
+    }
+  ],
+  "captions": [
+    {
+      "shot_id": "S01",
+      "text": "今天车上，多了个小搭子。",
+      "start": 0.2,
+      "duration": 4.058333
+    },
+    {
+      "shot_id": "S06",
+      "text": "黑耳朵，粉格子小围兜。真的好可爱。",
+      "start": 4.658333,
+      "duration": 4.058333
+    },
+    {
+      "shot_id": "S03",
+      "text": "垫子上还有颗小爱心。",
+      "start": 9.116666,
+      "duration": 4.058333
+    },
+    {
+      "shot_id": "S04",
+      "text": "你们喜欢吗？",
+      "start": 13.574999,
+      "duration": 4.058333
+    }
+  ],
+  "captions_status": "draft_from_shot_plan_dialogue_pending_voiceover_alignment",
+  "voiceovers": [],
+  "music": [],
+  "keep_native_audio": true
+}

@@ -21,7 +21,7 @@ Every toy-and-pad combination is a distinct product SKU. The approved standalone
 
 For the current Shuiba Tutu SKU:
 
-- physical black pad dimensions: 24 cm long × 6.5 cm wide;
+- physical black pad dimensions: 23.5 cm long × 6.5 cm wide;
 - physical pad aspect ratio: 24 / 6.5 = 3.6923;
 - the toy identity, costume, face, glasses, hat, limbs, attachment point, and pose are fixed to the approved product photo;
 - the toy-to-pad normalized width, height, center position, overlap, and front/back order are fixed;
@@ -38,7 +38,7 @@ Use scale anchors in this order:
 3. Visible human head width and shoulder width in the same frame.
 4. Physical dimensions only as a final plausibility check.
 
-Do not convert 24 cm directly into image pixels. For wide, medium, close, and detail shots, preserve the product's ratios to the nearby person and belt so the whole assembly scales naturally with camera distance.
+Do not convert 23.5 cm directly into image pixels. For wide, medium, close, and detail shots, preserve the product's ratios to the nearby person and belt so the whole assembly scales naturally with camera distance.
 
 For projected pad width, use the vehicle belt immediately above or below the product at the same depth. Measure both widths perpendicular to their shared centerline. Target pad width = 1.42 × local belt width; accept 1.35–1.50 × and reject anything above 1.55 ×. Do not compare against a distant belt segment or horizontal image width.
 

@@ -3,19 +3,26 @@
 // Canvas (manual edits, canvas generation). Browsers never talk to AutoDL directly.
 
 import { createServer } from 'node:http';
+import { spawn } from 'node:child_process';
 import { readFile, stat, readdir } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { extname, join, resolve, relative, sep } from 'node:path';
 import { listJobs, getJobDetail, getJobRunLog } from './job-store.mjs';
 import {
   createJob, renameJob, patchShotField, submitShot, preflightBatchSubmission, uploadJobAsset,
-  publishShotAudio, pollShot, canvasGenerate, canvasGenerationStatus, reconcileUnconfirmedSubmissions,
+  publishShotAudio, pollShot, canvasGenerate, canvasGenerations, canvasGenerationStatus, reconcileUnconfirmedSubmissions,
   resolveUnconfirmedSubmit, validateJobFiles, recordShotReview, appendJobEvent, canvasIdForJob, findBoundJob, readBinding, syncRequestPlan,
   promoteAssetToLibrary
 } from './job-actions.mjs';
-import { importLibraryAsset, listLibraryAssets, resolveAssetRef } from './asset-library.mjs';
-import { createCanvasProject, deleteCanvasProjects, getCanvasProject, getOrCreateCanvasProject, listCanvasProjects, updateCanvasProject, validCanvasId } from './canvas-store.mjs';
+import { importLibraryAsset, listLibraryAssets, listLibraryEntities, registerLibraryImage, resolveAssetRef, resolveLibraryEntity } from './asset-library.mjs';
+import { createCanvasProject, deleteCanvasProjects, getCanvasProject, getOrCreateCanvasProject, listCanvasProjects, updateCanvasProject, updateWorkbenchNode, validCanvasId } from './canvas-store.mjs';
+import { getChannelBackup, saveChannelBackup } from './channel-config.mjs';
+import { getPromptSourceBackup, savePromptSourceBackup } from './prompt-source-backup.mjs';
+import { saveGeneratedImage, listGeneratedImages, generatedImageFile } from './generated-images.mjs';
 import { composeCut } from './compose.mjs';
+import { exportJianyingDraft, jianyingExportPlan } from './jianying-export.mjs';
+import { listImageHistory, saveImageHistory, deleteImageHistory } from './image-history.mjs';
+import { saveMediaFile, mediaFile, listRecords, saveRecord, getRecord } from './shared-storage.mjs';
 
 const here = resolve(new URL('.', import.meta.url).pathname.replace(/^\/(.:)/, '$1'));
 const repoRoot = resolve(here, '..');
@@ -172,6 +179,25 @@ const server = createServer(async (req, res) => {
       return sendJson(res, 201, await createJob(allJobsRoot, body, { formats, categories }));
     }
 
+    const storedFile = /^\/api\/media-files\/([^/]+)$/.exec(url.pathname);
+    if (storedFile && req.method === 'PUT') return sendJson(res, 201, await saveMediaFile(allJobsRoot, decode(storedFile[1]), await readBodyBuffer(req, MAX_CANVAS_BODY_BYTES), req.headers['content-type']));
+    if (storedFile && req.method === 'GET') {
+      const file = await mediaFile(allJobsRoot, decode(storedFile[1]));
+      return file ? serveFile(file.path, file.mimeType, res, { allowRange: true }, req.headers.range) : sendJson(res, 404, { error: '文件尚未保存到服务端' });
+    }
+    if (storedFile && req.method === 'HEAD') {
+      const file = await mediaFile(allJobsRoot, decode(storedFile[1]));
+      res.writeHead(file ? 200 : 404); return res.end();
+    }
+    const recordCollection = /^\/api\/shared-records\/([^/]+)$/.exec(url.pathname);
+    if (recordCollection && req.method === 'GET') return sendJson(res, 200, await listRecords(allJobsRoot, decode(recordCollection[1])));
+    const sharedRecord = /^\/api\/shared-records\/([^/]+)\/([^/]+)$/.exec(url.pathname);
+    if (sharedRecord && req.method === 'GET') {
+      const value = await getRecord(allJobsRoot, decode(sharedRecord[1]), decode(sharedRecord[2]));
+      return value ? sendJson(res, 200, value) : sendJson(res, 404, { error: '记录不存在' });
+    }
+    if (sharedRecord && ['PUT', 'DELETE'].includes(req.method)) return sendJson(res, 200, await saveRecord(allJobsRoot, decode(sharedRecord[1]), decode(sharedRecord[2]), req.method === 'PUT' ? await readJsonBody(req, MAX_CANVAS_BODY_BYTES) : null, req.method === 'DELETE'));
+
     // Infinite Canvas manual generation: prompt + reference images in, task/shot ids out.
     if (req.method === 'POST' && url.pathname === '/api/canvas/generate') {
       const body = await readJsonBody(req, MAX_CANVAS_BODY_BYTES);
@@ -180,6 +206,7 @@ const server = createServer(async (req, res) => {
       if (result.task_id && ['QUEUED', 'RUNNING'].includes(result.status)) schedulePollShot(result.job_id, result.shot_id, result.task_id, token, 1500);
       return sendJson(res, result.dry_run ? 200 : 202, result);
     }
+    if (req.method === 'GET' && url.pathname === '/api/canvas/generations') return sendJson(res, 200, await canvasGenerations(allJobsRoot, String(url.searchParams.get('canvas_id') || ''), url.searchParams.getAll('node_id')));
     const canvasStatus = route(req, 'GET', /^\/api\/canvas\/generate\/([^/]+)\/([^/]+)$/, url);
     if (canvasStatus) {
       const jobId = decode(canvasStatus[1]);
@@ -189,6 +216,12 @@ const server = createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && url.pathname === '/api/library') return sendJson(res, 200, await listLibraryAssets(allJobsRoot));
+    if (req.method === 'GET' && url.pathname === '/api/library/entities') return sendJson(res, 200, await listLibraryEntities(allJobsRoot));
+    if (req.method === 'GET' && url.pathname === '/api/library/entities/resolve') {
+      const result = await resolveLibraryEntity(allJobsRoot, url.searchParams.get('q'), url.searchParams.get('use') || 'installed', url.searchParams.get('seat') || 'driver');
+      return sendJson(res, result.status, result.body);
+    }
+    if (req.method === 'POST' && url.pathname === '/api/library/entities/register') return sendJson(res, 200, await registerLibraryImage(allJobsRoot, await readJsonBody(req)));
     if (req.method === 'POST' && url.pathname === '/api/library/import') {
       const bytes = await readBodyBuffer(req, MAX_CANVAS_BODY_BYTES);
       return sendJson(res, 201, await importLibraryAsset(allJobsRoot, { category: url.searchParams.get('category'), group: url.searchParams.get('group'), name: url.searchParams.get('name'), mimeType: req.headers['content-type'], bytes }));
@@ -201,6 +234,51 @@ const server = createServer(async (req, res) => {
       if (!target) return sendJson(res, 403, { error: 'Forbidden' });
       const type = ({ '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' })[extname(target).toLowerCase()] || 'application/octet-stream';
       return serveFile(target, type, res);
+    }
+    // Shared channel config: merge edits without replacing another browser's channels.
+    if (req.method === 'GET' && url.pathname === '/api/config/channels') {
+      const backup = await getChannelBackup(allJobsRoot);
+      return backup ? sendJson(res, 200, backup) : sendJson(res, 404, { error: 'No backup saved yet' });
+    }
+    if (req.method === 'PUT' && url.pathname === '/api/config/channels') {
+      const body = await readJsonBody(req);
+      return sendJson(res, 200, await saveChannelBackup(allJobsRoot, body.channels, body.deletedIds));
+    }
+    if (req.method === 'GET' && url.pathname === '/api/config/prompt-sources') {
+      const backup = await getPromptSourceBackup(allJobsRoot);
+      return backup ? sendJson(res, 200, backup) : sendJson(res, 404, { error: 'No backup saved yet' });
+    }
+    if (req.method === 'PUT' && url.pathname === '/api/config/prompt-sources') {
+      const body = await readJsonBody(req);
+      return sendJson(res, 200, await savePromptSourceBackup(allJobsRoot, body.sources));
+    }
+    if (req.method === 'GET' && url.pathname === '/api/image-history') return sendJson(res, 200, await listImageHistory(allJobsRoot));
+    if (req.method === 'DELETE' && url.pathname === '/api/image-history') {
+      const body = await readJsonBody(req);
+      await deleteImageHistory(allJobsRoot, body.ids);
+      return sendJson(res, 200, { ok: true });
+    }
+    const historyWrite = route(req, 'PUT', /^\/api\/image-history\/([^/]+)$/, url);
+    if (historyWrite) return sendJson(res, 200, await saveImageHistory(allJobsRoot, decode(historyWrite[1]), await readJsonBody(req, MAX_CANVAS_BODY_BYTES)));
+    if (req.method === 'GET' && url.pathname === '/api/generated-images') return sendJson(res, 200, await listGeneratedImages(allJobsRoot));
+    if (req.method === 'POST' && url.pathname === '/api/generated-images') {
+      const bytes = await readBodyBuffer(req, MAX_CANVAS_BODY_BYTES);
+      return sendJson(res, 201, await saveGeneratedImage(allJobsRoot, bytes, req.headers['content-type'], Object.fromEntries(url.searchParams)));
+    }
+    const generatedFile = route(req, 'GET', /^\/api\/generated-images\/([^/]+)\/file$/, url);
+    if (generatedFile) {
+      const file = await generatedImageFile(allJobsRoot, decode(generatedFile[1]));
+      return file ? serveFile(file.path, file.mimeType, res) : sendJson(res, 404, { error: '图片不存在' });
+    }
+    const workbenchNode = route(req, 'PATCH', /^\/api\/canvases\/([^/]+)\/nodes\/([^/]+)\/workbench$/, url);
+    if (workbenchNode) {
+      const canvasId = decode(workbenchNode[1]);
+      if (!validCanvasId(canvasId)) return sendJson(res, 400, { error: 'Invalid canvas id' });
+      const body = await readJsonBody(req, MAX_CANVAS_BODY_BYTES);
+      if (!['bind', 'complete'].includes(body.action) || typeof body.taskId !== 'string' || !body.taskId) return sendJson(res, 400, { error: '无效的生成任务' });
+      const result = await updateWorkbenchNode(allJobsRoot, canvasId, decode(workbenchNode[2]), body);
+      if (result.applied) broadcastCanvas(canvasId, result.project, null);
+      return sendJson(res, 200, result);
     }
     // Canvas projects: single server-side source of truth (production/canvases/) so every browser
     // tab and Agent connecting to this runner shares the same canvas instead of per-browser storage.
@@ -281,6 +359,12 @@ const server = createServer(async (req, res) => {
       if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
       return sendJson(res, 200, await validateJobFiles(allJobsRoot, jobId));
     }
+    const jianyingPlan = route(req, 'GET', /^\/api\/jobs\/([^/]+)\/jianying-export$/, url);
+    if (jianyingPlan) {
+      const jobId = decode(jianyingPlan[1]);
+      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
+      return sendJson(res, 200, await jianyingExportPlan(allJobsRoot, jobId));
+    }
     if (req.method === 'GET' && url.pathname === '/api/jobs') return sendJson(res, 200, await listJobs(allJobsRoot));
     if (req.method === 'GET' && url.pathname.startsWith('/api/jobs/')) {
       const jobId = decode(url.pathname.slice('/api/jobs/'.length));
@@ -296,6 +380,24 @@ const server = createServer(async (req, res) => {
       const body = await readJsonBody(req);
       if (!body.field || body.value === undefined) return sendJson(res, 400, { error: 'Body must include { field, value }' });
       return sendJson(res, 200, await patchShotField(allJobsRoot, jobId, decode(shotField[2]), body.field, body.value));
+    }
+    // Opens the OS file manager on a file of this job (the runner only listens on 127.0.0.1). The path must
+    // stay inside the job folder; arguments are passed without a shell.
+    const revealFile = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/reveal$/, url);
+    if (revealFile) {
+      const jobId = decode(revealFile[1]);
+      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
+      const { path } = await readJsonBody(req);
+      const jobDir = resolve(allJobsRoot, jobId);
+      const target = resolve(jobDir, String(path || ''));
+      if (!String(path || '') || String(path).split(/[\\/]/).includes('..') || !target.startsWith(jobDir + sep)) return sendJson(res, 400, { error: '文件路径无效' });
+      if (!(await stat(target).then(info => info.isFile(), () => false))) return sendJson(res, 404, { error: '文件不存在' });
+      const [command, args, options] = process.platform === 'win32' ? ['explorer.exe', [`/select,"${target}"`], { windowsVerbatimArguments: true }]
+        : process.platform === 'darwin' ? ['open', ['-R', target], {}] : ['xdg-open', [resolve(target, '..')], {}];
+      const child = spawn(command, args, { detached: true, stdio: 'ignore', ...options });
+      child.on('error', () => {});
+      child.unref();
+      return sendJson(res, 200, { opened: true, path: target });
     }
     const assetPromote = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/assets\/promote$/, url);
     if (assetPromote) {
@@ -363,6 +465,12 @@ const server = createServer(async (req, res) => {
       const jobId = decode(shotReview[1]);
       if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
       return sendJson(res, 200, await recordShotReview(allJobsRoot, jobId, decode(shotReview[2]), await readJsonBody(req)));
+    }
+    const jianyingExport = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/jianying-export$/, url);
+    if (jianyingExport) {
+      const jobId = decode(jianyingExport[1]);
+      if (!validJobId(jobId)) return sendJson(res, 400, { error: 'Invalid job id' });
+      return sendJson(res, 200, await exportJianyingDraft(allJobsRoot, jobId, await readJsonBody(req)));
     }
     const resumePoll = route(req, 'POST', /^\/api\/jobs\/([^/]+)\/resume-poll$/, url);
     if (resumePoll) {

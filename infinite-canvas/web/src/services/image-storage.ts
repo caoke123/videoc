@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import i18n from "@/i18n";
 import { withLocalProxy } from "@/stores/use-config-store";
 import { createImageThumbnail } from "@/lib/image-thumbnail";
+import { fetchMediaBlob, mediaFileExists, mediaFileUrl, saveMediaBlob } from "@/services/api/shared-storage";
 
 export type UploadedImage = {
     url: string;
@@ -25,7 +26,6 @@ let previewRevision = 0;
 let previewQueue: Promise<unknown> = Promise.resolve();
 const IMAGE_PREVIEW_VERSION = 1;
 const IMAGE_DOWNLOAD_TIMEOUT_MS = 10 * 60_000;
-const IMAGE_REMOTE_LOAD_TIMEOUT_MS = 10 * 60_000;
 const IMAGE_DECODE_TIMEOUT_MS = 10_000;
 const IMAGE_RESPONSE_ERROR = "ImageResponseError";
 const IMAGE_TIMEOUT_ERROR = "ImageTimeoutError";
@@ -37,14 +37,12 @@ type ImageReadOptions = { signal?: AbortSignal };
 export async function uploadImage(input: string | Blob, options?: ImageReadOptions): Promise<UploadedImage> {
     if (typeof input !== "string") return storeImage(input, options);
 
-    let blob: Blob;
-    try {
-        blob = await fetchImageBlob(input, options);
-    } catch (error) {
-        if (options?.signal?.aborted || isNamedError(error, IMAGE_RESPONSE_ERROR) || isNamedError(error, IMAGE_TIMEOUT_ERROR) || !/^https?:\/\//i.test(input)) throw error;
-        const meta = await loadImageMeta(input, options, IMAGE_REMOTE_LOAD_TIMEOUT_MS);
-        if (!meta) throw error;
-        return { url: input, width: meta.width, height: meta.height, bytes: 0, mimeType: "" };
+    const blob = await fetchImageBlob(input, options);
+    const existing = /^\/api\/media-files\/([^/]+)$/.exec(input);
+    if (existing) {
+        const meta = await loadImageMeta(input, options);
+        if (!meta) throw new Error(i18n.t("common.imageReadFailed"));
+        return { url: input, storageKey: decodeURIComponent(existing[1]), width: meta.width, height: meta.height, bytes: blob.size, mimeType: blob.type };
     }
     return storeImage(blob, options);
 }
@@ -56,14 +54,16 @@ async function storeImage(blob: Blob, options?: ImageReadOptions): Promise<Uploa
         const meta = await loadImageMeta(url, options);
         if (!meta) throw new Error(i18n.t("common.imageReadFailed"));
         throwIfAborted(options?.signal);
-        await store.setItem(storageKey, blob);
+        await store.setItem(storageKey, blob).catch(() => undefined);
+        const saved = await saveMediaBlob(storageKey, blob);
         throwIfAborted(options?.signal);
-        objectUrls.set(storageKey, url);
+        objectUrls.set(storageKey, saved.url);
         await storeImagePreview(storageKey, blob);
-        return { url, storageKey, width: meta.width, height: meta.height, bytes: blob.size, mimeType: blob.type.startsWith("image/") ? blob.type : "" };
+        URL.revokeObjectURL(url);
+        return { url: saved.url, storageKey, width: meta.width, height: meta.height, bytes: blob.size, mimeType: blob.type.startsWith("image/") ? blob.type : "" };
     } catch (error) {
         URL.revokeObjectURL(url);
-        await store.removeItem(storageKey).catch(() => undefined);
+        // Keep the original cached bytes for recovery if the server could not save them.
         throw error;
     }
 }
@@ -128,10 +128,6 @@ function namedError(name: string) {
     return error;
 }
 
-function isNamedError(error: unknown, name: string) {
-    return error instanceof Error && error.name === name;
-}
-
 function abortReason(signal: AbortSignal) {
     return signal.reason instanceof Error ? signal.reason : new DOMException("Aborted", "AbortError");
 }
@@ -141,18 +137,28 @@ function throwIfAborted(signal?: AbortSignal) {
 }
 
 export async function resolveImageUrl(storageKey?: string, fallback = "") {
+    if (fallback.startsWith("/api/")) return fallback;
     if (!storageKey) return fallback;
     const cached = objectUrls.get(storageKey);
     if (cached) return cached;
+    if (await mediaFileExists(storageKey)) {
+        const url = mediaFileUrl(storageKey);
+        objectUrls.set(storageKey, url);
+        return url;
+    }
     const blob = await store.getItem<Blob>(storageKey);
     if (!blob) return fallback;
-    const url = URL.createObjectURL(blob);
+    const { url } = await saveMediaBlob(storageKey, blob);
     objectUrls.set(storageKey, url);
     return url;
 }
 
 export async function getImageBlob(storageKey: string) {
-    return store.getItem<Blob>(storageKey);
+    const saved = await fetchMediaBlob(storageKey);
+    if (saved) return saved;
+    const original = await store.getItem<Blob>(storageKey);
+    if (original) await saveMediaBlob(storageKey, original);
+    return original;
 }
 
 // 缩略图按图片的 storageKey 另存一份 WebP，只放在本地 IndexedDB 里，不写进节点数据，也不参与导出和 WebDAV 同步。
@@ -214,16 +220,16 @@ async function deleteImagePreview(storageKey: string) {
 }
 
 export async function setImageBlob(storageKey: string, blob: Blob) {
-    await store.setItem(storageKey, blob);
+    const { url } = await saveMediaBlob(storageKey, blob);
+    await store.setItem(storageKey, blob).catch(() => undefined);
     await deleteImagePreview(storageKey);
     await storeImagePreview(storageKey, blob);
-    const url = URL.createObjectURL(blob);
     objectUrls.set(storageKey, url);
     return url;
 }
 
 export async function imageToDataUrl(image: { url?: string; dataUrl?: string; storageKey?: string }, options?: ImageReadOptions) {
-    const url = image.dataUrl || (await resolveImageUrl(image.storageKey, image.url || ""));
+    const url = await resolveImageUrl(image.storageKey, image.dataUrl || image.url || "");
     if (!url || url.startsWith("data:")) return url;
     return blobToDataUrl(await fetchImageBlob(url, options));
 }

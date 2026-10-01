@@ -8,6 +8,8 @@ export type RawPrompt = {
     description: string;
     coverUrl: string;
     referenceImageUrls: string[];
+    referenceImageNames?: string[];
+    applyMode?: "replace" | "append";
     tags: string[];
     preview: string;
     createdAt: string;
@@ -68,6 +70,8 @@ function normalizeItems(values: unknown[], source: PromptSource) {
             description: stringValue(record.description),
             coverUrl,
             referenceImageUrls,
+            referenceImageNames: stringArray(record.referenceImageNames),
+            applyMode: record.applyMode === "replace" || record.applyMode === "append" ? record.applyMode : undefined,
             tags: stringArray(record.tags),
             preview: stringValue(record.preview),
             createdAt: stringValue(record.createdAt),

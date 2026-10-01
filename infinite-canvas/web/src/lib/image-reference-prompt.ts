@@ -9,6 +9,6 @@ export function imageReferenceLabel(index: number) {
 export function buildImageReferencePromptText(prompt: string, references: ReferenceImage[]) {
     const text = prompt.trim();
     if (!references.length) return text;
-    const labels = references.map((_, index) => imageReferenceLabel(index));
+    const labels = references.map((reference, index) => `${imageReferenceLabel(index)}${reference.name ? `（${reference.name}）` : ""}`);
     return i18n.t("imageReferences.promptPrefix", { labels: labels.join(i18n.t("imageReferences.separator")), prompt: text });
 }

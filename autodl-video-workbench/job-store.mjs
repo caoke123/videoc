@@ -133,7 +133,7 @@ export async function readReviewSummary(jobDir, runState) {
     if (!line.includes('"review_')) continue;
     try {
       const event = JSON.parse(line);
-      if (/^review_(accepted|rejected)$/.test(event.type) && event.shot_id) latest.set(event.shot_id, event);
+      if (/^review_(accepted|rejected|reset)$/.test(event.type) && event.shot_id) latest.set(event.shot_id, event);
     } catch { /* ignore a malformed line */ }
   }
   const runs = runState?.shots ? Object.entries(runState.shots) : (runState?.task_id ? [['MAIN', runState]] : []);
@@ -141,7 +141,7 @@ export async function readReviewSummary(jobDir, runState) {
   for (const [shotId, run] of runs) {
     if (normalizeStatus(run?.status) !== 'success' || !run.task_id) continue;
     const event = latest.get(shotId);
-    shots[shotId] = event && event.run_id === run.task_id
+    shots[shotId] = event && event.run_id === run.task_id && event.type !== 'review_reset'
       ? { state: event.type === 'review_accepted' ? 'accepted' : 'rejected', category: event.category || null, note: event.note || null }
       : { state: 'pending' };
   }

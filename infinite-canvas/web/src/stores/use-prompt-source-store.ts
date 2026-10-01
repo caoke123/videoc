@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { DEFAULT_PROMPT_SOURCES, createPromptSource, type PromptSource } from "@/services/api/prompt-source-presets";
+import { deleteSharedRecord, listSharedRecords, saveSharedRecord } from "@/services/api/shared-storage";
 
 export type PromptSourceSchedule = {
     intervalMinutes: number;
@@ -26,6 +27,10 @@ type PromptSourceStore = {
     toggleSource: (id: string, enabled: boolean) => void;
     updateSchedule: <K extends keyof PromptSourceSchedule>(key: K, value: PromptSourceSchedule[K]) => void;
 };
+
+function customSources(sources: PromptSource[]) {
+    return sources.filter((source) => !source.builtIn);
+}
 
 export const usePromptSourceStore = create<PromptSourceStore>()(
     persist(
@@ -57,3 +62,34 @@ export const usePromptSourceStore = create<PromptSourceStore>()(
         },
     ),
 );
+
+let applyingSources = false;
+async function syncSources() {
+    const shared = await listSharedRecords<PromptSource>("prompt-sources");
+    const { fetchPromptSourceBackup } = await import("@/services/api/prompt-source-backup");
+    const backup = await fetchPromptSourceBackup() || [];
+    const known = new Set([...shared.items.map(source => source.id), ...shared.deletedIds]);
+    for (const source of [...customSources(usePromptSourceStore.getState().sources), ...backup]) {
+        if (known.has(source.id)) continue;
+        await saveSharedRecord("prompt-sources", source.id, source);
+        shared.items.push(source); known.add(source.id);
+    }
+    applyingSources = true;
+    try { usePromptSourceStore.setState(state => ({ sources: [...state.sources.filter(source => source.builtIn), ...shared.items] })); }
+    finally { applyingSources = false; }
+}
+function reportSourceError(error: unknown) {
+    console.error("提示词来源同步失败", error);
+    void import("antd").then(({ message }) => message.error("提示词来源未同步，请检查本地服务后刷新"));
+}
+let sourceWrites = syncSources().catch(reportSourceError);
+usePromptSourceStore.subscribe((state, previous) => {
+    if (applyingSources || state.sources === previous.sources) return;
+    const custom = customSources(state.sources);
+    const before = customSources(previous.sources);
+    sourceWrites = sourceWrites.then(async () => {
+        for (const source of custom) if (JSON.stringify(source) !== JSON.stringify(before.find(item => item.id === source.id))) await saveSharedRecord("prompt-sources", source.id, source);
+        for (const source of before) if (!custom.some(item => item.id === source.id)) await deleteSharedRecord("prompt-sources", source.id);
+    }).catch(reportSourceError);
+});
+window.addEventListener("focus", () => { sourceWrites = sourceWrites.then(syncSources).catch(reportSourceError); });

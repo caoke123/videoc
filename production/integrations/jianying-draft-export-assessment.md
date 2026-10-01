@@ -33,3 +33,16 @@ Before integrating any exporter:
 4. Open in Jianying, check video/audio/caption timing, save, close, reopen, and verify media remains online. This basic round-trip has passed for the current diagnostic draft; repeat with approved H3/Seed Audio media during the first real production batch.
 5. The user performs final fine edit and manual export in Jianying. Automated MP4 export is explicitly out of scope.
 6. Keep a rollback copy and never overwrite existing drafts.
+
+## First real-job draft (2026-10-01)
+
+- Job `canvas-85113607-8e34-4fce-9571-3fd928f49412` (帕恰狗粉格围兜款，4 个已通过审片的 H3 镜头)。`edit/edit-plan.json` 用 ffprobe 的实际时长（4.458 秒/镜，合计 17.83 秒，超过计划的 13 秒；草稿保留完整时长由用户精剪）。
+- 适配脚本 `.agents/skills/ecommerce-video-edit/scripts/export_jianying_draft.py` 只读 `edit-plan.json`，调用同一提交 `32c5692…` 的 `luoluoluo22/jianying-editor-skill`（MIT）的草稿写入接口，强制 `overwrite=False`，目标草稿名已存在则拒绝。导出库装在临时 venv，不进项目依赖。
+- 生成草稿 `帕恰狗_主驾分享_粗剪测试_20261001`：1080×1920，视频轨 4 段（0 / 4.46 / 8.92 / 13.37 秒），字幕轨 4 条（分镜对白，标记为待按配音校对），保留 H3 原生音轨；素材未转码，原样复制进草稿 `materials/`。
+- 草稿主文件是旧格式 `draft_info.json`；9 月 26 日那份已确认能打开的测试草稿在剪映 11.5 打开后被转成了新目录结构（`Timelines/` 等），说明剪映会自动转换。本次草稿的剪映内打开、保存、关闭重开仍待用户确认。
+- 未接入剪映的自动导出，成片由用户在剪映里手动导出。
+
+## Task-page export button (2026-10-01)
+
+- 任务页「导出剪映草稿」调用本机执行器 `GET/POST /api/jobs/<id>/jianying-export`（`autodl-video-workbench/jianying-export.mjs`）：审片全部完成（无待审镜头）才可用；只取已通过审片的当前版本；顺序和字幕可在弹窗里调整；写 `edit/edit-plan.json`（上一份留作 `edit-plan.prev.json`），再调用适配脚本，结果记入运行日志 `jianying_draft_exported`。
+- 导出组件由 `autodl-video-workbench/scripts/setup-jianying-exporter.mjs` 安装到 `tools/jianying-exporter/`（git 忽略：固定到提交 32c5692 的克隆 + 独立 Python 3.12 venv）。环境变量 `JIANYING_EXPORTER_DIR` 可改安装位置，`JIANYING_DRAFTS_ROOT` 可改草稿目录（默认剪映标准目录）。

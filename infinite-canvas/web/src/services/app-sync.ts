@@ -1,4 +1,6 @@
-import localforage from "localforage";
+import { createServerRecordStore } from "@/services/server-record-store";
+import { listImageHistory, saveImageHistory } from "@/services/api/image-history";
+import { persistMediaReferences } from "@/services/persistent-media";
 
 import i18n from "@/i18n";
 import { getMediaBlob, resolveMediaUrl, setMediaBlob } from "@/services/file-storage";
@@ -74,9 +76,18 @@ export type AppSyncProgressEvent = {
 export type AppSyncProgress = (event: AppSyncProgressEvent) => void;
 
 const FILE_CONCURRENCY = 3;
-const imageLogStore = localforage.createInstance({ name: "infinite-canvas", storeName: "image_generation_logs" });
-const videoLogStore = localforage.createInstance({ name: "infinite-canvas", storeName: "video_generation_logs" });
-type LogStore = typeof imageLogStore;
+type LogStore = {
+    iterate<T, R>(callback: (value: T, key: string, iteration: number) => R): Promise<unknown>;
+    setItem<T>(id: string, value: T): Promise<unknown>;
+};
+const imageLogStore: LogStore = {
+    async iterate<T, R>(callback: (value: T, key: string, iteration: number) => R) {
+        const items = await listImageHistory<T & { id: string }>();
+        items.forEach((item, index) => callback(item, item.id, index + 1));
+    },
+    async setItem<T>(id: string, value: T) { return saveImageHistory(await persistMediaReferences({ ...value, id })); },
+};
+const videoLogStore: LogStore = createServerRecordStore("video-history", "video_generation_logs");
 const storageKeyPattern = /^(image|video|audio|file|video-reference|audio-reference):/;
 
 export async function syncAppDataToWebdav(config: WebdavSyncConfig, onProgress?: AppSyncProgress): Promise<AppSyncResult> {
@@ -274,7 +285,6 @@ async function readStoredLogs(store: LogStore) {
 }
 
 async function replaceStoredLogs(store: LogStore, logs: StoredLog[]) {
-    await store.clear();
     await runWithConcurrency(logs, FILE_CONCURRENCY, async (log) => {
         const id = getStringField(log, "id");
         if (id) await store.setItem(id, log);

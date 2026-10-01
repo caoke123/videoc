@@ -1,0 +1,27 @@
+{
+  "job_id": "canvas-0671e649-6feb-4040-97ae-66e502028f62",
+  "format_id": "ugc-multi-shot",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "purpose": "画布手动生成",
+      "duration": 4,
+      "references": [
+        {
+          "path": "assets/source/b1292cda1f2f.jpg",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "role": "画布选择"
+        }
+      ],
+      "status": "planned",
+      "source": "infinite-canvas"
+    }
+  ]
+}

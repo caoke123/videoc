@@ -1,0 +1,152 @@
+{
+  "schema_version": 2,
+  "job_id": "pachagou-bib-driver-share-13s-20261001",
+  "category_id": "seatbelt-shoulder-pad",
+  "format_id": "ugc-multi-shot",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "start_seconds": 0,
+      "end_seconds": 3,
+      "duration": 3,
+      "purpose": "主驾开场，女主发现肩上的小搭子并开口。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "今天车上，多了个小搭子。",
+      "audio_direction": "女主对镜自然说普通话，带一点惊喜，尾音上扬；车内低沉怠速声、织带轻微摩擦声；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "女主身份与造型：只继承脸型、五官、肤色、发型发色、体型与造型；不继承该图自身的背景、姿势、构图与光线"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "帕恰狗（粉格围兜款）SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+        }
+      ],
+      "primary_action": "0–1.5s：刚系好安全带坐稳，视线落到左肩的帕恰狗；1.5–3s：抬头看向镜头说出台词，不触碰产品。",
+      "camera": "主驾前方仪表台/挡风玻璃区域朝车尾，未镜像；主驾、左门、左 B 柱和方向盘在画面右，中控在画面左，肩带右上至左下。",
+      "end_state": "女主微笑看镜头，帕恰狗和爱心贴标完整清楚，安全带连续平整、绷直贴身，同一张脸不漂。",
+      "status": "draft_for_user_review"
+    },
+    {
+      "shot_id": "S02",
+      "start_seconds": 3,
+      "end_seconds": 7,
+      "duration": 4,
+      "purpose": "镜头缓推到玩偶，说出看得见的特征。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "黑耳朵，粉格子小围兜。真的好可爱。",
+      "audio_direction": "同一女主对镜说话，语速比 S01 略慢；环境音同 S01，随推近略降低；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "女主身份与造型：只继承脸型、五官、肤色、发型发色、体型与造型；不继承该图自身的背景、姿势、构图与光线"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "帕恰狗（粉格围兜款）SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+        }
+      ],
+      "primary_action": "0–2s：延续 S01 坐姿，说前半句；2–4s：镜头缓缓推近肩部，视线随话语看向玩偶再回到镜头，双手放在腿上，不触碰产品。",
+      "camera": "延续 S01 机位小幅推近，未镜像；推近后玩偶占比变大但脸部仍在画面内。",
+      "end_state": "黑耳朵、粉格围兜、爱心贴标清晰，耳朵不被压进垫体，护肩套宽约为局部带宽 1.42 倍，人物与 S01 同一张脸。",
+      "status": "draft_for_user_review"
+    },
+    {
+      "shot_id": "S03",
+      "start_seconds": 7,
+      "end_seconds": 10,
+      "duration": 3,
+      "purpose": "产品近景，强化商品身份与爱心贴标，画外旁白。",
+      "generation_mode": "standalone_product_reference",
+      "audio_mode": "native",
+      "dialogue": "垫子上还有颗小爱心。",
+      "audio_direction": "同一女声画外旁白，语气轻快；环境音延续 S02；最后 0.5 秒轻音乐淡入；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "帕恰狗（粉格围兜款）SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+        }
+      ],
+      "primary_action": "固定近景：安全带连续穿过护肩套中心，爱心 mua 贴标位于垫体上部清晰可见，玩偶毛绒质感在自然光下可辨；无人物入镜，无安装或调整动作。",
+      "camera": "护肩套与局部安全带特写，浅景深，车内背景虚化。",
+      "end_state": "玩偶与黑垫是同一刚性整体，贴标位置、大小与参考一致，安全带绷直贴身，无文字水印。",
+      "status": "draft_for_user_review"
+    },
+    {
+      "shot_id": "S04",
+      "start_seconds": 10,
+      "end_seconds": 13,
+      "duration": 3,
+      "purpose": "回到对镜，自然收尾。",
+      "generation_mode": "character_and_installed_product_reference",
+      "audio_mode": "native",
+      "dialogue": "你们喜欢吗？",
+      "audio_direction": "女主对镜自然说普通话，带笑意，句尾略上扬；环境音与音乐自然收束；最终可由用户提供的 Seed Audio 替换。",
+      "references": [
+        {
+          "path": "library:characters/approved/urban-woman-a-20260925-v1.png",
+          "role": "女主身份与造型：只继承脸型、五官、肤色、发型发色、体型与造型；不继承该图自身的背景、姿势、构图与光线"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+          "role": "帕恰狗（粉格围兜款）SKU 完整身份真值"
+        },
+        {
+          "path": "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+          "role": "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境"
+        },
+        {
+          "path": "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+          "role": "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值"
+        },
+        {
+          "path": "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png",
+          "role": "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+        }
+      ],
+      "primary_action": "镜头由 S03 近景切回主驾中近景，女主转头看向镜头说出台词，笑意自然，不做手部动作。",
+      "camera": "回到 S01 机位，未镜像，构图与光线延续 S01。",
+      "end_state": "人物与 S01、S02 同一张脸，帕恰狗完整可辨，作为全片收尾帧。",
+      "status": "draft_for_user_review"
+    }
+  ]
+}

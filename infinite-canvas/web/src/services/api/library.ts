@@ -15,12 +15,31 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return data as T;
 }
 
+export type LibraryEntityType = "sku" | "character" | "scene" | "material";
+export type LibraryEntityImage = LibraryAssetItem & { role: string; kind?: string };
+export type LibraryEntity = {
+    id: string;
+    type: LibraryEntityType;
+    name: string;
+    aliases: string[];
+    status: "approved" | "pending";
+    category: string | null;
+    folder: string;
+    sidecar: string;
+    cover: string | null;
+    images: LibraryEntityImage[];
+    related: string[];
+    meta: Record<string, unknown>;
+    warnings: string[];
+};
+export type LibraryEntities = { entities: LibraryEntity[]; unassigned: LibraryAssetItem[]; problems: string[] };
+
 export const listLibrary = () => request<LibraryCategory[]>("/api/library");
+export const listLibraryEntities = () => request<LibraryEntities>("/api/library/entities");
 export const libraryFileUrl = (path: string) => `/api/library/files/${path.split("/").map(encodeURIComponent).join("/")}`;
 
 export type ImportLibraryAssetResult = { ref: string; path: string; duplicate: boolean };
-export const importLibraryAsset = (blob: Blob, category: string, name: string, group?: string) => {
-    const query = new URLSearchParams({ category, name });
-    if (group) query.set("group", group);
-    return request<ImportLibraryAssetResult>(`/api/library/import?${query}`, { method: "POST", headers: { "Content-Type": blob.type || "application/octet-stream" }, body: blob });
-};
+export const importLibraryAsset = (blob: Blob, name: string) => request<ImportLibraryAssetResult>(`/api/library/import?${new URLSearchParams({ name })}`, { method: "POST", headers: { "Content-Type": blob.type || "application/octet-stream" }, body: blob });
+
+export type RegisterImageBody = { path: string } & ({ entityId: string; role: "identity" | "driver" | "passenger" | "other"; label?: string } | { create: { type: "character" | "scene" | "material"; name: string }; label?: string });
+export const registerLibraryImage = (body: RegisterImageBody) => request<{ entityId: string; path: string; ref: string }>("/api/library/entities/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });

@@ -328,7 +328,7 @@ export default {
     },
     navigation: {
         canvas: "我的画布",
-        production: "任务历史",
+        production: "任务管理",
         image: "生图工作台",
         video: "视频创作台",
         prompts: "提示词库",

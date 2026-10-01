@@ -1,0 +1,91 @@
+{
+  "job_id": "pachagou-bib-driver-share-13s-20261001",
+  "derived_from": "shot-plan",
+  "media_type": "video",
+  "workflow_id": "minimax_h3_z0903",
+  "resolution": "768p竖(768*1376)",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "seed": 227502102,
+      "prompt": "Vertical 9:16 realistic Chinese UGC video, 3 seconds. Reference image 1 is the only person in this video: the exact woman who must appear; use her face, hairstyle, hair color, skin tone, build and her cream ribbed knit top. Reference image 2 is the exact plush-and-pad product. Reference image 3 is a photo of a DIFFERENT woman wearing the product; use it ONLY for how the seatbelt passes through the center of the pad and for the pad's position and proportion on the shoulder. Do NOT take from reference image 3 her face, hair or hairstyle, skin, body, pose, clothing (a white off-shoulder top) or the black car interior; none of these may appear in the video. Reference image 4 is the heart-label black pad material. Reference image 5 is the car cabin (pearl white leather seats, blue ambient trim) and the only environment to use. Only the woman from reference image 1 appears. A parked left-hand-drive premium sedan with pearl white leather seats, dark center console and subtle blue ambient trim, never mirrored. Dashboard-front camera faces the driver; the woman from reference image 1 sits naturally in the driver seat, with the left door, left B-pillar and steering wheel on the right side of the frame and the center console on the left. The product is the exact white fluffy plush dog from the product reference: two upright black ears, black bead eyes and nose, pink cheeks, a pink gingham bib with white pom-pom trim, mounted on a black knit seatbelt shoulder pad with a small pink heart 'mua' label near the top of the pad (about 8 by 11 cm plush, ears slightly wider than the pad), already correctly installed: a continuous, flat, taut, straight belt runs from upper right through the center of the pad to lower left, lying flat against the torso with no twist, kink, slack or bulge. She has just buckled up, her eyes drop to the plush on her left shoulder, then she looks up at the camera with a pleased smile, one restrained handheld-style camera push-in. She speaks exactly in Mandarin: “今天车上，多了个小搭子。” Preserve the exact plush shape, ear shape, black pad texture, heart label position, belt placement, car geometry and lighting. No text overlay, no logo, no touching or adjusting the product, no installation action, no safety claims.",
+      "duration": 3,
+      "start_seconds": 0,
+      "ref_images": [
+        "library:characters/approved/urban-woman-a-20260925-v1.png",
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+        "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+        "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png"
+      ],
+      "reference_roles": [
+        "女主身份与造型：只继承脸型、五官、肤色、发型发色、体型与造型；不继承该图自身的背景、姿势、构图与光线",
+        "帕恰狗（粉格围兜款）SKU 完整身份真值",
+        "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境",
+        "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值",
+        "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+      ]
+    },
+    {
+      "shot_id": "S02",
+      "seed": 272125078,
+      "prompt": "Vertical 9:16 realistic Chinese UGC video, 4 seconds. Reference image 1 is the only person in this video: the exact woman who must appear; use her face, hairstyle, hair color, skin tone, build and her cream ribbed knit top. Reference image 2 is the exact plush-and-pad product. Reference image 3 is a photo of a DIFFERENT woman wearing the product; use it ONLY for how the seatbelt passes through the center of the pad and for the pad's position and proportion on the shoulder. Do NOT take from reference image 3 her face, hair or hairstyle, skin, body, pose, clothing (a white off-shoulder top) or the black car interior; none of these may appear in the video. Reference image 4 is the heart-label black pad material. Reference image 5 is the car cabin (pearl white leather seats, blue ambient trim) and the only environment to use. Only the woman from reference image 1 appears. A parked left-hand-drive premium sedan with pearl white leather seats, dark center console and subtle blue ambient trim, never mirrored. Continue in the same car with the same woman from reference image 1, same dashboard-front camera, driver on the right of the frame. The product is the exact white fluffy plush dog from the product reference: two upright black ears, black bead eyes and nose, pink cheeks, a pink gingham bib with white pom-pom trim, mounted on a black knit seatbelt shoulder pad with a small pink heart 'mua' label near the top of the pad (about 8 by 11 cm plush, ears slightly wider than the pad), already correctly installed: a continuous, flat, taut, straight belt runs from upper right through the center of the pad to lower left, lying flat against the torso with no twist, kink, slack or bulge. She keeps both hands resting on her lap and does not touch the product; the camera slowly pushes in toward her shoulder, her gaze follows her words to the plush and back to the camera. She speaks exactly in Mandarin: “黑耳朵，粉格子小围兜。真的好可爱。” Preserve the exact plush shape, ear shape, black pad texture, heart label position, belt placement, car geometry and lighting. No text overlay, no logo, no touching or adjusting the product, no installation action, no safety claims.",
+      "duration": 4,
+      "start_seconds": 3,
+      "ref_images": [
+        "library:characters/approved/urban-woman-a-20260925-v1.png",
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+        "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+        "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png"
+      ],
+      "reference_roles": [
+        "女主身份与造型：只继承脸型、五官、肤色、发型发色、体型与造型；不继承该图自身的背景、姿势、构图与光线",
+        "帕恰狗（粉格围兜款）SKU 完整身份真值",
+        "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境",
+        "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值",
+        "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+      ]
+    },
+    {
+      "shot_id": "S03",
+      "seed": 293197395,
+      "prompt": "Vertical 9:16 realistic Chinese UGC video, 3 seconds. Reference image 1 is the exact plush-and-pad product. Reference image 2 is a photo of a woman wearing the product; use it ONLY for how the seatbelt passes through the center of the pad and for the pad's position and proportion. Do NOT take from reference image 2 her face, hair, skin, body, pose, clothing or the black car interior. Reference image 3 is the heart-label black pad material. Reference image 4 is the car cabin, the only environment to use. No person appears in this shot. A parked left-hand-drive premium sedan with pearl white leather seats, dark center console and subtle blue ambient trim, never mirrored. Fixed close-up on the shoulder pad and plush, shallow depth of field, the car interior softly blurred behind, no person's face in frame. The product is the exact white fluffy plush dog from the product reference: two upright black ears, black bead eyes and nose, pink cheeks, a pink gingham bib with white pom-pom trim, mounted on a black knit seatbelt shoulder pad with a small pink heart 'mua' label near the top of the pad (about 8 by 11 cm plush, ears slightly wider than the pad), already correctly installed: a continuous, flat, taut, straight belt runs from upper right through the center of the pad to lower left, lying flat against the torso with no twist, kink, slack or bulge. The pink heart 'mua' label near the top of the pad is clearly visible and the plush fur texture reads in soft daylight. Off-screen the same young woman's Mandarin narration says exactly: “垫子上还有颗小爱心。” Preserve the exact plush shape, ear shape, black pad texture, heart label position, belt placement, car geometry and lighting. No text overlay, no logo, no touching or adjusting the product, no installation action, no safety claims.",
+      "duration": 3,
+      "start_seconds": 7,
+      "ref_images": [
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+        "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+        "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png"
+      ],
+      "reference_roles": [
+        "帕恰狗（粉格围兜款）SKU 完整身份真值",
+        "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境",
+        "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值",
+        "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+      ]
+    },
+    {
+      "shot_id": "S04",
+      "seed": 384040726,
+      "prompt": "Vertical 9:16 realistic Chinese UGC video, 3 seconds. Reference image 1 is the only person in this video: the exact woman who must appear; use her face, hairstyle, hair color, skin tone, build and her cream ribbed knit top. Reference image 2 is the exact plush-and-pad product. Reference image 3 is a photo of a DIFFERENT woman wearing the product; use it ONLY for how the seatbelt passes through the center of the pad and for the pad's position and proportion on the shoulder. Do NOT take from reference image 3 her face, hair or hairstyle, skin, body, pose, clothing (a white off-shoulder top) or the black car interior; none of these may appear in the video. Reference image 4 is the heart-label black pad material. Reference image 5 is the car cabin (pearl white leather seats, blue ambient trim) and the only environment to use. Only the woman from reference image 1 appears. A parked left-hand-drive premium sedan with pearl white leather seats, dark center console and subtle blue ambient trim, never mirrored. Back to the wide-medium driver framing of the first shot, the same woman from reference image 1, same camera. The product is the exact white fluffy plush dog from the product reference: two upright black ears, black bead eyes and nose, pink cheeks, a pink gingham bib with white pom-pom trim, mounted on a black knit seatbelt shoulder pad with a small pink heart 'mua' label near the top of the pad (about 8 by 11 cm plush, ears slightly wider than the pad), already correctly installed: a continuous, flat, taut, straight belt runs from upper right through the center of the pad to lower left, lying flat against the torso with no twist, kink, slack or bulge. She turns toward the camera with a natural warm smile and no hand movement. She speaks exactly in Mandarin: “你们喜欢吗？”, ending on a relaxed smile as the final frame. Preserve the exact plush shape, ear shape, black pad texture, heart label position, belt placement, car geometry and lighting. No text overlay, no logo, no touching or adjusting the product, no installation action, no safety claims.",
+      "duration": 3,
+      "start_seconds": 10,
+      "ref_images": [
+        "library:characters/approved/urban-woman-a-20260925-v1.png",
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/source/product-front.png",
+        "library:products/seatbelt-shoulder-pad/pachagou-bib-heart-pad-v1/approved/installed-driver-v1.jpg",
+        "library:material-references/seatbelt-shoulder-pad/heart-black-pad.png",
+        "library:structure-references/seatbelt-shoulder-pad/china-lhd-mercedes-sedan/source/cabin-driver-centered-v1.png"
+      ],
+      "reference_roles": [
+        "女主身份与造型：只继承脸型、五官、肤色、发型发色、体型与造型；不继承该图自身的背景、姿势、构图与光线",
+        "帕恰狗（粉格围兜款）SKU 完整身份真值",
+        "帕恰狗（粉格围兜款）主驾佩戴整图（含另一位女生和黑色内饰）：只取护肩套与安全带的位置、比例、穿入穿出关系，不取人物、服饰、环境",
+        "爱心黑护肩垫：材质与粉色爱心 mua 贴标位置真值",
+        "全片统一的左舵白色座椅、深色中控、蓝色氛围灯车厢参考（主驾居中）"
+      ]
+    }
+  ]
+}

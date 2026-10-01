@@ -2,6 +2,7 @@ import localforage from "localforage";
 import { nanoid } from "nanoid";
 
 import { withLocalProxy } from "@/stores/use-config-store";
+import { fetchMediaBlob, mediaFileExists, mediaFileUrl, saveMediaBlob } from "@/services/api/shared-storage";
 
 export type UploadedFile = { url: string; storageKey: string; bytes: number; mimeType: string; width?: number; height?: number; durationMs?: number };
 
@@ -9,33 +10,49 @@ const store = localforage.createInstance({ name: "infinite-canvas", storeName: "
 const objectUrls = new Map<string, string>();
 
 export async function uploadMediaFile(input: string | Blob, prefix = "file"): Promise<UploadedFile> {
-    const blob = typeof input === "string" ? await (await fetch(withLocalProxy(input))).blob() : input;
-    const storageKey = `${prefix}:${nanoid()}`;
-    await store.setItem(storageKey, blob);
-    const url = URL.createObjectURL(blob);
+    let blob: Blob;
+    if (typeof input === "string") {
+        const response = await fetch(withLocalProxy(input));
+        if (!response.ok) throw new Error("下载媒体文件失败，未保存");
+        blob = await response.blob();
+    } else blob = input;
+    const existing = typeof input === "string" ? /^\/api\/media-files\/([^/]+)$/.exec(input) : null;
+    const storageKey = existing ? decodeURIComponent(existing[1]) : `${prefix}:${nanoid()}`;
+    await store.setItem(storageKey, blob).catch(() => undefined);
+    const url = existing ? mediaFileUrl(storageKey) : (await saveMediaBlob(storageKey, blob)).url;
     objectUrls.set(storageKey, url);
     const meta = blob.type.startsWith("video/") ? await readVideoMeta(url) : blob.type.startsWith("audio/") ? await readAudioMeta(url) : {};
     return { url, storageKey, bytes: blob.size, mimeType: blob.type || "application/octet-stream", ...meta };
 }
 
 export async function resolveMediaUrl(storageKey?: string, fallback = "") {
+    if (fallback.startsWith("/api/")) return fallback;
     if (!storageKey) return fallback;
     const cached = objectUrls.get(storageKey);
     if (cached) return cached;
+    if (await mediaFileExists(storageKey)) {
+        const url = mediaFileUrl(storageKey);
+        objectUrls.set(storageKey, url);
+        return url;
+    }
     const blob = await store.getItem<Blob>(storageKey);
     if (!blob) return fallback;
-    const url = URL.createObjectURL(blob);
+    const { url } = await saveMediaBlob(storageKey, blob);
     objectUrls.set(storageKey, url);
     return url;
 }
 
 export async function getMediaBlob(storageKey: string) {
-    return store.getItem<Blob>(storageKey);
+    const saved = await fetchMediaBlob(storageKey);
+    if (saved) return saved;
+    const original = await store.getItem<Blob>(storageKey);
+    if (original) await saveMediaBlob(storageKey, original);
+    return original;
 }
 
 export async function setMediaBlob(storageKey: string, blob: Blob) {
-    await store.setItem(storageKey, blob);
-    const url = URL.createObjectURL(blob);
+    const { url } = await saveMediaBlob(storageKey, blob);
+    await store.setItem(storageKey, blob).catch(() => undefined);
     objectUrls.set(storageKey, url);
     return url;
 }

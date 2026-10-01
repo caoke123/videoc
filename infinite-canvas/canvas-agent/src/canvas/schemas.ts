@@ -44,6 +44,7 @@ export const toolNames = [
     "assets_list",
     "assets_add",
     "library_search",
+    "workbench_image_results",
 ] as const;
 export type ToolName = (typeof toolNames)[number];
 
@@ -84,11 +85,13 @@ const generationOptionsSchema = z.object({
 });
 
 const canvasImageSourceSchema = z.discriminatedUnion("type", [
+    z.object({ type: z.literal("generated"), imageId: z.string() }),
     z.object({ type: z.literal("library"), ref: z.string() }),
     z.object({ type: z.literal("asset"), assetId: z.string() }),
 ]);
 
 const workbenchReferenceSourceSchema = z.discriminatedUnion("type", [
+    z.object({ type: z.literal("generated"), imageId: z.string() }),
     z.object({ type: z.literal("library"), ref: z.string() }),
     z.object({ type: z.literal("asset"), assetId: z.string() }),
     z.object({ type: z.literal("url"), url: z.string() }),
@@ -140,16 +143,18 @@ export const toolInputSchemas = {
     canvas_run_generation: z.object({ nodeId: z.string(), mode: generationModeSchema.optional(), prompt: z.string().optional() }),
     generation_get_status: z.object({ scope: z.enum(["all", "canvas", "image", "video"]).optional(), taskId: z.string().optional(), nodeIds: z.array(z.string()).optional(), limit: z.number().optional() }),
     workbench_image_get_config: z.object({}).passthrough(),
-    workbench_image_generate: z.object({ prompt: z.string(), model: z.string().optional(), quality: z.string().optional(), size: z.string().optional(), count: z.number().optional(), references: z.array(workbenchReferenceSourceSchema).optional(), run: z.boolean().optional() }),
+    workbench_image_generate: z.object({ target: z.object({ canvasId: z.string(), nodeId: z.string() }).optional(), name: z.string().optional(), prompt: z.string(), model: z.string().optional(), quality: z.string().optional(), size: z.string().optional(), count: z.number().optional(), references: z.array(workbenchReferenceSourceSchema).optional(), run: z.boolean().optional() }),
     workbench_video_get_config: z.object({}).passthrough(),
     workbench_video_generate: z.object({ prompt: z.string(), model: z.string().optional(), size: z.string().optional(), seconds: z.string().optional(), resolution: z.string().optional(), generateAudio: z.boolean().optional(), watermark: z.boolean().optional(), mode: z.enum(["frames", "reference"]).optional(), run: z.boolean().optional() }),
     prompts_search: z.object({ keyword: z.string().optional(), category: z.string().optional(), tags: z.array(z.string()).optional(), page: z.number().optional(), pageSize: z.number().optional() }),
     assets_list: z.object({ kind: z.enum(["all", "text", "image", "video"]).optional(), keyword: z.string().optional(), page: z.number().optional(), pageSize: z.number().optional() }),
     assets_add: z.object({ kind: z.enum(["text", "image"]), title: z.string(), content: z.string().optional(), imageUrl: z.string().optional(), tags: z.array(z.string()).optional(), source: z.string().optional(), note: z.string().optional() }),
+    workbench_image_results: z.object({ imageId: z.string().optional(), taskId: z.string().optional(), keyword: z.string().optional(), page: z.number().optional(), pageSize: z.number().optional() }),
     library_search: z.object({ category: z.string().optional(), keyword: z.string().optional(), page: z.number().optional(), pageSize: z.number().optional() }),
 } satisfies Record<ToolName, z.AnyZodObject>;
 
 export const toolDescriptions: Record<ToolName, string> = {
+    workbench_image_results: "查询持久化的工作台生成图片。可按 imageId、taskId 或名称 keyword 搜索。每张图有稳定 img-UUID、name、generated:ID 引用和 URL；可用 source/references {type:'generated',imageId} 插入画布或作为生图参考。",
     site_navigate: "跳转网站页面。path 可为 / (首页)、/canvas (我的画布)、/canvas/:id (指定画布)、/image (生图工作台)、/video (视频创作台)、/prompts (提示词库)、/assets (我的素材)、/config (配置)。操作画布前若不在画布页，先用本工具打开画布。",
     canvas_list_projects: "列出用户全部画布（仅标题、创建/更新时间、节点数、连线数，不含完整数据），支持 keyword 搜索和 page/pageSize 分页。返回的 id 可配合 site_navigate 跳转到 /canvas/:id 打开对应画布。",
     canvas_get_state: "读取当前网页画布的节点、连线、选区和视口。",
@@ -158,7 +163,7 @@ export const toolDescriptions: Record<ToolName, string> = {
     canvas_apply_ops: "批量操作当前网页画布。ops 支持 add_node、update_node、delete_node、delete_connections、connect_nodes、set_viewport、select_nodes、run_generation。",
     canvas_create_node: "创建任意类型节点：text、image、config、video、audio。适合创建占位图、媒体占位、配置节点或自定义 metadata 节点。",
     canvas_create_attachment_nodes: "把当前对话中用户上传的图片附件创建成真实画布图片节点。attachmentIds 使用本轮附件清单中的 ID；返回的节点 ID 可传给 canvas_create_generation_flow.referenceNodeIds 作为生成参考图。",
-    canvas_insert_image_nodes: "把共享素材库（library_search 查到的 ref）或「我的素材」（assets_list 查到的 assetId）里已经存在的图片，直接创建成真实画布图片节点，不需要先下载、也不会重新生成。每个 node 需要 id（自定义，用于后续连线/操作）和 source：{type:'library', ref} 或 {type:'asset', assetId}。适合按分镜脚本批量插入角色/产品/场景参考图后再连线。返回的节点 ID 可传给 canvas_connect_nodes 或 canvas_create_generation_flow.referenceNodeIds。",
+    canvas_insert_image_nodes: "把共享素材库（library_search 查到的 ref）或「我的素材」（assets_list 查到的 assetId）里已经存在的图片，直接创建成真实画布图片节点，不需要先下载、也不会重新生成。也支持 source:{type:'generated',imageId} 插入工作台结果。每个 node 需要 id（自定义，用于后续连线/操作）和 source：{type:'library', ref} 或 {type:'asset', assetId}。适合按分镜脚本批量插入角色/产品/场景参考图后再连线。返回的节点 ID 可传给 canvas_connect_nodes 或 canvas_create_generation_flow.referenceNodeIds。",
     canvas_create_text_node: "在当前画布创建单个文本节点。",
     canvas_create_text_nodes: "批量创建文本节点，适合生成标题、段落、脚本、说明等内容块。",
     canvas_create_config_node: "创建生成配置节点，可指定 text/image/video/audio 模式和生成参数，可选择立即触发生成。",
@@ -179,7 +184,7 @@ export const toolDescriptions: Record<ToolName, string> = {
     canvas_run_generation: "触发指定节点生成，通常用于配置节点或文本/图片/视频/音频节点。",
     generation_get_status: "查询当前活动网页的生成任务状态。默认返回画布、生图工作台和视频工作台最近任务；可用 scope 过滤来源，用 taskId 查询工作台任务，用 nodeIds 查询画布节点。",
     workbench_image_get_config: "读取生图工作台的当前参数和可选项（可用模型、质量、分辨率 1k/2k/4k/auto、宽高比、张数范围），在调用 workbench_image_generate 前先了解可选值。",
-    workbench_image_generate: "在生图工作台填入提示词并按需设置 model、quality、size（如 16:9 或 2048x1152）、count，run 默认 true 会自动点击生成按钮。会自动跳转到生图工作台。可选 references 数组预先填入参考图，每项四选一：{type:'library', ref} 引用共享素材库、{type:'asset', assetId} 引用「我的素材」、{type:'url', url} 引用任意图片地址、{type:'node', nodeId} 直接引用当前画布上某个图片节点（适合还没存进素材库、只是这次对话里刚生成或插入的图，nodeId 用 canvas_get_state 返回的节点 ID）。复用工作台原有的参考图/生成能力，不需要重新准备素材。生成为异步过程，提交后返回 taskId，可用 generation_get_status 查询状态。",
+    workbench_image_generate: "在生图工作台填入提示词；可传中文 name 命名结果（如「镜头01-场景图」）、target:{canvasId,nodeId} 将成功图片回填已存在的图片节点并保留布局和连线。生成期间节点被删除、手动替换或新任务接管时不覆盖，结果仍可通过 workbench_image_results 查询。可按需设置 model、quality、size（如 16:9 或 2048x1152）、count，run 默认 true 会启动生成；run:false 仅载入可编辑草稿，可同时保留 target，等待用户手动点击生成后回填。会自动跳转到生图工作台。绑定 target 且省略 references 时自动读取目标节点的上游文本与参考图；显式传 references（含空数组）则以该参数为准。可选 references 数组预先填入参考图，每项五选一：{type:'generated',imageId} 引用工作台已生成图片、{type:'library', ref} 引用共享素材库、{type:'asset', assetId} 引用「我的素材」、{type:'url', url} 引用任意图片地址、{type:'node', nodeId} 直接引用当前画布上某个图片节点（适合还没存进素材库、只是这次对话里刚生成或插入的图，nodeId 用 canvas_get_state 返回的节点 ID）。复用工作台原有的参考图/生成能力，不需要重新准备素材。生成为异步过程，提交后返回 taskId，可用 generation_get_status 查询状态。",
     workbench_video_get_config: "读取视频创作台的当前参数和可选项（可用模型、清晰度 480/720/1080、比例 1:1/3:4/4:3/16:9/9:16/21:9/auto、时长 4–30 秒、首尾帧或全能参考模式、是否生成声音与水印）。",
     workbench_video_generate: "在视频创作台填入提示词并按需设置 model、size（1:1、3:4、4:3、16:9、9:16、21:9、auto 或 1280x720）、seconds（4–30）、resolution（480/720/1080）、generateAudio、watermark、mode（frames 首尾帧 / reference 全能参考），run 默认 true 会自动点击生成按钮。会自动跳转到视频创作台。生成为异步过程，提交后返回 taskId，可用 generation_get_status 查询状态。",
     prompts_search: "搜索提示词库（第三方提示词合集），支持 keyword、category、tags 过滤和 page/pageSize 分页，返回标题、提示词、分类、标签、封面等。",

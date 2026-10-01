@@ -127,10 +127,18 @@ export function hasResumableVideoTask(node: CanvasNodeData) {
     return node.type === CanvasNodeType.Video && Boolean(node.metadata?.videoTaskId) && !node.metadata?.content;
 }
 
-export function resetInterruptedGeneration(nodes: CanvasNodeData[]) {
+// Local-runner shots are not tracked by a browser-side task id: the runner keeps generating and
+// downloading after the page is gone, so a reload asks it where each loading node's shot is.
+export const RUNNER_IN_FLIGHT = new Set(["SUBMITTING", "QUEUED", "RUNNING", "NEEDS_ATTENTION"]);
+
+export function withRunnerVideo(node: CanvasNodeData, videoUrl: string): CanvasNodeData {
+    return { ...node, metadata: { ...node.metadata, status: "success" as const, errorDetails: undefined, content: videoUrl, mimeType: "video/mp4" } };
+}
+
+export function resetInterruptedGeneration(nodes: CanvasNodeData[], keepIds: ReadonlySet<string> = new Set()) {
     return nodes.map((node) =>
         node.metadata?.status === "loading"
-            ? hasResumableVideoTask(node)
+            ? hasResumableVideoTask(node) || keepIds.has(node.id)
                 ? node
                 : {
                       ...node,

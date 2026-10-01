@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "sku_id": "shuiba-tutu-black-pad-v1",
+  "category_id": "seatbelt-shoulder-pad",
+  "name": "水豚噜噜黑色安全带护肩套",
+  "aliases": [
+    "白色款",
+    "白帽款"
+  ],
+  "status": "approved",
+  "approved_on": "2026-08-22",
+  "approval_note": "User confirmed the supplied standalone photo as SKU identity truth and the supplied driver photo as installed-state and screen-scale truth.",
+  "assets": {
+    "identity_source": "source/product-front.png",
+    "installed_reference": "approved/installed-driver-v1.png",
+    "material_reference": "library:material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+    "extra_references": [
+      {
+        "path": "source/wearing-reference-passenger-20261001.png",
+        "role": "副驾驶位佩戴参考（用户提供，2026-10-01）",
+        "seat": "passenger"
+      }
+    ]
+  },
+  "assembly_policy": "rigid_locked",
+  "identity_locked_parts": [
+    "black_pad",
+    "toy_face",
+    "toy_glasses",
+    "toy_hat",
+    "toy_costume",
+    "toy_limbs",
+    "hanging_cords",
+    "attachment_point",
+    "complete_silhouette"
+  ],
+  "pad": {
+    "length_cm": 23.5,
+    "width_cm": 6.5,
+    "aspect_ratio": 3.6154,
+    "color": "black"
+  },
+  "plush_geometry": {
+    "plush_width_to_pad_width": 1.6,
+    "plush_height_to_pad_length": 0.62,
+    "plush_center_y_from_pad_top": 0.42,
+    "tolerance_percent": 5
+  },
+  "installed_reference_scale": {
+    "priority": "authoritative_for_screen_scale",
+    "pad_width_to_local_vehicle_belt_width": {
+      "nominal": 1.42,
+      "min": 1.35,
+      "max": 1.5,
+      "hard_reject_above": 1.55,
+      "measurement": "perpendicular_to_shared_centerline_at_same_projected_depth"
+    },
+    "pad_length_to_visible_head_width": {
+      "min": 1.4,
+      "max": 1.7
+    },
+    "pad_width_to_visible_head_width": {
+      "min": 0.4,
+      "max": 0.5
+    },
+    "plush_width_to_visible_head_width": {
+      "min": 0.7,
+      "max": 0.85
+    },
+    "pad_length_to_visible_shoulder_width": {
+      "min": 0.65,
+      "max": 0.85
+    },
+    "top_anchor": "shoulder_belt_contact_zone",
+    "lower_edge_limit": "upper_chest"
+  },
+  "installation": {
+    "vehicle_belt_passes_inside_pad": true,
+    "centerlines_aligned": true,
+    "placement_zone": "shoulder_to_upper_chest",
+    "installation_action_visible": false
+  }
+}

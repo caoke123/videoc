@@ -1,0 +1,21 @@
+{
+  "shots": {
+    "S1": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "75a7a6c7-e660-46f1-98f1-f922cee366c5",
+      "submitted_at": "2026-09-30T09:56:15.268Z",
+      "seed": 930001,
+      "duration": 4,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 384,
+      "last_polled_at": "2026-09-30T10:05:39.175Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S1/75a7a6c7-e660-46f1-98f1-f922cee366c5.mp4",
+      "downloaded_at": "2026-09-30T10:05:40.431Z"
+    }
+  },
+  "updated_at": "2026-09-30T10:05:40.431Z"
+}

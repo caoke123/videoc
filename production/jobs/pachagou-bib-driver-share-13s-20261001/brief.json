@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "job_id": "pachagou-bib-driver-share-13s-20261001",
+  "category_id": "seatbelt-shoulder-pad",
+  "product_sku_id": "pachagou-bib-heart-pad-v1",
+  "mode": "original",
+  "platform": "short-video",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 13,
+  "audience": "喜欢可爱小物的年轻女车主",
+  "use_occasion": "停车后随口分享车上的小搭子",
+  "creative_concept": "方向 A「今天的小搭子」：女主停稳车、系好安全带，发现肩上的帕恰狗，轻松对镜分享；全程不碰产品，不做安装动作。",
+  "character_profile": "都市女性 A（素材库已批准人物），独自出镜。",
+  "scene_plan": "停稳的中国左舵轿车主驾位：白色座椅、深色中控、蓝色氛围灯（素材库“中国左舵奔驰轿车内饰”）。",
+  "action_plan": "S1 发现并开口；S2 镜头缓推到肩部产品；S3 产品近景、画外旁白；S4 回到对镜笑着收尾。",
+  "spoken_script": "S01：今天车上，多了个小搭子。 S02：黑耳朵，粉格子小围兜。真的好可爱。 S03（画外）：垫子上还有颗小爱心。 S04：你们喜欢吗？",
+  "raw_copy": "",
+  "hook": "停好车低头发现肩上多了个小搭子。",
+  "cta": "“你们喜欢吗？”自然收尾，不接硬广。",
+  "verified_claims": [],
+  "prohibited_claims": [
+    "unverified crash protection",
+    "unverified injury reduction",
+    "replacement of the vehicle restraint system",
+    "任何舒适度、材质性能类宣称"
+  ],
+  "reference_video": null,
+  "notes": "用户未提供卖点，口播只写看得见的特征。素材库里没有“女主 A 坐在奔驰车厢主驾”的关键帧；建议先用 mode:probe 只提交 S01，人物或车厢不稳再按预设 1 的方式补一张关键帧。"
+}

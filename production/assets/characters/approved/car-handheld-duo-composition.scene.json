@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "car-handheld-duo-composition-v1",
+  "name": "车内双款手持构图参考",
+  "status": "approved",
+  "category": "seatbelt-shoulder-pad",
+  "images": [{ "path": "car-handheld-duo-composition-v1.png", "role": "构图参考（双款车内手持）" }],
+  "notes": "被任务 水豚噜噜双款护肩套-创意种草15秒 以 library:characters/approved/car-handheld-duo-composition-v1.png 引用；文件位置不属于人物，移动前须同步修改该任务的引用。"
+}

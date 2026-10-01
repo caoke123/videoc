@@ -35,6 +35,7 @@ export const getProductionJob = (jobId: string) => request<ProductionJobDetail>(
 export const getProductionRunLog = (jobId: string) => request<Array<Record<string, unknown>>>(`/api/jobs/${encodeURIComponent(jobId)}/run-log`);
 export const createProductionJob = (body: { title: string; categoryId: string; formatId: string }) => request<{ job_id: string }>("/api/jobs", { method: "POST", body: JSON.stringify(body) });
 export const renameProductionJob = (jobId: string, title: string) => request<{ title: string; changed: boolean }>(`/api/jobs/${encodeURIComponent(jobId)}/rename`, { method: "POST", body: JSON.stringify({ title }) });
+export const revealProductionFile = (jobId: string, path: string) => request<{ opened: boolean; path: string }>(`/api/jobs/${encodeURIComponent(jobId)}/reveal`, { method: "POST", body: JSON.stringify({ path }) });
 export const promoteProductionAsset = (jobId: string, body: { path: string; category: string; group?: string }) => request<{ ref: string; path: string; duplicate: boolean }>(`/api/jobs/${encodeURIComponent(jobId)}/assets/promote`, { method: "POST", body: JSON.stringify(body) });
 export const resolveProductionSubmit = (jobId: string, shotId: string, body: { task_id?: string; discard?: boolean }) => request<{ resolved: "adopted" | "discarded"; taskId?: string }>(`/api/jobs/${encodeURIComponent(jobId)}/shots/${encodeURIComponent(shotId)}/resolve-submit`, { method: "POST", body: JSON.stringify(body) });
 export const resumeProductionPolling = (jobId: string) => request<{ resumed: number; alreadyRunning: number; tokenConfigured: boolean }>(`/api/jobs/${encodeURIComponent(jobId)}/resume-poll`, { method: "POST", body: JSON.stringify({}) });
@@ -46,5 +47,16 @@ export const uploadProductionAsset = async (jobId: string, file: File, shotId?: 
     if (shotId) query.set("shotId", shotId);
     return request<{ asset_path: string; shot_id: string | null }>(`/api/jobs/${encodeURIComponent(jobId)}/assets?${query}`, { method: "POST", headers: { "Content-Type": file.type || "application/octet-stream" }, body: file });
 };
-export const reviewProductionShot = (jobId: string, shotId: string, body: { decision: "accepted" | "rejected"; category?: string; note?: string }) => request<{ recorded: string }>(`/api/jobs/${encodeURIComponent(jobId)}/shots/${encodeURIComponent(shotId)}/review`, { method: "POST", body: JSON.stringify(body) });
+export const reviewProductionShot = (jobId: string, shotId: string, body: { decision: "accepted" | "rejected" | "reset"; category?: string; note?: string }) => request<{ recorded: string }>(`/api/jobs/${encodeURIComponent(jobId)}/shots/${encodeURIComponent(shotId)}/review`, { method: "POST", body: JSON.stringify(body) });
+export type JianyingExportPlan = {
+    ready: boolean;
+    reasons: string[];
+    exporter_installed: boolean;
+    setup_command: string;
+    review: { pending: number; accepted: number; rejected: number };
+    default_name: string;
+    shots: Array<{ shot_id: string; duration: number; caption: string; path: string }>;
+};
+export const getJianyingExportPlan = (jobId: string) => request<JianyingExportPlan>(`/api/jobs/${encodeURIComponent(jobId)}/jianying-export`);
+export const exportJianyingDraft = (jobId: string, body: { name: string; shots: Array<{ shot_id: string; caption: string }> }) => request<{ draft_name: string; draft_path: string; duration: number; shots: string[] }>(`/api/jobs/${encodeURIComponent(jobId)}/jianying-export`, { method: "POST", body: JSON.stringify(body) });
 export const productionFileUrl = (jobId: string, path: string) => `/api/jobs/${encodeURIComponent(jobId)}/files/${encodeURIComponent(path)}`;

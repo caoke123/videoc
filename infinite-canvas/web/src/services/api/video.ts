@@ -8,6 +8,7 @@ import { getMediaBlob, resolveMediaUrl, uploadMediaFile, type UploadedFile } fro
 import { imageToDataUrl } from "@/services/image-storage";
 import { boolConfig, buildApiUrl, modelOptionName, resolveModelRequestConfig, resolveModelScript, withLocalProxy, type AiConfig } from "@/stores/use-config-store";
 import { runModelPlugin } from "./model-plugin";
+import { fetchSharedRecord, saveSharedRecord } from "@/services/api/shared-storage";
 import type { ReferenceImage } from "@/types/image";
 import type { ReferenceAudio, ReferenceVideo } from "@/types/media";
 
@@ -81,7 +82,7 @@ export async function createVideoGenerationTask(config: AiConfig, prompt: string
 
 export async function pollVideoGenerationTask(config: AiConfig, task: VideoGenerationTask, options?: RequestOptions): Promise<VideoGenerationTaskState> {
     if (task.provider === "plugin") {
-        const result = pluginVideoResults.get(task.id);
+        const result = pluginVideoResults.get(task.id) || (await fetchSharedRecord<{ result: VideoGenerationResult }>("video-task-results", task.id)).result;
         return result ? { status: "completed", result } : { status: "failed", error: apiText("pluginVideoExpired") };
     }
     const requestConfig = resolveModelRequestConfig(config, task.model);
@@ -119,7 +120,10 @@ async function createPluginVideoTask(config: AiConfig, model: string, script: st
         }),
     );
     const id = nanoid();
-    pluginVideoResults.set(id, result);
+    const stored = await storeGeneratedVideo(result);
+    const persistent = { url: stored.url, mimeType: stored.mimeType };
+    await saveSharedRecord("video-task-results", id, { id, result: persistent });
+    pluginVideoResults.set(id, persistent);
     return { id, provider: "plugin", model };
 }
 
@@ -138,11 +142,7 @@ function videoPluginResult(result: unknown): VideoGenerationResult {
 export async function storeGeneratedVideo(result: VideoGenerationResult): Promise<UploadedFile> {
     if (result.blob) return uploadMediaFile(result.blob, "video");
     if (result.url) {
-        try {
-            return await uploadMediaFile(result.url, "video");
-        } catch {
-            return { url: result.url, storageKey: "", bytes: 0, mimeType: result.mimeType || "video/mp4" };
-        }
+        return uploadMediaFile(result.url, "video");
     }
     throw new Error(apiText("noPlayableVideo"));
 }

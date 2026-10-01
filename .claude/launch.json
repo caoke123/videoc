@@ -4,7 +4,7 @@
     {
       "name": "infinite-canvas-web",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["--cwd", "infinite-canvas/web", "run", "dev"],
+      "runtimeArgs": ["run", "--cwd", "infinite-canvas/web", "dev"],
       "port": 4400
     }
   ]

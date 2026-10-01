@@ -677,6 +677,8 @@ async function upsertCanvasShot(jobsRoot, jobDir, jobId, request) {
   if (target) {
     // Re-rolling a shot that is still running would rewrite the plan under a live task.
     const run = await currentShotRunState(jobDir, await listFileNames(jobDir), target.shot_id, 'multi');
+    // A browser retry resumes the confirmed live task without modifying its prompt or resubmitting.
+    if (run?.task_id && ['QUEUED', 'RUNNING'].includes(run.status)) return { shotId: target.shot_id, reused: true };
     if (IN_FLIGHT.has(run?.status)) throw new Error(`镜头 ${target.shot_id} 还在生成或待核对，请等它结束后再重新生成`);
   }
 
@@ -755,6 +757,25 @@ export async function canvasGenerationStatus(jobsRoot, jobId, shotId) {
   const run = await currentShotRunState(jobDir, await listFileNames(jobDir), shotId, 'multi');
   if (!run) return { status: 'PLANNED', task_id: null, video_path: null, error: null };
   return { status: run.status || 'PLANNED', task_id: run.task_id || null, video_path: run.output_file || null, error: run.last_poll_error || null };
+}
+
+// For a canvas that was reloaded while shots were generating: which runner shot does each node
+// belong to, and where is it now. Read-only; the browser decides what to do with the answer.
+export async function canvasGenerations(jobsRoot, canvasId, nodeIds) {
+  if (!/^[\p{L}\p{N}_-]{1,64}$/u.test(canvasId)) throw new Error('画布 id 无效');
+  const jobId = (await findBoundJob(jobsRoot, canvasId)) || `canvas-${canvasId}`;
+  const jobDir = join(jobsRoot, jobId);
+  if (!(await access(join(jobDir, 'brief.json')).then(() => true, () => false))) return { job_id: jobId, nodes: {} };
+  const binding = await readBinding(jobDir);
+  const nodes = {};
+  for (const nodeId of nodeIds.slice(0, 50)) {
+    const shotId = binding.node_shots[nodeId] || /^shot-((?:S|G)\d+)$/.exec(nodeId)?.[1];
+    if (!shotId) continue;
+    const status = await canvasGenerationStatus(jobsRoot, jobId, shotId);
+    const videoUrl = status.status === 'SUCCESS' && status.video_path ? `/api/jobs/${encodeURIComponent(jobId)}/files/${status.video_path.split('/').map(encodeURIComponent).join('/')}` : null;
+    nodes[nodeId] = { shot_id: shotId, ...status, video_url: videoUrl };
+  }
+  return { job_id: jobId, nodes };
 }
 
 // ---- Submission recovery, validation, review --------------------------------
@@ -866,7 +887,7 @@ const REVIEW_CATEGORIES = new Set(['material', 'consistency', 'lipsync', 'compos
 
 // Human review decisions are appended as new events; earlier success/failed records are never rewritten.
 export async function recordShotReview(jobsRoot, jobId, shotId, { decision, category, note }) {
-  if (!['accepted', 'rejected'].includes(decision)) throw new Error('decision 必须是 accepted 或 rejected');
+  if (!['accepted', 'rejected', 'reset'].includes(decision)) throw new Error('decision 必须是 accepted、rejected 或 reset');
   if (decision === 'rejected' && !REVIEW_CATEGORIES.has(category)) throw new Error(`驳回原因必须是：${[...REVIEW_CATEGORIES].join('、')}`);
   const jobDir = join(jobsRoot, jobId);
   const run = await currentShotRunState(jobDir, await listFileNames(jobDir), shotId, 'multi');

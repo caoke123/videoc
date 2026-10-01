@@ -5,6 +5,49 @@ description: Implemented changes that still need manual verification
 
 # Pending Tests
 
+- Server persistence: original image/video/audio files live under `production/canvas-storage/`; assets, video history and completed custom video results are saved per record. Canvas nodes, connections, media, assets and history must remain available in a different browser and after clearing browser caches or restarting the executor. Storage failures must be visible.
+- Recovery: opening the original browser copies IndexedDB files to the server and repairs expired blob URLs with storage keys without removing original local data. Import legacy image history through the existing button; legacy assets/video logs migrate on first access. Missing originals must not overwrite existing records with empty files.
+- Concurrent edits and references: edits to different nodes/connections/assets in separate browsers must survive; saves from one browser must preserve order. Deleting records or clearing browser caches must retain referenced original files. Deleted assets/video logs must not be reimported by an old browser.
+- Generation records: direct canvas image generation saves prompt, parameters, references, results and errors. Failed video file saves must report failure instead of retaining an expiring URL as success. Completed custom video results must remain queryable in another browser. No paid generation was invoked for this change; real provider generation requires manual validation.
+
+- AutoDL canvas recovery: retrying a queued/running shot resumes the same confirmed task without changing its prompt or submitting a paid duplicate. Unconfirmed submissions without task IDs still require reconciliation.
+
+- Channel sync: refresh Chrome to save its local-only AutoDL channel, then refresh or focus the in-app browser to load its video models. Updating one channel must preserve other browsers' channels; deleted channels must not reappear on refresh, and failed saves must display an error.
+
+- Preset 7: load two independent product references, the user's composition example and pad material. Keep the left item handheld and the right item on an unoccupied hanging belt; avoid mixed accessories, a third product, extra hands, or confusing the movable latch plate with a fixed buckle receiver.
+
+- Default image constraints: presets 1, 2 and 6 include structure, material and scene-specific restrictions with four, five and three references respectively. Optional modules 3–5 append without replacing existing inputs; handheld scenes must not inherit installed-state scale or placement requirements.
+
+- Preset 6: refresh the local source and select the handheld car close-up preset. It replaces the prompt and loads product identity, user composition example, and material references. Preserve the complete product and left-hand grip without belt installation; changing reference 1 must override the example's SKU.
+
+- Image history model binding: after recreating a channel or opening history in another browser, restore the uniquely matching image model from the current channels with its call script. Require reselection when ambiguous or unavailable; do not submit using an invalid channel binding.
+
+- Canvas image workbench: “到工作台编辑并回填” must prefill prompt, ordered references, model settings and target without starting generation. Edit inputs, then generate manually; successes backfill the original node. Missing config or invalid parameters must retain the target for retry. New session, history selection and cancellation must clear the target. Loading references disables generation; failed loading must not attach a stale target.
+- Seatbelt presets: refresh the existing local source; verify six Chinese presets. Full templates replace prompt and references together only after references load successfully. Material and prohibition modules append without deleting references; material images deduplicate by preset source URL. Reference role names follow current order into the model prompt. Validate driver/passenger coordinates, product identity and proportionality manually before approving new images. See `production/workflows/seatbelt-image-presets.md` for evidence, reference order and SKU replacement.
+
+- History import: stale object URLs must be resolved from stored image blobs; one missing image must not block other records. Unlinked server images should be restored once with their existing IDs; unavailable original prompts and parameters must remain empty.
+
+- Image workbench: previews use 60% of their previous display width and retain the original aspect ratio. Full records persist in `production/image-history/`; verify prompts, parameters, references, results, renames and deletions across browsers and service restarts. Import old browser records with the local-history button; repeated imports must not duplicate records or erase local originals. Saving failures must be visible; API keys must not be stored.
+
+## 工作台分镜资产生成与回填
+
+- 参考图左右移动按钮应位于缩略图下方，使用 20px 按钮和清晰箭头，不遮挡图片；深浅主题均可辨认，首尾边界禁用、替换和删除操作仍正常。
+
+- 生成结果卡片保持现有列宽，按原图比例自适应高度，取消固定 3:4 黑边；9:16 原图完整显示，点击可放大，不改变生成尺寸。等待和失败占位卡片仍使用 3:4。图片名称与可复制 ID 分开展示。
+- 新生成图片不再截取英文提示词作为名称；Agent 传入中文名称时沿用，否则默认「生成图片-序号」，记录标题采用对应中文名称或「图片生成」。已有标题不自动重命名，用户仍可手动编辑。
+- 左侧生成记录标题可通过编辑图标修改并持久化，刷新后保留；修改标题不改变提示词、图片名称或图片 ID，编辑时不应误触记录预览。
+
+- 在图片节点的提示词面板点击「工作台生成并回填」，应沿用节点模型、尺寸、提示词和上游参考图；生成完成后更新原节点，保留名称、中心和连线，多张成功结果成为备选。
+- Agent 调用 `workbench_image_generate` 可传 `name` 和 `target:{canvasId,nodeId}`。通过 `generation_get_status` 查看 imageIds 与 backfill（applied/skipped/failed），工作台完成一批后再提交下一镜头。
+- 新生成的图片应显示可复制的 `img-UUID` 与名称，下载文件名使用该 ID。图片文件与索引保存到 `production/generated-images/`，刷新或换浏览器后可通过 `workbench_image_results` 按 ID、名称或 taskId 查询。
+- 查询结果的 `{type:'generated',imageId}` 可作为工作台参考图，或通过 `canvas_insert_image_nodes` 插入画布；保存到「我的素材」后仍应保留生成图片 ID。
+- 生成过程中手动上传、从资产库换图、启动新任务或删除目标时，旧结果不得覆盖或重建节点；图片保留供查询，回填状态应明确报告。
+- 参考图读取失败时必须停止，不得静默丢失参考图后继续生成；无参考图的任务不得沿用上一次任务的参考图。
+- 两个标签页打开同一画布时，接收回填后不应互相重复保存。回填与视口保存重叠时，两者都应保留。
+- 本地上传、「我的资产」和共享素材库填入入口继续可用；删除工作台历史不会删除服务端生成图片。新增编号针对新生成结果，不迁移已有历史。
+- 生成仍由打开的生图工作台页面执行，生成期间需保持页面打开；本地执行器和 Canvas Agent 更新后需重启，前端浏览器交互与实际模型生成待用户验收。
+
+
 本次新增的生产任务工作台需要人工验收：
 
 - 从 Infinite Canvas「任务历史」创建 UGC/TVC/9 宫格任务，确认只创建任务记录和计划文件，不预建空资产或成片目录；刷新后列表、镜头、日志和成片版本仍可读取。
@@ -23,8 +66,15 @@ description: Implemented changes that still need manual verification
 
 - 素材库分类改名：原「车辆/佩戴参考图」改为「结构参考图」，画布「从素材库选择」、资产选择弹窗的「素材库」页签、独立的素材库页面三处应同步显示新名称，不应再出现「车辆」或「佩戴」字样。
 - 素材库分组升级：产品参考图、材料参考图、结构参考图收录时应支持「产品类目/子分组」两级分组（如 `seatbelt-shoulder-pad/pink-lulu-v1`），素材库页面和画布素材库浏览器应正确显示分组名并可按分组关键字搜索；角色定妆照保持单级分组不变。
-- 素材库不再区分候选/已批准：从生图/视频工作台结果、「我的资产」或生产任务页点击「收进素材库」后，应立即出现在对应分类目录下，不应再提示「候选区」，画布和素材库页面都能直接选用，不受额外状态限制。
+- 素材库不再区分候选/已批准：生产任务页点击「收进素材库」后，应立即出现在所选分类目录下，不应再提示「候选区」，画布和素材库页面都能直接选用，不受额外状态限制。
+- 收进素材库与登记：生图工作台和「我的资产」的「收进素材库」应一次点击完成，不再弹出分类和分组选择，图片统一进入素材库页面底部的「未整理」，重复图片提示“已有相同图片”。「未整理」每张图有「登记到…」：可登记到已有产品（主驾佩戴参考、副驾驶位佩戴参考、商品原图、其他参考）、已有人物/场景/材质（填写用途），或新建人物/场景/材质；登记后图片移入该实体目录，素材库页面和 Agent 查询接口立即能看到，重启执行器后仍在。新产品和已有商品原图的替换仍需让 Agent 处理。
 - 收进素材库容错：对没有本地缓存（如跨域生成结果）的图片点击「收进素材库」，应经本机转发代理读取原始地址；代理未开启或仍读取失败时应提示需要开启本地转发代理，而不是笼统的网络错误；上传文件名的扩展名应始终与图片实际内容一致，不应再出现「文件类型和扩展名不匹配」。
+- 素材库实体视图：独立的素材库页面应按「产品/人物/场景/材质」显示实体卡片（封面、名称、别名、图片数），产品可按品类筛选，搜索支持别名（如“电玩款”）和图片用途；点开实体应看到每张图的用途、登记的佩戴比例/玩偶几何（未测量时显示提示）、锁定部件和批准记录，「复制全部引用」应一次复制该实体全部图片引用。待确认的人物应带「待确认」标记。没有归入任何实体的图片应出现在页面底部「未整理」。画布素材库浏览器与 Agent 的 `library_search` 仍沿用原来的逐图列表，本次未改。
+- 画布镜头生成中刷新：在画布里提交一个 AutoDL 镜头，生成途中（约 7 分钟内）刷新或重新打开画布，该节点应继续显示“生成中”，完成后自动出现视频，不应出现“页面刷新后生成已中断”；关闭页面等镜头完成后再打开，节点应直接显示视频；任务失败时节点应显示 AutoDL 的失败原因；执行器里根本没有该镜头任务时仍显示“已中断”。
+- 任务页文件路径：在任务页选中素材或生成版本节点，右侧应显示相对路径和本机完整路径（可选中复制），点「复制路径」应提示已复制，点「打开文件目录」应在资源管理器中打开并选中该文件；路径超出任务目录或文件不存在时应报错而不是打开。该按钮在运行本机执行器的电脑上打开，执行器部署到别处时不可用。
+- 撤销审片：在任务页选中镜头提示词节点，镜头已接受或已驳回时审片面板应出现「撤销审片」，点击后状态回到「待审片」，顶部「待人工审片」数量相应增加；待审片的镜头不显示该按钮；撤销后重新接受或驳回应正常生效。
+- 导出剪映草稿：任务页有待审片镜头时「导出剪映草稿」应为灰色并提示还有几个镜头待审片；审片全部完成后点击应弹出镜头列表，默认顺序为上次导出的顺序，可调整顺序、去掉镜头、修改字幕和草稿名；导出成功后应显示草稿路径，重启剪映专业版后在草稿列表里能找到，视频、字幕时间正确，保存、关闭、重开后素材不掉线；同名草稿应被拒绝覆盖；未安装导出组件时应提示安装命令。
+- 提示词库显示：生图工作台「查看提示词库」中，卡片标题悬停应显示完整标题；卡片和列表应显示来源、「参考图 ×N」和「追加」标记；右上角可在卡片与列表视图间切换，选择自定义来源（如“安全带护肩套”）时默认是列表，手动选择后会被记住；标签区默认只显示前 15 个，可展开全部。新增预设「司机双手各持一款（非佩戴）」选中后应带入粉裤噜妹、阳光噜噜、构图参考和黑垫材质 4 张参考图。所有预设标题应带序号（1–12），封面应是成品参考图并且比原来更大（护目镜围巾款暂用商品原图，等生成并登记佩戴参考后替换）；预设 8（司机双手各持一款）应带入 5 张参考图，第 5 张是人物参考（默认都市女性 A，只锁定司机的脸、发型和衣着）；预设 7 没有人物出镜，仍是 4 张参考图。生图工作台在宽屏下，中间的工作台区约占一半宽度，结果区变窄；提示词输入框随内容增高（最多 18 行），长预设能直接看全。
 - 自定义提示词库参考图预设：选中安全带护肩套提示词库中的预设后，应按 Reference 顺序自动填入登记的参考图；使用参考图的原地替换按钮替换单张参考图时，其余已选参考图的顺序不应改变。
 
 The current release needs manual verification in these areas:

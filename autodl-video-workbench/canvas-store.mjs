@@ -5,6 +5,7 @@
 import { randomUUID } from 'node:crypto';
 import { mkdir, readdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { assertPersistentReferences } from './shared-storage.mjs';
 
 export const canvasesRoot = jobsRoot => join(dirname(jobsRoot), 'canvases');
 
@@ -54,17 +55,63 @@ export async function getOrCreateCanvasProject(jobsRoot, id, { title } = {}) {
   return createCanvasProject(jobsRoot, { id, title });
 }
 
-export async function updateCanvasProject(jobsRoot, id, patch = {}) {
+const writes = new Map();
+function serializeWrite(jobsRoot, id, action) {
+  const key = join(canvasesRoot(jobsRoot), id);
+  const pending = (writes.get(key) || Promise.resolve()).catch(() => {}).then(action);
+  writes.set(key, pending);
+  void pending.finally(() => { if (writes.get(key) === pending) writes.delete(key); }).catch(() => {});
+  return pending;
+}
+
+export function updateCanvasProject(jobsRoot, id, patch = {}) {
+  return serializeWrite(jobsRoot, id, () => writeCanvasProject(jobsRoot, id, patch));
+}
+
+async function writeCanvasProject(jobsRoot, id, patch = {}) {
+  assertPersistentReferences(patch);
   if (!validCanvasId(id)) throw new Error('画布 id 无效');
   const current = await getCanvasProject(jobsRoot, id) || emptyProject(id, patch.title);
   const next = { ...current };
   for (const field of PROJECT_FIELDS) if (patch[field] !== undefined) next[field] = patch[field];
+  for (const [field, change] of Object.entries(patch.listChanges || {})) {
+    if (!['nodes', 'connections', 'chatSessions'].includes(field) || !Array.isArray(change.upserts) || !Array.isArray(change.removed)) throw new Error('画布增量数据无效');
+    const items = new Map((next[field] || []).map(item => [item.id, item]));
+    for (const id of change.removed) items.delete(id);
+    for (const item of change.upserts) items.set(item.id, item);
+    next[field] = [...items.values()];
+  }
   next.updatedAt = new Date().toISOString();
   await writeProjectFile(jobsRoot, next);
   return next;
 }
 
+// Only touch the target node; stale tasks must never replace a manual upload or a newer task.
+export function updateWorkbenchNode(jobsRoot, id, nodeId, body) {
+  return serializeWrite(jobsRoot, id, async () => {
+    const project = await getCanvasProject(jobsRoot, id);
+    const node = project?.nodes.find(node => node.id === nodeId);
+    if (!node || node.type !== 'image') throw new Error('目标图片节点不存在');
+    const metadata = node.metadata || {};
+    if (body.action === 'bind') {
+      node.metadata = { ...metadata, workbenchTaskId: body.taskId, workbenchSourceContent: metadata.content || '' };
+    } else {
+      if (metadata.workbenchTaskId !== body.taskId || (metadata.content || '') !== metadata.workbenchSourceContent) return { applied: false, project };
+      if (!Array.isArray(body.images) || !body.images.length) throw new Error('没有可回填的图片');
+      const image = body.images[0];
+      node.metadata = { ...metadata, content: image.content, storageKey: undefined, status: 'success', errorDetails: undefined, images: body.images, count: body.images.length, primaryImageId: image.id, generatedImageId: image.id, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight, bytes: image.bytes, mimeType: image.mimeType, prompt: body.prompt, workbenchSourceContent: image.content };
+      if (!metadata.freeResize && image.naturalWidth && image.naturalHeight) {
+        const scale = Math.min(node.width / image.naturalWidth, node.height / image.naturalHeight);
+        const width = image.naturalWidth * scale, height = image.naturalHeight * scale;
+        node.position = { x: node.position.x + (node.width - width) / 2, y: node.position.y + (node.height - height) / 2 };
+        node.width = width; node.height = height;
+      }
+    }
+    return { applied: true, project: await writeCanvasProject(jobsRoot, id, { nodes: project.nodes }) };
+  });
+}
+
 export async function deleteCanvasProjects(jobsRoot, ids) {
   const dir = canvasesRoot(jobsRoot);
-  await Promise.all((Array.isArray(ids) ? ids : []).filter(validCanvasId).map(id => unlink(join(dir, `${id}.json`)).catch(() => {})));
+  await Promise.all((Array.isArray(ids) ? ids : []).filter(validCanvasId).map(id => serializeWrite(jobsRoot, id, () => unlink(join(dir, `${id}.json`)).catch(() => {}))));
 }

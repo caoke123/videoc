@@ -1,0 +1,513 @@
+{
+  "title": "安全带上的小搭子，选哪只？｜16秒UGC双款对比",
+  "nodes": [
+    {
+      "id": "asset:white",
+      "type": "image",
+      "title": "图1｜白帽款完整商品原图",
+      "position": {
+        "x": 0,
+        "y": 570
+      },
+      "width": 280,
+      "height": 373.3333333333333,
+      "metadata": {
+        "content": "/api/library/files/products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+        "status": "success",
+        "naturalWidth": 1086,
+        "naturalHeight": 1448,
+        "bytes": 915808,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset:brown",
+      "type": "image",
+      "title": "图2｜电玩小子完整商品原图",
+      "position": {
+        "x": 0,
+        "y": 1015
+      },
+      "width": 280,
+      "height": 373.3333333333333,
+      "metadata": {
+        "content": "/api/library/files/products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+        "status": "success",
+        "naturalWidth": 1086,
+        "naturalHeight": 1448,
+        "bytes": 1410487,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset:duo",
+      "type": "image",
+      "title": "构图参考｜双款左手持、右侧垂落安全带",
+      "position": {
+        "x": 0,
+        "y": 1460
+      },
+      "width": 280,
+      "height": 280,
+      "metadata": {
+        "content": "/prompts/references/seatbelt-duo-handheld-hanging.png",
+        "status": "success",
+        "naturalWidth": 1254,
+        "naturalHeight": 1254,
+        "bytes": 2554186,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset:handheld",
+      "type": "image",
+      "title": "构图参考｜副驾视角单手举起商品",
+      "position": {
+        "x": 0,
+        "y": 1905
+      },
+      "width": 280,
+      "height": 280,
+      "metadata": {
+        "content": "/prompts/references/seatbelt-handheld-car.png",
+        "status": "success",
+        "naturalWidth": 1254,
+        "naturalHeight": 1254,
+        "bytes": 1951911,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "asset:material",
+      "type": "image",
+      "title": "材质参考｜黑垫细小织物圈纹",
+      "position": {
+        "x": 0,
+        "y": 2350
+      },
+      "width": 280,
+      "height": 420,
+      "metadata": {
+        "content": "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png",
+        "status": "success",
+        "naturalWidth": 3840,
+        "naturalHeight": 5760,
+        "bytes": 13741225,
+        "mimeType": "image/png"
+      }
+    },
+    {
+      "id": "script-approved",
+      "type": "text",
+      "title": "已通过脚本｜安全带上的小搭子，选哪只？",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "width": 720,
+      "height": 420,
+      "metadata": {
+        "content": "16秒｜9:16｜女生轻快日常分享｜可爱派与酷酷派对比\n\nS1 0–3秒：就这两个安全带小搭子，我选不出来了！\nS2 3–7秒：白帽这只，戴着小眼镜，乖乖的。\nS3 7–11秒：这只戴耳机穿背带裤，又酷又可爱。\nS4 11–16秒：你选可爱派还是酷酷派？喜欢的去下面挑！",
+        "status": "success",
+        "fontSize": 18
+      }
+    },
+    {
+      "id": "workflow",
+      "type": "text",
+      "title": "制作顺序｜先审S1，其余待审查后提交",
+      "position": {
+        "x": 850,
+        "y": 0
+      },
+      "width": 720,
+      "height": 420,
+      "metadata": {
+        "content": "当前只搭建，未提交生成。\n1. S1场景图节点→到工作台编辑并回填；可修改提示词和参考图后手动生图。\n2. 准备单款S2/S3场景图；S4复用S1双款图。\n3. 视频模型尚未配置。配置后仅先提交S1视频供审查，通过后再提交S2–S4。\n4. 各镜头必须含对应原文旁白；最终配音按Seed Audio外部流程制作。\n5. 字幕和CTA后期添加。原图与构图参考不等于已生成场景图。",
+        "status": "success",
+        "fontSize": 18
+      }
+    },
+    {
+      "id": "scene-S1",
+      "type": "image",
+      "title": "S1/S4｜双款同框场景图·待工作台生成",
+      "position": {
+        "x": 750,
+        "y": 570
+      },
+      "width": 288,
+      "height": 512,
+      "metadata": {
+        "prompt": "生成真实手机拍摄的车内双款商品对比近景，按工作台所选画幅比例构图。图1唯一决定画面左侧商品的完整外观，图2唯一决定画面右侧商品的完整外观；两张是独立商品参考，不交换、混合或拼接玩偶、服装、帽子、眼镜、耳机、配饰与垫体。图3只控制车内构图、两件商品的展示状态、相对位置和取景占比，不覆盖图1与图2的商品身份。图4只控制黑色护肩垫材质。\n白天，轿车停稳。近距离朝后排两个头枕之间的缝隙及座椅靠背上沿取景，画面顶部是两个头枕的内侧边缘，中间露出窗外自然虚化的绿植与光斑，画面主体是从头枕缝隙间垂直向下延伸的两条独立安全带织带；不出现人物脸、胸口、方向盘或无关商品。\n仅两件完整商品，各自套在自己的一条安全带织带上，左右各一条，互不共用同一条带体。左侧使用图1，右侧使用图2：两条织带都从垫体顶端中心进入、底端中心穿出，垫体包覆带体而非粘在表面；带体在垫体上方从头枕缝隙绷直向下进入垫体，在垫体下方继续绷直向下出画，全程连续、平整、不打绺、不松弛、不出现明显弧度或多余余量，不是手持姿态，也不是松垮垂挂在车门或B柱旁的无人佩戴状态。两条织带顶部与底部都保留清晰连续证据，不在中途断开或凭空消失。一只自然成年左手从画面左下角伸入，仅轻轻托扶左侧垫体的下缘与侧边，拇指与手指贴合垫体外表面，不深入垫体内部、不拉扯或牵动织带、不做任何安装、扣合、调整、拉伸或拆卸动作；右侧垫体全程无手部接触。\n两件商品左右并列、各自完整可辨，垂直方向大致平齐，左右间距、相对高度与画面占比接近图3；顶部与底部包边、玩偶及配饰不被裁切，手指不遮挡玩偶正脸，两件商品之间不交叉、不重叠遮住关键细节，不生成第三件商品、第二只手或额外的织带、锁扣与锁舌。两件商品分别保持各自原图的垫体长宽比、玩偶相对垫体的大小、附着位置及前后层次；整体统一透视，不拆分、独立缩放、折叠、扭曲、悬浮或穿模，不把毛绒玩偶画成硬塑料。\n两个黑垫都保持图4中细小、密集、不规则的织物凸起圈纹，哑光质感与缝制包边，保持参考中的纹理颗粒尺度，不放大成泡泡、圆点或蜂窝，不生成平绒、灰色补片。商品清晰，背景柔和虚化，窗光与接触阴影自然，手指数量、关节与持握合理。仅呈现静态已安装展示，不生成安装、扣合、拉扯、调整或拆卸动作。保留各商品原图已有真实细节，不新增文案、价格、水印、虚构标识或未经核实的安全与功效宣称。",
+        "content": "",
+        "status": "idle",
+        "generationMode": "image",
+        "generationType": "edit",
+        "model": "8mrbR5XysBRP3kisTnaBI::doubao-seedream-5-0-flash-260915",
+        "size": "1152x2048",
+        "quality": "high",
+        "count": 1,
+        "references": [
+          "/api/library/files/products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "/api/library/files/products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "/prompts/references/seatbelt-duo-handheld-hanging.png",
+          "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
+        ]
+      }
+    },
+    {
+      "id": "scene-S2",
+      "type": "image",
+      "title": "S2｜白帽款手持近景·待工作台生成",
+      "position": {
+        "x": 750,
+        "y": 1200
+      },
+      "width": 288,
+      "height": 512,
+      "metadata": {
+        "prompt": "生成真实手机随手拍的车内商品近景，按工作台所选画幅比例构图。图1是完整商品外观的唯一依据，锁定玩偶、服装、配饰、颜色、黑垫轮廓及玩偶相对垫体的大小与位置；图2只控制取景、持握方式、商品在画面中的占比和车内环境，不覆盖图1的商品身份；图3只控制黑垫材质。\n白天，中国左舵轿车停稳。相机位于副驾驶乘员视角，朝前方偏右取景；画面右侧是副驾车门、侧窗与车外后视镜，左侧背景是副驾前方仪表台和前挡风玻璃。窗外树木与街景自然虚化，不复制背景中的包装袋、杂物或标识，不在副驾正前方增加方向盘。\n一只自然成年左手从画面左下方伸入，拇指轻压黑垫正面下部，其余手指从后方托握垫体下部与侧缘，接触关系以图2为准；不抓拉玩偶、帽子、眼镜或配饰，不遮挡玩偶正脸和主要细节。仅出现这只手与局部前臂，不出现人物脸、第二只手或身体。\n整件商品竖直居中举起，正面朝镜头，完整保留黑垫上下边缘及玩偶附件，四周留出自然余量，商品占画面高度的比例接近图2。玩偶与黑垫是完整预装的一件商品，整体统一透视，保持图1内部比例与附着位置，不拆分、独立缩放、扭曲、折叠、悬浮或穿模。此时商品未安装在安全带上，不穿入织带、不生成佩戴、安装或扣合动作，不套用佩戴状态的垫宽与带宽比例。\n商品清晰、背景柔和虚化；自然窗光、真实接触阴影、适量手机拍摄细节，无夸张棚拍光效。黑垫保持图3中细小、密集、不规则的织物凸起圈纹、哑光质感及缝制包边，纹理尺度随取景自然变化，不放大成泡泡、圆点或蜂窝。手指数量与关节自然，不畸形。保留图1已有的真实商品细节，不新增文案、价格、水印、虚构标识或未经核实的安全与功效宣称。\n本镜头只出现图1白帽款，突出帽子、白框眼镜、小衣服细节，同时保留完整黑垫与自然持握，禁止出现电玩款或第二件商品。",
+        "content": "",
+        "status": "idle",
+        "generationMode": "image",
+        "generationType": "edit",
+        "model": "8mrbR5XysBRP3kisTnaBI::doubao-seedream-5-0-flash-260915",
+        "size": "1152x2048",
+        "quality": "high",
+        "count": 1,
+        "references": [
+          "/api/library/files/products/seatbelt-shoulder-pad/shuiba-tutu-black-pad-v1/source/product-front.png",
+          "/prompts/references/seatbelt-handheld-car.png",
+          "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
+        ]
+      }
+    },
+    {
+      "id": "scene-S3",
+      "type": "image",
+      "title": "S3｜电玩小子手持近景·待工作台生成",
+      "position": {
+        "x": 750,
+        "y": 1830
+      },
+      "width": 288,
+      "height": 512,
+      "metadata": {
+        "prompt": "生成真实手机随手拍的车内商品近景，按工作台所选画幅比例构图。图1是完整商品外观的唯一依据，锁定玩偶、服装、配饰、颜色、黑垫轮廓及玩偶相对垫体的大小与位置；图2只控制取景、持握方式、商品在画面中的占比和车内环境，不覆盖图1的商品身份；图3只控制黑垫材质。\n白天，中国左舵轿车停稳。相机位于副驾驶乘员视角，朝前方偏右取景；画面右侧是副驾车门、侧窗与车外后视镜，左侧背景是副驾前方仪表台和前挡风玻璃。窗外树木与街景自然虚化，不复制背景中的包装袋、杂物或标识，不在副驾正前方增加方向盘。\n一只自然成年左手从画面左下方伸入，拇指轻压黑垫正面下部，其余手指从后方托握垫体下部与侧缘，接触关系以图2为准；不抓拉玩偶、帽子、眼镜或配饰，不遮挡玩偶正脸和主要细节。仅出现这只手与局部前臂，不出现人物脸、第二只手或身体。\n整件商品竖直居中举起，正面朝镜头，完整保留黑垫上下边缘及玩偶附件，四周留出自然余量，商品占画面高度的比例接近图2。玩偶与黑垫是完整预装的一件商品，整体统一透视，保持图1内部比例与附着位置，不拆分、独立缩放、扭曲、折叠、悬浮或穿模。此时商品未安装在安全带上，不穿入织带、不生成佩戴、安装或扣合动作，不套用佩戴状态的垫宽与带宽比例。\n商品清晰、背景柔和虚化；自然窗光、真实接触阴影、适量手机拍摄细节，无夸张棚拍光效。黑垫保持图3中细小、密集、不规则的织物凸起圈纹、哑光质感及缝制包边，纹理尺度随取景自然变化，不放大成泡泡、圆点或蜂窝。手指数量与关节自然，不畸形。保留图1已有的真实商品细节，不新增文案、价格、水印、虚构标识或未经核实的安全与功效宣称。\n本镜头图1已替换为电玩小子完整商品原图，只出现这款商品，突出耳机、护目镜与星星背带裤，同时保留完整黑垫与自然持握；图2中的白帽玩偶不得复制到结果，禁止出现白帽款或第二件商品。",
+        "content": "",
+        "status": "idle",
+        "generationMode": "image",
+        "generationType": "edit",
+        "model": "8mrbR5XysBRP3kisTnaBI::doubao-seedream-5-0-flash-260915",
+        "size": "1152x2048",
+        "quality": "high",
+        "count": 1,
+        "references": [
+          "/api/library/files/products/seatbelt-shoulder-pad/shuiba-lulu-brown-black-pad-v1/source/product-front.png",
+          "/prompts/references/seatbelt-handheld-car.png",
+          "/api/library/files/material-references/seatbelt-shoulder-pad/black-pad-material-4k.png"
+        ]
+      }
+    },
+    {
+      "id": "copy-S1",
+      "type": "text",
+      "title": "S1｜0–3秒·口播与画面",
+      "position": {
+        "x": 1110,
+        "y": 570
+      },
+      "width": 390,
+      "height": 260,
+      "metadata": {
+        "content": "口播：就这两个安全带小搭子，我选不出来了！\n\n使用对应场景图与商品原图。\n生成4秒，剪辑取前3秒；提交后等人工审查。\n旁白为画外女生，不生成露脸人物。",
+        "status": "success",
+        "fontSize": 18
+      }
+    },
+    {
+      "id": "shot-S1",
+      "type": "video",
+      "title": "S1视频｜待配置模型·先审",
+      "position": {
+        "x": 1590,
+        "y": 570
+      },
+      "width": 288,
+      "height": 512,
+      "metadata": {
+        "prompt": "Photorealistic vertical 9:16 Chinese UGC product video inside a parked car in daylight. Use image 1 as the approved starting composition. Image 2 locks the left white-hat SKU; image 3 locks the right headphones-and-denim SKU. The left hand holds the white-hat product, while the right product remains on the unoccupied hanging belt beside the door. A stable close-up with one very subtle camera push-in; keep both complete assemblies visible and stationary. Do not install, pull, fasten, detach, or exchange either product. Finish the spoken hook within the first three seconds and hold the final pose for the remaining second. Preserve exact SKU proportions, attached accessories, matte black-pad fine irregular textile loops, sewn binding, continuous visible webbing, natural contact shadows and anatomical hand grip. The visible hanging metal latch plate is movable hardware, not a fixed red-button buckle receiver. No face, torso, second hand, third product, mixed SKU accessories, detached parts, warped plush, extra belt segments, prices, subtitles, watermark, invented logo, or unverified safety claims. Native audio is required: a natural young adult female Mandarin off-screen voice, light friendly conversational delivery, says exactly: “就这两个安全带小搭子，我选不出来了！” No added words, no music, no conflicting speech. Keep subtle cabin ambience beneath the voice. Duration 4 seconds.",
+        "content": "",
+        "status": "idle",
+        "generationMode": "video",
+        "model": "",
+        "seconds": "4",
+        "size": "9:16",
+        "videoMode": "reference",
+        "generateAudio": "true"
+      }
+    },
+    {
+      "id": "copy-S2",
+      "type": "text",
+      "title": "S2｜3–7秒·口播与画面",
+      "position": {
+        "x": 1110,
+        "y": 1200
+      },
+      "width": 390,
+      "height": 260,
+      "metadata": {
+        "content": "口播：白帽这只，戴着小眼镜，乖乖的。\n\n使用对应场景图与商品原图。\nS1视频通过后再提交。\n旁白为画外女生，不生成露脸人物。",
+        "status": "success",
+        "fontSize": 18
+      }
+    },
+    {
+      "id": "shot-S2",
+      "type": "video",
+      "title": "S2视频｜待配置模型·待S1通过",
+      "position": {
+        "x": 1590,
+        "y": 1200
+      },
+      "width": 288,
+      "height": 512,
+      "metadata": {
+        "prompt": "Photorealistic vertical 9:16 Chinese UGC product video inside a parked car in daylight. Image 1 is the starting handheld composition; image 2 is the exact white-hat product identity. Only this single SKU appears. One slow, small camera push-in emphasizes the white hat, white glasses and clothing without cropping the complete pad or accessories. Keep the hand grip stable; no toy manipulation, installation or additional hands. Preserve exact SKU proportions, attached accessories, matte black-pad fine irregular textile loops, sewn binding, continuous visible webbing, natural contact shadows and anatomical hand grip. The visible hanging metal latch plate is movable hardware, not a fixed red-button buckle receiver. No face, torso, second hand, third product, mixed SKU accessories, detached parts, warped plush, extra belt segments, prices, subtitles, watermark, invented logo, or unverified safety claims. Native audio is required: a natural young adult female Mandarin off-screen voice, light friendly conversational delivery, says exactly: “白帽这只，戴着小眼镜，乖乖的。” No added words, no music, no conflicting speech. Keep subtle cabin ambience beneath the voice. Duration 4 seconds.",
+        "content": "",
+        "status": "idle",
+        "generationMode": "video",
+        "model": "",
+        "seconds": "4",
+        "size": "9:16",
+        "videoMode": "reference",
+        "generateAudio": "true"
+      }
+    },
+    {
+      "id": "copy-S3",
+      "type": "text",
+      "title": "S3｜7–11秒·口播与画面",
+      "position": {
+        "x": 1110,
+        "y": 1830
+      },
+      "width": 390,
+      "height": 260,
+      "metadata": {
+        "content": "口播：这只戴耳机穿背带裤，又酷又可爱。\n\n使用对应场景图与商品原图。\nS1视频通过后再提交。\n旁白为画外女生，不生成露脸人物。",
+        "status": "success",
+        "fontSize": 18
+      }
+    },
+    {
+      "id": "shot-S3",
+      "type": "video",
+      "title": "S3视频｜待配置模型·待S1通过",
+      "position": {
+        "x": 1590,
+        "y": 1830
+      },
+      "width": 288,
+      "height": 512,
+      "metadata": {
+        "prompt": "Photorealistic vertical 9:16 Chinese UGC product video inside a parked car in daylight. Image 1 is the starting handheld composition; image 2 is the exact headphones-and-denim product identity. Only this single SKU appears. One slow, small camera push-in emphasizes the brown headphones, goggles and star-pattern denim overalls without cropping the complete pad or accessories. Keep the hand grip stable; no toy manipulation, installation or additional hands. Preserve exact SKU proportions, attached accessories, matte black-pad fine irregular textile loops, sewn binding, continuous visible webbing, natural contact shadows and anatomical hand grip. The visible hanging metal latch plate is movable hardware, not a fixed red-button buckle receiver. No face, torso, second hand, third product, mixed SKU accessories, detached parts, warped plush, extra belt segments, prices, subtitles, watermark, invented logo, or unverified safety claims. Native audio is required: a natural young adult female Mandarin off-screen voice, light friendly conversational delivery, says exactly: “这只戴耳机穿背带裤，又酷又可爱。” No added words, no music, no conflicting speech. Keep subtle cabin ambience beneath the voice. Duration 4 seconds.",
+        "content": "",
+        "status": "idle",
+        "generationMode": "video",
+        "model": "",
+        "seconds": "4",
+        "size": "9:16",
+        "videoMode": "reference",
+        "generateAudio": "true"
+      }
+    },
+    {
+      "id": "copy-S4",
+      "type": "text",
+      "title": "S4｜11–16秒·口播与画面",
+      "position": {
+        "x": 1110,
+        "y": 2460
+      },
+      "width": 390,
+      "height": 260,
+      "metadata": {
+        "content": "口播：你选可爱派还是酷酷派？喜欢的去下面挑！\n\n复用S1双款场景图，无需再生一张图。\nS1视频通过后再提交。\n旁白为画外女生，不生成露脸人物。",
+        "status": "success",
+        "fontSize": 18
+      }
+    },
+    {
+      "id": "shot-S4",
+      "type": "video",
+      "title": "S4视频｜待配置模型·待S1通过",
+      "position": {
+        "x": 1590,
+        "y": 2460
+      },
+      "width": 288,
+      "height": 512,
+      "metadata": {
+        "prompt": "Photorealistic vertical 9:16 Chinese UGC product video inside a parked car in daylight. Reuse the same image 1 starting composition as S1, maintaining the same car, lighting, left-hand grip and left/right SKU positions. Image 2 locks the left white-hat SKU; image 3 locks the right headphones-and-denim SKU. A stable shot with a very subtle pull-back lets viewers compare both complete products. Hold the two products steady throughout; do not add installation, tugging or switching actions. No model-rendered CTA or captions; those are added during editing. Preserve exact SKU proportions, attached accessories, matte black-pad fine irregular textile loops, sewn binding, continuous visible webbing, natural contact shadows and anatomical hand grip. The visible hanging metal latch plate is movable hardware, not a fixed red-button buckle receiver. No face, torso, second hand, third product, mixed SKU accessories, detached parts, warped plush, extra belt segments, prices, subtitles, watermark, invented logo, or unverified safety claims. Native audio is required: a natural young adult female Mandarin off-screen voice, light friendly conversational delivery, says exactly: “你选可爱派还是酷酷派？喜欢的去下面挑！” No added words, no music, no conflicting speech. Keep subtle cabin ambience beneath the voice. Duration 5 seconds.",
+        "content": "",
+        "status": "idle",
+        "generationMode": "video",
+        "model": "",
+        "seconds": "5",
+        "size": "9:16",
+        "videoMode": "reference",
+        "generateAudio": "true"
+      }
+    },
+    {
+      "id": "edit-plan",
+      "type": "text",
+      "title": "剪辑与配音说明｜16秒·待素材生成",
+      "position": {
+        "x": 2090,
+        "y": 570
+      },
+      "width": 500,
+      "height": 430,
+      "metadata": {
+        "content": "顺序：S1取前3秒→S2 4秒→S3 4秒→S4 5秒，总长16秒。\n镜头视频尚未生成，此节点是剪辑说明，不是成片。\n字幕后期添加：可爱派 🤍 / 酷酷派 🎮 / 你选哪只？\n每镜头生成原文画外旁白，最终Seed Audio配音外部制作后导入，替换原声并按实际音频校准字幕。\n最终交付可编辑剪映草稿，人工微调并导出。",
+        "status": "success",
+        "fontSize": 18
+      }
+    }
+  ],
+  "connections": [
+    {
+      "id": "edge:asset:white:scene-S1",
+      "fromNodeId": "asset:white",
+      "toNodeId": "scene-S1"
+    },
+    {
+      "id": "edge:asset:brown:scene-S1",
+      "fromNodeId": "asset:brown",
+      "toNodeId": "scene-S1"
+    },
+    {
+      "id": "edge:asset:duo:scene-S1",
+      "fromNodeId": "asset:duo",
+      "toNodeId": "scene-S1"
+    },
+    {
+      "id": "edge:asset:material:scene-S1",
+      "fromNodeId": "asset:material",
+      "toNodeId": "scene-S1"
+    },
+    {
+      "id": "edge:asset:white:scene-S2",
+      "fromNodeId": "asset:white",
+      "toNodeId": "scene-S2"
+    },
+    {
+      "id": "edge:asset:handheld:scene-S2",
+      "fromNodeId": "asset:handheld",
+      "toNodeId": "scene-S2"
+    },
+    {
+      "id": "edge:asset:material:scene-S2",
+      "fromNodeId": "asset:material",
+      "toNodeId": "scene-S2"
+    },
+    {
+      "id": "edge:asset:brown:scene-S3",
+      "fromNodeId": "asset:brown",
+      "toNodeId": "scene-S3"
+    },
+    {
+      "id": "edge:asset:handheld:scene-S3",
+      "fromNodeId": "asset:handheld",
+      "toNodeId": "scene-S3"
+    },
+    {
+      "id": "edge:asset:material:scene-S3",
+      "fromNodeId": "asset:material",
+      "toNodeId": "scene-S3"
+    },
+    {
+      "id": "edge:scene-S1:shot-S1",
+      "fromNodeId": "scene-S1",
+      "toNodeId": "shot-S1"
+    },
+    {
+      "id": "edge:asset:white:shot-S1",
+      "fromNodeId": "asset:white",
+      "toNodeId": "shot-S1"
+    },
+    {
+      "id": "edge:asset:brown:shot-S1",
+      "fromNodeId": "asset:brown",
+      "toNodeId": "shot-S1"
+    },
+    {
+      "id": "edge:shot-S1:edit-plan",
+      "fromNodeId": "shot-S1",
+      "toNodeId": "edit-plan"
+    },
+    {
+      "id": "edge:scene-S2:shot-S2",
+      "fromNodeId": "scene-S2",
+      "toNodeId": "shot-S2"
+    },
+    {
+      "id": "edge:asset:white:shot-S2",
+      "fromNodeId": "asset:white",
+      "toNodeId": "shot-S2"
+    },
+    {
+      "id": "edge:shot-S2:edit-plan",
+      "fromNodeId": "shot-S2",
+      "toNodeId": "edit-plan"
+    },
+    {
+      "id": "edge:scene-S3:shot-S3",
+      "fromNodeId": "scene-S3",
+      "toNodeId": "shot-S3"
+    },
+    {
+      "id": "edge:asset:brown:shot-S3",
+      "fromNodeId": "asset:brown",
+      "toNodeId": "shot-S3"
+    },
+    {
+      "id": "edge:shot-S3:edit-plan",
+      "fromNodeId": "shot-S3",
+      "toNodeId": "edit-plan"
+    },
+    {
+      "id": "edge:scene-S1:shot-S4",
+      "fromNodeId": "scene-S1",
+      "toNodeId": "shot-S4"
+    },
+    {
+      "id": "edge:asset:white:shot-S4",
+      "fromNodeId": "asset:white",
+      "toNodeId": "shot-S4"
+    },
+    {
+      "id": "edge:asset:brown:shot-S4",
+      "fromNodeId": "asset:brown",
+      "toNodeId": "shot-S4"
+    },
+    {
+      "id": "edge:shot-S4:edit-plan",
+      "fromNodeId": "shot-S4",
+      "toNodeId": "edit-plan"
+    }
+  ],
+  "chatSessions": [],
+  "activeChatId": null,
+  "backgroundMode": "dot",
+  "showImageInfo": true,
+  "viewport": {
+    "x": 60,
+    "y": 70,
+    "k": 0.45
+  }
+}

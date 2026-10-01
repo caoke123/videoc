@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { App, Button, Checkbox, Empty, Input, InputNumber, Modal, Select, Spin, Tag } from "antd";
-import { ArrowLeft, Check, CloudUpload, Copy, ExternalLink, Film, LibraryBig, Pencil, RefreshCw, Upload, WandSparkles, X } from "lucide-react";
+import { App, Button, Checkbox, Empty, Input, InputNumber, Modal, Select, Spin, Tag, Tooltip } from "antd";
+import { ArrowLeft, Check, Clapperboard, CloudUpload, Copy, ExternalLink, Film, FolderOpen, LibraryBig, Pencil, RefreshCw, Upload, WandSparkles, X } from "lucide-react";
 
 import { ConnectionPath } from "@/components/canvas/canvas-connections";
+import { JianyingExportModal } from "./jianying-export-modal";
 import { InfiniteCanvas } from "@/components/canvas/infinite-canvas";
 import { CanvasNodeType, type CanvasConnection, type CanvasNodeData, type ViewportTransform } from "@/types/canvas";
 import { canvasThemes } from "@/lib/canvas-theme";
@@ -11,10 +12,14 @@ import { useCopyText } from "@/hooks/use-copy-text";
 import { composeTaskCut, fetchBoundTask, openTaskCanvas, syncTaskCanvasFinals } from "@/lib/production-canvas";
 import { LIBRARY_CATEGORY_OPTIONS } from "@/services/api/library";
 import { useThemeStore } from "@/stores/use-theme-store";
-import { getProductionJob, preflightProductionBatch, productionFileUrl, promoteProductionAsset, publishProductionAudio, renameProductionJob, resolveProductionSubmit, resumeProductionPolling, reviewProductionShot, submitProductionBatch, uploadProductionAsset, type ProductionConnection, type ProductionJobDetail, type ProductionLayout, type ProductionNode } from "@/services/api/production";
+import { getProductionJob, preflightProductionBatch, productionFileUrl, promoteProductionAsset, revealProductionFile, publishProductionAudio, renameProductionJob, resolveProductionSubmit, resumeProductionPolling, reviewProductionShot, submitProductionBatch, uploadProductionAsset, type ProductionConnection, type ProductionJobDetail, type ProductionLayout, type ProductionNode } from "@/services/api/production";
 
 const defaultViewport: ViewportTransform = { x: 260, y: 180, k: 0.65 };
 
+function localFilePath(root: string, path: string) {
+    const separator = root.includes("\\") ? "\\" : "/";
+    return `${root.replace(/[\\/]+$/, "")}${separator}${path.split("/").join(separator)}`;
+}
 function fileLabel(path: string) { return path.split("/").pop() || path; }
 function mediaKind(path: string) {
     const ext = path.split(".").pop()?.toLowerCase();
@@ -247,6 +252,7 @@ export default function ProductionJobPage() {
     const [resumingPolling, setResumingPolling] = useState(false);
     const [rejectCategory, setRejectCategory] = useState("material");
     const [composeOpen, setComposeOpen] = useState(false);
+    const [jianyingOpen, setJianyingOpen] = useState(false);
     const [composing, setComposing] = useState(false);
     const [composeShots, setComposeShots] = useState<string[]>([]);
     const [composeTransition, setComposeTransition] = useState<"cut" | "fade">("cut");
@@ -349,11 +355,11 @@ export default function ProductionJobPage() {
         finally { setPublishingAudio(false); }
     };
 
-    const reviewShot = async (shotId: string, decision: "accepted" | "rejected") => {
+    const reviewShot = async (shotId: string, decision: "accepted" | "rejected" | "reset") => {
         setReviewing(shotId);
         try {
             await reviewProductionShot(jobId, shotId, decision === "rejected" ? { decision, category: rejectCategory } : { decision });
-            message.success(decision === "accepted" ? `${shotId} 已接受` : `${shotId} 已驳回，可到“我的画布”改素材或提示词后重新生成`);
+            message.success(decision === "accepted" ? `${shotId} 已接受` : decision === "reset" ? `${shotId} 已撤销审片，回到待审片` : `${shotId} 已驳回，可到“我的画布”改素材或提示词后重新生成`);
             await refresh();
         } catch (error) { message.error(error instanceof Error ? error.message : "审核记录失败"); }
         finally { setReviewing(null); }
@@ -436,7 +442,7 @@ export default function ProductionJobPage() {
         <main className="flex h-full min-h-0 flex-col bg-background text-foreground">
             <header className="flex min-h-14 items-center justify-between gap-3 border-b border-border px-4">
                 <div className="flex min-w-0 items-center gap-3">
-                    <Button type="text" icon={<ArrowLeft className="size-4" />} onClick={() => navigate("/production")}>任务历史</Button>
+                    <Button type="text" icon={<ArrowLeft className="size-4" />} onClick={() => navigate("/production")}>任务管理</Button>
                     <span className="text-muted-foreground">/</span>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1">
@@ -458,6 +464,11 @@ export default function ProductionJobPage() {
                     {hasPendingPolling && <Button loading={resumingPolling} onClick={() => void resumePolling()}>继续轮询</Button>}
                     {pendingReviewShots.length > 0 && <Button icon={<Check className="size-4" />} loading={bulkAccepting} onClick={acceptAllPending}>全部接受 {pendingReviewShots.length}</Button>}
                     <Button icon={<Film className="size-4" />} disabled={!shotsWithRender.length} onClick={openCompose}>合成审片预览</Button>
+                    {detail.request_plan?.media_type !== "image" ? (
+                        <Tooltip title={(detail.review_status?.pending ?? 0) > 0 ? `还有 ${detail.review_status?.pending} 个镜头待审片，审片全部完成后才能导出` : !detail.review_status?.accepted ? "没有已通过审片的镜头" : "把已通过审片的镜头导出为剪映草稿"}>
+                            <span><Button icon={<Clapperboard className="size-4" />} disabled={!detail.review_status?.accepted || detail.review_status.pending > 0} onClick={() => setJianyingOpen(true)}>导出剪映草稿</Button></span>
+                        </Tooltip>
+                    ) : null}
                     <Button type="primary" icon={<ExternalLink className="size-4" />} loading={openingCanvas} onClick={() => void openInMyCanvas()}>在我的画布中打开</Button>
                     <Button icon={<RefreshCw className="size-4" />} onClick={() => void refresh()}>刷新</Button>
                 </div>
@@ -520,11 +531,19 @@ export default function ProductionJobPage() {
                                 <Button size="small" type="primary" icon={<Check className="size-3" />} loading={reviewing === activeNode.shotId} onClick={() => void reviewShot(activeNode.shotId!, "accepted")}>接受</Button>
                                 <Select size="small" className="w-28" value={rejectCategory} onChange={setRejectCategory} options={[{ value: "material", label: "材质问题" }, { value: "consistency", label: "一致性" }, { value: "lipsync", label: "口型" }, { value: "composition", label: "构图" }, { value: "audio", label: "声音" }, { value: "other", label: "其他" }]} />
                                 <Button size="small" danger icon={<X className="size-3" />} loading={reviewing === activeNode.shotId} onClick={() => void reviewShot(activeNode.shotId!, "rejected")}>驳回</Button>
+                                {detail.review_status.shots[activeNode.shotId].state !== "pending" ? <Button size="small" type="text" loading={reviewing === activeNode.shotId} onClick={() => void reviewShot(activeNode.shotId!, "reset")}>撤销审片</Button> : null}
                             </div>
                         </div> : null}
                     </> : activeNode?.kind === "asset" || activeNode?.kind === "render" ? <>
                         <h2 className="font-semibold">{activeNode.kind === "asset" ? "素材详情" : "生成版本"}</h2>
-                        {activeNode.path ? <p className="mt-2 break-all text-xs text-muted-foreground">{activeNode.path}</p> : null}
+                        {activeNode.path ? <>
+                            <p className="mt-2 break-all text-xs text-muted-foreground">{activeNode.path}</p>
+                            <p className="mt-1 select-all break-all rounded bg-muted px-2 py-1 font-mono text-[11px]">{localFilePath(detail.local_path, activeNode.path)}</p>
+                            <div className="mt-2 flex gap-2">
+                                <Button size="small" icon={<Copy className="size-3.5" />} onClick={() => copyText(localFilePath(detail.local_path, activeNode.path!), "已复制文件路径")}>复制路径</Button>
+                                <Button size="small" icon={<FolderOpen className="size-3.5" />} onClick={() => void revealProductionFile(jobId, activeNode.path!).catch((error) => message.error(error instanceof Error ? error.message : "打开失败"))}>打开文件目录</Button>
+                            </div>
+                        </> : null}
                         {activeNode.path && mediaKind(activeNode.path) === "image" ? <img src={productionFileUrl(jobId, activeNode.path)} alt={activeNode.title} className="mt-4 max-h-80 w-full rounded-lg object-contain" /> : activeNode.path && mediaKind(activeNode.path) === "video" ? <video src={productionFileUrl(jobId, activeNode.path)} controls className="mt-4 w-full rounded-lg bg-black" /> : activeNode.path && mediaKind(activeNode.path) === "audio" ? <audio src={productionFileUrl(jobId, activeNode.path)} controls className="mt-4 w-full" /> : activeNode.kind === "render" && !activeNode.path ? <div className="mt-4 rounded-lg border border-border p-4 text-sm text-muted-foreground">{activeNode.shotId ? `镜头 ${activeNode.shotId}：${normalizeStatus(runStateFor(detail, activeNode.shotId)?.status || activeNode.status)}。生成完成后视频会出现在此节点。` : "所有镜头完成后，完整审片版会显示在此节点。"}</div> : activeNode.path ? <a className="mt-4 inline-block text-sm underline" href={productionFileUrl(jobId, activeNode.path)} download>下载文件</a> : null}
                         {activeNode.path && mediaKind(activeNode.path) === "image" ? <Button className="mt-3" icon={<LibraryBig className="size-4" />} onClick={() => { setPromoteTarget(activeNode.path!); setPromoteGroup(""); }}>收进素材库</Button> : null}
                     </> : <>
@@ -535,6 +554,7 @@ export default function ProductionJobPage() {
                 </aside>
             </div>
             <input ref={uploadRef} type="file" accept=".wav,.mp3,.m4a,.aac" className="hidden" onChange={(event) => void uploadAudio(event.target.files?.[0])} />
+            <JianyingExportModal jobId={jobId} open={jianyingOpen} onClose={() => setJianyingOpen(false)} />
             <Modal title="合成审片预览（本机 ffmpeg）" open={composeOpen} onCancel={() => setComposeOpen(false)} onOk={() => void runCompose()} okText="开始合成" cancelText="取消" confirmLoading={composing} okButtonProps={{ disabled: composeShots.length < 1 }}>
                 <div className="flex flex-col gap-3 py-2 text-sm">
                     <div>

@@ -7,7 +7,8 @@
 ## 权威素材
 
 - `source/product-front.png`：完整产品身份真值，不可拆分或重绘玩偶与黑色护肩套。
-- `source/woman-reference.jpg`：本次人物身份参考。
+- 首张佩戴合成图所用的人物身份参考已于 2026-10-01 移到人物分类：`characters/shuiba-lulu-driver-woman-20260815/woman-reference.jpg`。
+- `source/wearing-reference-driver-v1.png`、`source/wearing-reference-front-passenger-v1.png`：用户提供的主驾、副驾佩戴参考（2026-10-01 由白色款目录移入；副驾那张带向存在歧义，未作为副驾权威）。
 - `approved/installed-driver-v1.png`：人工确认通过的驾驶佩戴参考。
 
 ## 必须保持

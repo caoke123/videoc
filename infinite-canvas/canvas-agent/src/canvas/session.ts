@@ -37,6 +37,7 @@ const SITE_TOOLS = new Set<ToolName>([
     "assets_add",
     "generation_get_status",
     "library_search",
+    "workbench_image_results",
 ]);
 
 /** 管理网页画布连接、状态、附件和工具请求。 */

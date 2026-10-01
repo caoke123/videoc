@@ -1,3 +1,4 @@
+import { runSiteTool } from "@/lib/agent/agent-site-tools";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent as ReactChangeEvent, DragEvent as ReactDragEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -47,7 +48,7 @@ import { libraryFileUrl, type LibraryAssetItem } from "@/services/api/library";
 import { CanvasZoomControls } from "@/components/canvas/canvas-zoom-controls";
 import { useAgentStore } from "@/stores/use-agent-store";
 import { CANVAS_CLIENT_ID, useCanvasStore } from "@/stores/canvas/use-canvas-store";
-import { subscribeCanvasProject } from "@/services/api/canvas-projects";
+import { fetchCanvasGenerations, mergeCanvasItems, subscribeCanvasProject, type RunnerGeneration } from "@/services/api/canvas-projects";
 import { useAgentBridge } from "@/pages/canvas/hooks/use-agent-bridge";
 import { usePluginHost } from "@/pages/canvas/hooks/use-plugin-host";
 import { buildNodeMentionReferences, getGroupResourceNodes, isCanvasReferenceNode, type CanvasResourceReference } from "@/lib/canvas/canvas-resource-references";
@@ -70,6 +71,8 @@ import {
     isAudioFile,
     isGenerationCanceled,
     resetInterruptedGeneration,
+    RUNNER_IN_FLIGHT,
+    withRunnerVideo,
     resolveMetadataReferences,
     sourceNodeReferenceImages,
 } from "@/lib/canvas/canvas-generation-helpers";
@@ -180,6 +183,7 @@ function InfiniteCanvasPage() {
     const uploadTargetRef = useRef<{ nodeId?: string; position?: Position } | null>(null);
     const clipboardRef = useRef<CanvasClipboard | null>(null);
     const historyRef = useRef<{ past: CanvasHistoryEntry[]; future: CanvasHistoryEntry[] }>({ past: [], future: [] });
+    const remoteStateRef = useRef<CanvasHistoryEntry | null>(null);
     const lastHistoryRef = useRef<CanvasHistoryEntry | null>(null);
     const historyCommitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const viewportSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -451,6 +455,29 @@ function InfiniteCanvasPage() {
         [modal, stopGenerationByRunningId, t],
     );
 
+    // Shots the local runner is still generating (or finished while the page was closed): follow them
+    // until they end, then write the video or the failure back into the node.
+    const watchRunnerGenerations = useCallback(async (canvasId: string, ids: string[], isCancelled: () => boolean) => {
+        let pending = ids;
+        while (pending.length && !isCancelled()) {
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            if (isCancelled()) return;
+            const states = await fetchCanvasGenerations(canvasId, pending).catch(() => null);
+            if (!states) continue;
+            const ended = pending.filter((id) => !states[id] || !RUNNER_IN_FLIGHT.has(states[id].status));
+            if (!ended.length) continue;
+            pending = pending.filter((id) => !ended.includes(id));
+            setNodes((prev) =>
+                prev.map((item) => {
+                    const state = states[item.id];
+                    if (!ended.includes(item.id) || item.metadata?.status !== NODE_STATUS_LOADING) return item;
+                    if (state?.status === "SUCCESS" && state.video_url) return withRunnerVideo(item, state.video_url);
+                    return { ...item, metadata: { ...item.metadata, status: NODE_STATUS_ERROR, errorDetails: state?.error || t("canvas.generation.interrupted") } };
+                }),
+            );
+        }
+    }, [t]);
+
     useEffect(() => {
         if (!hydrated || hydrateError) return;
         setProjectLoaded(false);
@@ -463,7 +490,12 @@ function InfiniteCanvasPage() {
                 navigate("/canvas", { replace: true });
                 return;
             }
-            const restoredNodes = await hydrateCanvasImages(resetInterruptedGeneration(project.nodes));
+            const orphanIds = project.nodes.filter((node) => node.type === CanvasNodeType.Video && node.metadata?.status === "loading" && !hasResumableVideoTask(node)).map((node) => node.id);
+            const generations: Record<string, RunnerGeneration> = orphanIds.length ? await fetchCanvasGenerations(projectId, orphanIds).catch(() => ({})) : {};
+            if (cancelled) return;
+            const resuming = new Set(orphanIds.filter((id) => RUNNER_IN_FLIGHT.has(generations[id]?.status)));
+            const recovered = project.nodes.map((node) => (generations[node.id]?.status === "SUCCESS" && generations[node.id].video_url ? withRunnerVideo(node, generations[node.id].video_url as string) : node));
+            const restoredNodes = await hydrateCanvasImages(resetInterruptedGeneration(recovered, resuming));
             const restoredSessions = await hydrateAssistantImages(project.chatSessions || []);
             setNodes(restoredNodes);
             setConnections(project.connections);
@@ -487,12 +519,13 @@ function InfiniteCanvasPage() {
             };
             setHistoryState({ canUndo: false, canRedo: false });
             setProjectLoaded(true);
+            if (resuming.size) void watchRunnerGenerations(projectId, [...resuming], () => cancelled);
         };
         void restore();
         return () => {
             cancelled = true;
         };
-    }, [hydrated, hydrateError, navigate, openProject, projectId]);
+    }, [hydrated, hydrateError, navigate, openProject, projectId, watchRunnerGenerations]);
 
     // Live updates from other tabs/Agents editing this same canvas; our own writes are filtered out
     // server-side by clientId, so this only ever applies changes made elsewhere.
@@ -502,10 +535,16 @@ function InfiniteCanvasPage() {
             projectId,
             CANVAS_CLIENT_ID,
             (project) => {
+                const previous = useCanvasStore.getState().projects.find(item => item.id === projectId);
+                const mergedNodes = previous ? mergeCanvasItems(previous.nodes, nodesRef.current, project.nodes) : project.nodes;
+                const mergedConnections = previous ? mergeCanvasItems(previous.connections, connectionsRef.current, project.connections) : project.connections;
+                remoteStateRef.current = { nodes: project.nodes, connections: project.connections, chatSessions: project.chatSessions || [], activeChatId: project.activeChatId || null, backgroundMode: project.backgroundMode, showImageInfo: project.showImageInfo || false };
                 mergeRemoteProject(project);
-                setNodes(project.nodes);
-                setConnections(project.connections);
-                setChatSessions(project.chatSessions || []);
+                nodesRef.current = mergedNodes;
+                connectionsRef.current = mergedConnections;
+                setNodes(mergedNodes);
+                setConnections(mergedConnections);
+                setChatSessions(local => previous ? mergeCanvasItems(previous.chatSessions || [], local, project.chatSessions || []) : project.chatSessions || []);
                 setActiveChatId(project.activeChatId || null);
                 setBackgroundMode(project.backgroundMode);
                 setShowImageInfo(project.showImageInfo || false);
@@ -533,6 +572,10 @@ function InfiniteCanvasPage() {
     useEffect(() => {
         if (!projectLoaded || applyingHistoryRef.current || historyPausedRef.current) return;
         const next = createHistoryEntry();
+        if (matchesRemoteState(next, remoteStateRef.current)) {
+            lastHistoryRef.current = next;
+            return;
+        }
         const previous = lastHistoryRef.current;
         if (
             previous?.nodes === next.nodes &&
@@ -566,6 +609,10 @@ function InfiniteCanvasPage() {
 
     useEffect(() => {
         if (!projectLoaded || historyPausedRef.current) return;
+        if (matchesRemoteState({ nodes, connections, chatSessions, activeChatId, backgroundMode, showImageInfo }, remoteStateRef.current)) {
+            remoteStateRef.current = null;
+            return;
+        }
         if (projectSaveTimerRef.current) clearTimeout(projectSaveTimerRef.current);
         projectSaveTimerRef.current = setTimeout(() => {
             projectSaveTimerRef.current = null;
@@ -1795,6 +1842,7 @@ function InfiniteCanvasPage() {
                         bytes: image.bytes,
                         mimeType: image.mimeType,
                         primaryImageId: image.id,
+                        generatedImageId: image.id.startsWith("img-") ? image.id : undefined,
                     },
                 };
             }),
@@ -3136,6 +3184,23 @@ function InfiniteCanvasPage() {
         setPreviewNodeId(node.id);
         setPreviewImageId(imageId || null);
     }, []);
+    const handleWorkbenchGenerate = useCallback(async (nodeId: string, prompt: string) => {
+        try {
+            const node = nodesRef.current.find(node => node.id === nodeId);
+            if (!node || node.type !== CanvasNodeType.Image) return;
+            const context = await hydrateNodeGenerationContext(buildNodeGenerationContext(nodeId, nodesRef.current, connectionsRef.current, prompt));
+            // Flush edits before leaving the canvas; the workbench only updates this image node.
+            if (projectSaveTimerRef.current) clearTimeout(projectSaveTimerRef.current);
+            await updateProject(projectId, { nodes: nodesRef.current, connections: connectionsRef.current, chatSessions, activeChatId, backgroundMode, showImageInfo });
+            await runSiteTool("workbench_image_generate", {
+                prompt: context.prompt, name: node.title, target: { canvasId: projectId, nodeId }, run: false,
+                model: node.metadata?.model || effectiveConfig.imageModel || effectiveConfig.model,
+                size: node.metadata?.size || effectiveConfig.size, quality: node.metadata?.quality || effectiveConfig.quality,
+                count: node.metadata?.count || 1,
+                references: context.referenceImages.map(image => ({ type: "url", url: image.dataUrl })),
+            }, navigate);
+        } catch (error) { message.error(error instanceof Error ? error.message : "工作台生成失败"); }
+    }, [activeChatId, backgroundMode, chatSessions, effectiveConfig, message, navigate, projectId, showImageInfo, updateProject]);
     const handleNodeRetry = useCallback(
         (node: CanvasNodeData) => {
             if (node.type === CanvasNodeType.Text && (node.metadata?.textCount || 1) > 1) {
@@ -3180,6 +3245,7 @@ function InfiniteCanvasPage() {
                     onPromptChange={handleNodePromptChange}
                     onConfigChange={handleConfigNodeChange}
                     onGenerate={handleGenerateNode}
+                    onWorkbenchGenerate={handleWorkbenchGenerate}
                     onStop={confirmStopGeneration}
                     onDisconnectReference={disconnectNodeReference}
                     onStartReferenceSelection={startNodeReferenceSelection}
@@ -3190,7 +3256,7 @@ function InfiniteCanvasPage() {
                     }}
                 />
             ),
-        [configInputsById, confirmStopGeneration, connectedNodesByNodeId, disconnectNodeReference, handleConfigNodeChange, handleGenerateNode, handleNodePromptChange, mentionReferencesByNodeId, nodes, renderPluginPanel, runningNodeId, startNodeReferenceSelection],
+        [configInputsById, confirmStopGeneration, connectedNodesByNodeId, disconnectNodeReference, handleConfigNodeChange, handleGenerateNode, handleWorkbenchGenerate, handleNodePromptChange, mentionReferencesByNodeId, nodes, renderPluginPanel, runningNodeId, startNodeReferenceSelection],
     );
 
     const renderNodeContentPanel = useCallback(
@@ -3521,4 +3587,8 @@ function InfiniteCanvasPage() {
             </section>
         </main>
     );
+}
+
+function matchesRemoteState(state: CanvasHistoryEntry, remote: CanvasHistoryEntry | null) {
+    return remote !== null && state.nodes === remote.nodes && state.connections === remote.connections && state.chatSessions === remote.chatSessions && state.activeChatId === remote.activeChatId && state.backgroundMode === remote.backgroundMode && state.showImageInfo === remote.showImageInfo;
 }

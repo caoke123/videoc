@@ -95,7 +95,7 @@ export default function ProductionJobsPage() {
                 <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
                     <div>
                         <p className="text-xs text-muted-foreground">无限画布 · AutoDL</p>
-                        <h1 className="mt-2 text-3xl font-semibold">任务历史</h1>
+                        <h1 className="mt-2 text-3xl font-semibold">任务管理</h1>
                         <p className="mt-2 text-sm text-muted-foreground">任务、素材、提示词、生成版本与人工操作都保存在项目任务目录中。</p>
                     </div>
                     <div className="flex gap-2">

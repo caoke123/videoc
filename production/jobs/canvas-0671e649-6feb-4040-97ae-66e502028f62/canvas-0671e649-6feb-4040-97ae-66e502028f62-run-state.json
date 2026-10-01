@@ -1,0 +1,22 @@
+{
+  "status": "PREPARING",
+  "shots": {
+    "S01": {
+      "status": "SUCCESS",
+      "submit_intent_at": null,
+      "submit_error": null,
+      "retry_approved": false,
+      "task_id": "9cc9e900-0d18-484e-b12b-d8f60f0d8eeb",
+      "submitted_at": "2026-09-30T15:19:27.435Z",
+      "seed": 14091272,
+      "duration": 4,
+      "resolution": "768p竖(768*1376)",
+      "elapsed_seconds": 318,
+      "last_polled_at": "2026-09-30T15:24:48.494Z",
+      "last_poll_error": null,
+      "output_file": "renders/runs/S01/9cc9e900-0d18-484e-b12b-d8f60f0d8eeb.mp4",
+      "downloaded_at": "2026-09-30T15:24:48.812Z"
+    }
+  },
+  "updated_at": "2026-09-30T15:24:48.813Z"
+}
